@@ -14,14 +14,15 @@ struct sGameScene {
     sGameCamera scene_cam;
 
     Matrix44 player_model;
-    Mesh player_body;
+    Mesh *player_body;
+    Texture *player_texture;
+    Shader *player_shader;
 
-    sGameScene() {
-        curr_area = 0;
-    }
+    sGameScene(); 
 
     int create_area();
     void add_element_to_area();
+    void render_scene();
 };
 
 
