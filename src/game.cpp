@@ -6,6 +6,7 @@
 #include "shader.h"
 #include "input.h"
 #include "animation.h"
+#include "game_scene.h"
 
 #include <cmath>
 
@@ -20,6 +21,7 @@ bool attached_torpedo = true;
 bool free_cam = false;
 Game* Game::instance = NULL;
 
+sGameScene *curr_scene = NULL;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
 {
@@ -43,11 +45,13 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	camera = new Camera();
 	camera->lookAt(Vector3(0.f,10.f, 10.f),Vector3(0.f,0.f,0.f), Vector3(0.f,1.f,0.f)); //position the camera and point to 0,0,0
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,100000.f); //set the projection, we want to be perspective
+	camera->enable();
 
 	// example of shader loading using the shaders manager
 	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
 
 	torpedo_model.setTranslation(0, -5, 0);
+	curr_scene = new sGameScene();
 
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
@@ -79,7 +83,8 @@ void renderMesh(Matrix44 m, Mesh* mesh, Texture* texture, int submesh = 0)
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	Vector3 eye = plane_model * Vector3(0,10,30);
+	curr_scene->render_scene();
+	/*Vector3 eye = plane_model * Vector3(0,10,30);
 	Vector3 center = plane_model * Vector3();
 	Vector3 up = plane_model.rotateVector(Vector3(0, 1, 0));
 	if(!free_cam)
@@ -120,11 +125,11 @@ void Game::render(void)
 	renderMesh(attached_torpedo ? torpedo_model * plane_model : torpedo_model, mesh, texture);
 
 	//Draw the floor grid
+	
+
+	//render the FPS, Draw Calls, etc*/
+	//drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
 	drawGrid();
-
-	//render the FPS, Draw Calls, etc
-	drawText(2, 2, getGPUStats(), Vector3(1, 1, 1), 2);
-
 	//swap between front buffer and back buffer
 	SDL_GL_SwapWindow(this->window);
 }
@@ -136,7 +141,8 @@ void Game::update(double seconds_elapsed)
 	//example
 	angle += (float)seconds_elapsed * 10.0f;
 
-
+	uint8 key_presses = 0;
+	curr_scene->update_scene(elapsed_time, key_presses);
 
 	//mouse input to rotate the cam
 	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
@@ -162,12 +168,6 @@ void Game::update(double seconds_elapsed)
 		if (Input::isKeyPressed(SDL_SCANCODE_S) || Input::isKeyPressed(SDL_SCANCODE_DOWN)) camera->move(Vector3(0.0f, 0.0f, -1.0f) * speed);
 		if (Input::isKeyPressed(SDL_SCANCODE_A) || Input::isKeyPressed(SDL_SCANCODE_LEFT)) camera->move(Vector3(1.0f, 0.0f, 0.0f) * speed);
 		if (Input::isKeyPressed(SDL_SCANCODE_D) || Input::isKeyPressed(SDL_SCANCODE_RIGHT)) camera->move(Vector3(-1.0f, 0.0f, 0.0f) * speed);
-	}
-
-	if (Input::isKeyPressed(SDL_SCANCODE_F) && attached_torpedo)
-	{
-		attached_torpedo = false;
-		torpedo_model = torpedo_model * plane_model;
 	}
 
 	if (!free_cam)

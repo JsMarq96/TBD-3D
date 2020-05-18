@@ -6,6 +6,14 @@
 #include "game_camera.h"
 #include "mesh.h"
 #include "area.h"
+#include "input.h"
+
+#define PRESS_W 0b00001
+#define PRESS_A 0b00010
+#define PRESS_S 0b00100
+#define PRESS_D 0b01000
+
+#define CHAR_SPEED 10
 
 struct sGameScene {
     std::vector<sArea*> game_areas;
@@ -20,9 +28,8 @@ struct sGameScene {
 
     sGameScene(); 
 
-    int create_area();
-    void add_element_to_area();
     void render_scene();
+    void update_scene(float elapsed_time, uint8 pressed_keys);
 };
 
 

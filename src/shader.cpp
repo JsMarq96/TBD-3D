@@ -115,17 +115,18 @@ Shader* Shader::Get(const char* vsf, const char* psf, const char* macros)
 		name = std::string(vsf) + "," + std::string(psf ? psf : "") + (macros ? macros : "");
 	else
 		name = vsf;
+
 	std::map<std::string,Shader*>::iterator it = s_Shaders.find(name);
 	if (it != s_Shaders.end())
 		return it->second;
 
 	if (!psf)
 		return NULL;
-
 	Shader* sh = new Shader();
 	if (!sh->load( vsf,psf, macros ))
 		return NULL;
 	s_Shaders[name] = sh;
+	
 	return sh;
 }
 

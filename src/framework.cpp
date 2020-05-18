@@ -148,7 +148,7 @@ void Vector3::parseFromText(const char* text, const char separator)
 			strncpy(num, start, current - start);
 			num[current - start] = '\0';
 			start = current + 1;
-			if (num[0] != 'x') //¿?
+			if (num[0] != 'x') //ï¿½?
 				switch(pos)
 				{
 					case 0: x = (float)atof(num); break;
