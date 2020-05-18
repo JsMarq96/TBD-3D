@@ -11,8 +11,9 @@ sGameScene::sGameScene() {
     curr_area = 0;
     
     player_model.setTranslation(0,0,0);
-    player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/flat.fs");
-    player_body = Mesh::Get("data/meshes/player.obj");
+    player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    player_body = Mesh::Get("data/meshes/player_t.obj");
+    player_texture = Texture::Get("data/textures/player_text.tga");
 
     // Create test area
     sArea* test_area = new sArea(0, 0, 50, 50);
@@ -64,15 +65,15 @@ void sGameScene::render_scene() {
 	//set the camera as default
 	//camera->enable();
     curr_camera->enable();
-    //glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
     
     if (scene_cam.cam_mode == THIRD_PERSON) {
         player_shader->enable();
         player_shader->setUniform("u_color", Vector4(1,1,1,1));
         player_shader->setUniform("u_viewprojection", curr_camera->viewprojection_matrix);
-        //player_shader->setUniform("u_texture", player_texture);
+        player_shader->setUniform("u_texture", player_texture);
         player_shader->setUniform("u_model", player_model);
         player_body->render(GL_TRIANGLES);
         player_shader->disable();
@@ -88,7 +89,9 @@ void sGameScene::render_scene() {
 
 }
 
-void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
+void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {  
+    player_model.rotate(Input::mouse_delta.x * CHAR_ROT_SPEED, Vector3(0.f,-1.f,0.f));
+  
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         player_model.translate(.0f, .0f, -.1f * CHAR_SPEED);
     } else if (Input::isKeyPressed(SDL_SCANCODE_S)) {
@@ -100,6 +103,10 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     } else if (Input::isKeyPressed(SDL_SCANCODE_D)) {
         player_model.translate(.1f * CHAR_SPEED, .0f, .0f);
     }
+
+
+    //camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
+	//camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
 
     /*if (Input::isKeyPressed(SDL_SCANCODE_UP)) eye1 = eye1 + Vector3(0,0,0.1);
     if (Input::isKeyPressed(SDL_SCANCODE_DOWN)) eye1 = eye1 - Vector3(0,0,0.1);

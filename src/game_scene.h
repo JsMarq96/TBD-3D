@@ -13,7 +13,8 @@
 #define PRESS_S 0b00100
 #define PRESS_D 0b01000
 
-#define CHAR_SPEED 10
+#define CHAR_SPEED 5
+#define CHAR_ROT_SPEED 0.01f
 
 struct sGameScene {
     std::vector<sArea*> game_areas;

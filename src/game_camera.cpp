@@ -18,4 +18,7 @@ void sGameCamera::get_camera(Camera* cam, Matrix44 player_model) {
     up = player_model.rotateVector(Vector3(0,1,0));
 
     cam->lookAt(eye, center, up);
+
+    //cam->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
+	//cam->rotate(Input::mouse_delta.y * 0.005f, cam->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
 }

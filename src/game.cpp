@@ -136,6 +136,7 @@ void Game::render(void)
 
 void Game::update(double seconds_elapsed)
 {
+	Input::centerMouse();
 	float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
@@ -143,6 +144,8 @@ void Game::update(double seconds_elapsed)
 
 	uint8 key_presses = 0;
 	curr_scene->update_scene(elapsed_time, key_presses);
+
+	
 
 	//mouse input to rotate the cam
 	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
@@ -174,10 +177,6 @@ void Game::update(double seconds_elapsed)
 	{
 		plane_model.translate(0, 0, seconds_elapsed * -10);
 	}
-
-	//to navigate with the mouse fixed in the middle
-	if (mouse_locked)
-		Input::centerMouse();
 }
 
 //Keyboard event handler (sync input)
