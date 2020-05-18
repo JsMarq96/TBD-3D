@@ -45,7 +45,9 @@ void sGameScene::render_scene() {
     // Render player
     scene_cam.get_camera(curr_camera, player_model);
 
-    /*Vector3 eye, up, center;
+    /*
+    For manual camera adjust
+    Vector3 eye, up, center;
 
     eye = player_model * eye1;
     center = player_model * center1;
