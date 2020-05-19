@@ -3,17 +3,6 @@
 sRenderItems::sRenderItems(std::string &shader_vs,
                  std::string &shader_fs,
                  std::string &mesh) {
-/*sRenderItems::sRenderItems(const char* shader_vs,
-                 const char* shader_fs,
-                 const char* mesh) {
-    shader_fs_id = new char[DATA_DIR_LEN];
-    shader_vs_id = new char[DATA_DIR_LEN];
-    mesh_id = new char[DATA_DIR_LEN];
-    
-    strcpy((char*) &shader_vs_id[0], shader_vs);
-    strcpy((char*) &shader_fs_id[0], shader_fs);
-    strcpy((char*) &mesh_id[0], mesh);*/
-
     shader_fs_id = shader_vs;
     shader_vs_id = shader_fs;
     mesh_id = mesh;
@@ -31,11 +20,13 @@ bool sRenderItems::add_element(Matrix44 &new_model) {
 
 // Todo: frustum coling
 void sStage::render_area(Camera *camera) {
+    std::vector<sRenderItems*>::iterator it;
     // Render elements
-    for (int j = 0; j < 2; j++) {
+    for (it = stage_elements.begin(); it < stage_elements.end(); it++) {
         // Load shader
-        Shader *curr_shader = Shader::Get(area_elements[j].shader_vs_id.c_str(), area_elements[j].shader_fs_id.c_str());
-        Mesh *mesh = Mesh::Get(area_elements[j].mesh_id.c_str());
+        sRenderItems* curr_item = *it;
+        Shader *curr_shader = Shader::Get(curr_item->shader_vs_id.c_str(), curr_item->shader_fs_id.c_str());
+        Mesh *mesh = Mesh::Get(curr_item->mesh_id.c_str());
         curr_shader->enable();
         
         curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
@@ -44,8 +35,8 @@ void sStage::render_area(Camera *camera) {
 
         mesh->enableBuffers(curr_shader);
 
-        for (int i = 0; i < area_elements[j].last_inserted_index; i++) {
-            curr_shader->setUniform("u_model", area_elements[j].models[i]);
+        for (int i = 0; i < curr_item->last_inserted_index; i++) {
+            curr_shader->setUniform("u_model", curr_item->models[i]);
             mesh->drawCall(GL_TRIANGLES, 1, 0);
         }
 
@@ -60,6 +51,18 @@ void sStage::add_tree(Matrix44 tree_model) {
 
 void sStage::add_house(Matrix44 house_model) {
     area_elements[HOUSES_ID].add_element(house_model);
+}
+
+void sStage::add_instance(int type, Matrix44 model) {
+    stage_elements[type]->add_element(model);
+}
+
+int sStage::add_element(std::string mesh_name, std::string text_name, std::string shader_fs, std::string shader_vs) {
+    sRenderItems* new_elem = new sRenderItems(shader_fs, shader_vs, mesh_name);
+
+    stage_elements.push_back(new_elem);
+    
+    return stage_elements.size() - 1;
 }
 
 sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
