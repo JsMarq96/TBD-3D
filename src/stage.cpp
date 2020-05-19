@@ -19,7 +19,7 @@ bool sRenderItems::add_element(Matrix44 &new_model) {
 }
 
 // Todo: frustum coling
-void sStage::render_area(Camera *camera) {
+void sStage::render_stage(Camera *camera) {
     std::vector<sRenderItems*>::iterator it;
     // Render elements
     for (it = stage_elements.begin(); it < stage_elements.end(); it++) {

@@ -59,7 +59,7 @@ struct sStage {
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 
-    void render_area(Camera *camera);
+    void render_stage(Camera *camera);
     void add_tree(Matrix44 tree_model);
     void add_house(Matrix44 house_model);
 
