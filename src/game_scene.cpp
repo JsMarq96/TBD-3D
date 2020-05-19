@@ -12,11 +12,13 @@ sGameScene::sGameScene() {
     
     player_model.setTranslation(0,0,0);
     player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
-    player_body = Mesh::Get("data/meshes/player_t.obj");
-    player_texture = Texture::Get("data/textures/player_text.tga");
+    //player_body = Mesh::Get("data/spitfire/spitfire.ASE");
+    player_body = Mesh::Get("data/meshes/player_t4.obj");
+    player_texture = Texture::Get("data/textures/player_text3.tga");
+    //player_texture = Texture::Get("data/spitfire/spitfire_color_spec.tga");
 
     // Create test area
-    sArea* test_area = new sArea(0, 0, 50, 50);
+    sStage* test_area = new sStage(0, 0, 50, 50);
 
     Matrix44 tree1_model = Matrix44();
     Matrix44 tree2_model = Matrix44();
@@ -25,10 +27,10 @@ sGameScene::sGameScene() {
     Matrix44 house2_model = Matrix44();
 
     tree1_model.translate(20, 0, 0);
-    tree2_model.translate(15, 5, 0);
-    tree3_model.translate(30, 30, 0);
-    house1_model.translate(0, 50, 0);
-    house2_model.translate(50, 10, 0);
+    tree2_model.translate(15, 0, 5);
+    tree3_model.translate(30, 0, 30);
+    house1_model.translate(0, 0, 150);
+    house2_model.translate(50, 0, 20);
 
     test_area->add_tree(tree1_model);
     test_area->add_tree(tree2_model);
@@ -37,7 +39,7 @@ sGameScene::sGameScene() {
     test_area->add_house(house1_model);
     test_area->add_house(house2_model);
 
-    game_areas.push_back(test_area);
+    scene_stages.push_back(test_area);
 }
 
 //Vector3 eye1 = Vector3(0,1,2.7), up1, center1 = Vector3(0,1,0);
@@ -61,11 +63,6 @@ void sGameScene::render_scene() {
 
 	// Clear the window and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//set the camera as default
-	//camera->enable();
-    curr_camera->enable();
-    glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
     
@@ -75,15 +72,15 @@ void sGameScene::render_scene() {
         player_shader->setUniform("u_viewprojection", curr_camera->viewprojection_matrix);
         player_shader->setUniform("u_texture", player_texture);
         player_shader->setUniform("u_model", player_model);
-        player_body->render(GL_TRIANGLES);
+        player_body->render(GL_TRIANGLES, 1);
         player_shader->disable();
     }
 
     // TODO: set delimitation by fog?
     // Render area
-    game_areas[0]->render_area(curr_camera);
+    scene_stages[0]->render_area(curr_camera);
     // Render next areas??
-    //drawText(2, 2, "x:" + std::to_string(player_model.m[12]) + " y:" + std::to_string(player_model.m[13]) + " z:" + std::to_string(player_model.m[14]), Vector3(1, 1, 1), 2);
+    drawText(2, 2, "x:" + std::to_string(player_model.m[12]) + " y:" + std::to_string(player_model.m[13]) + " z:" + std::to_string(player_model.m[14]), Vector3(1, 1, 1), 2);
     //drawText(2, 2, "x:" + std::to_string(eye1.x) + " y:" + std::to_string(eye1.y) + " z:" + std::to_string(eye1.z), Vector3(1, 1, 1), 2);
     //drawText(2, 17, "x:" + std::to_string(center1.x) + " y:" + std::to_string(center1.y) + " z:" + std::to_string(center1.z), Vector3(1, 1, 1), 2);
 

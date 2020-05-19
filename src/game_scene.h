@@ -5,7 +5,7 @@
 #include "framework.h"
 #include "game_camera.h"
 #include "mesh.h"
-#include "area.h"
+#include "stage.h"
 #include "input.h"
 
 #define PRESS_W 0b00001
@@ -13,11 +13,11 @@
 #define PRESS_S 0b00100
 #define PRESS_D 0b01000
 
-#define CHAR_SPEED 5
-#define CHAR_ROT_SPEED 0.01f
+#define CHAR_SPEED 3
+#define CHAR_ROT_SPEED 0.0005f
 
 struct sGameScene {
-    std::vector<sArea*> game_areas;
+    std::vector<sStage*> scene_stages;
     int curr_area;
 
     sGameCamera scene_cam;

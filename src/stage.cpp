@@ -1,4 +1,4 @@
-#include "area.h"
+#include "stage.h"
 
 sRenderItems::sRenderItems(std::string &shader_vs,
                  std::string &shader_fs,
@@ -30,7 +30,7 @@ bool sRenderItems::add_element(Matrix44 &new_model) {
 }
 
 // Todo: frustum coling
-void sArea::render_area(Camera *camera) {
+void sStage::render_area(Camera *camera) {
     // Render elements
     for (int j = 0; j < 2; j++) {
         // Load shader
@@ -54,15 +54,15 @@ void sArea::render_area(Camera *camera) {
     }
 }
 
-void sArea::add_tree(Matrix44 tree_model) {
+void sStage::add_tree(Matrix44 tree_model) {
     area_elements[TREES_ID].add_element(tree_model);
 }
 
-void sArea::add_house(Matrix44 house_model) {
+void sStage::add_house(Matrix44 house_model) {
     area_elements[HOUSES_ID].add_element(house_model);
 }
 
-sArea::sArea(int n_x, int n_y, int n_width, int n_heigh) {
+sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     x= n_x, y = n_y;
     width = n_width, heigth = n_heigh;
 

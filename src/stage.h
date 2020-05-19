@@ -47,14 +47,14 @@ enum AreaElements: uint8 {
 };
 
 // Generic Game Area
-struct sArea {
+struct sStage {
     int x, y;
     int width, heigth;
-    std::vector<sArea*> next_areas;
+    std::vector<sStage*> next_areas;
 
     sRenderItems area_elements[2];
     
-    sArea(int n_x, int n_y, int n_width, int n_heigh);
+    sStage(int n_x, int n_y, int n_width, int n_heigh);
 
     void render_area(Camera *camera);
     void add_tree(Matrix44 tree_model);

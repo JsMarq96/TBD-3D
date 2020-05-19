@@ -1,8 +1,8 @@
-# Blender MTL File: 'treed.blend'
+# Blender MTL File: 'person_no_mirr.blend'
 # Material Count: 1
 
-newmtl Material
-Ns 323.999994
+newmtl Material.001
+Ns 225.000000
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
 Ks 0.500000 0.500000 0.500000
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd /home/js/Documents/TJE_framework_2020/data/tree.png
+map_Kd /home/js/Documents/Meshes/player_text1.png
