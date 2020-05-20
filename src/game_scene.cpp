@@ -1,11 +1,5 @@
 #include "game_scene.h"
 
-Matrix44 setTranslationMat(int x, int y, int z) {
-    Matrix44 new_mat = Matrix44();
-    new_mat.setTranslation(x, y, z);
-
-    return new_mat;
-}
 
 sGameScene::sGameScene() {
     curr_area = 0;
@@ -18,28 +12,11 @@ sGameScene::sGameScene() {
     //player_texture = Texture::Get("data/spitfire/spitfire_color_spec.tga");
 
     // Create test area
-    sStage* test_area = new sStage(0, 0, 50, 50);
+    sStage* test_stage = new sStage(0, 0, 50, 50);
 
-    Matrix44 tree1_model = Matrix44();
-    Matrix44 tree2_model = Matrix44();
-    Matrix44 tree3_model = Matrix44();
-    Matrix44 house1_model = Matrix44();
-    Matrix44 house2_model = Matrix44();
+    parse_stage(test_stage, "data/stages/01.stg");
 
-    tree1_model.translate(20, 0, 0);
-    tree2_model.translate(15, 0, 5);
-    tree3_model.translate(30, 0, 30);
-    house1_model.translate(0, 0, 150);
-    house2_model.translate(50, 0, 20);
-
-    test_area->add_tree(tree1_model);
-    test_area->add_tree(tree2_model);
-    test_area->add_tree(tree3_model);
-
-    test_area->add_house(house1_model);
-    test_area->add_house(house2_model);
-
-    scene_stages.push_back(test_area);
+    scene_stages.push_back(test_stage);
 }
 
 //Vector3 eye1 = Vector3(0,1,2.7), up1, center1 = Vector3(0,1,0);
@@ -78,7 +55,7 @@ void sGameScene::render_scene() {
 
     // TODO: set delimitation by fog?
     // Render area
-    scene_stages[0]->render_area(curr_camera);
+    scene_stages[0]->render_stage(curr_camera);
     // Render next areas??
     drawText(2, 2, "x:" + std::to_string(player_model.m[12]) + " y:" + std::to_string(player_model.m[13]) + " z:" + std::to_string(player_model.m[14]), Vector3(1, 1, 1), 2);
     //drawText(2, 2, "x:" + std::to_string(eye1.x) + " y:" + std::to_string(eye1.y) + " z:" + std::to_string(eye1.z), Vector3(1, 1, 1), 2);

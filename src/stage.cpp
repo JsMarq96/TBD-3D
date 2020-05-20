@@ -45,14 +45,6 @@ void sStage::render_stage(Camera *camera) {
     }
 }
 
-void sStage::add_tree(Matrix44 tree_model) {
-    area_elements[TREES_ID].add_element(tree_model);
-}
-
-void sStage::add_house(Matrix44 house_model) {
-    area_elements[HOUSES_ID].add_element(house_model);
-}
-
 void sStage::add_instance(int type, Matrix44 model) {
     stage_elements[type]->add_element(model);
 }
@@ -65,12 +57,18 @@ int sStage::add_element(std::string mesh_name, std::string text_name, std::strin
     return stage_elements.size() - 1;
 }
 
+int sStage::add_element(std::string elem_name) {
+    int index = -1;
+    if (elem_name == "tree.obj") {
+        index = add_element("data/meshes/tree.obj","data/shaders/basic.vs","data/shaders/flat.fs","data/textures");
+    } else if (elem_name == "house.obj") {
+        index = add_element("data/meshes/house.obj","data/shaders/basic.vs","data/shaders/flat.fs","data/textures");
+    }
+
+    return index;
+}
+
 sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     x= n_x, y = n_y;
     width = n_width, heigth = n_heigh;
-
-    std::string vs_shader = "data/shaders/basic.vs", fs_shader = "data/shaders/flat.fs", tree_mesh = "data/meshes/tree.obj";
-
-    area_elements[TREES_ID] = sRenderItems(fs_shader, vs_shader, tree_mesh);
-    area_elements[HOUSES_ID] =  sRenderItems(fs_shader, vs_shader, tree_mesh);
 }

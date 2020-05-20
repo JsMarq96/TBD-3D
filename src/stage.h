@@ -42,32 +42,26 @@ struct sRenderItems {
     bool add_element(Matrix44 &model);
 };
 
-enum AreaElements: uint8 {
-    TREES_ID = 0,
-    HOUSES_ID = 1
-};
-
 // Generic Game Area
 struct sStage {
     int x, y;
     int width, heigth;
+    // To do
     std::vector<sStage*> next_areas;
-
-    sRenderItems area_elements[2];
 
     std::vector<sRenderItems*> stage_elements;
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 
     void render_stage(Camera *camera);
-    void add_tree(Matrix44 tree_model);
-    void add_house(Matrix44 house_model);
 
     void add_instance(int type, Matrix44 model);
+
     int add_element(std::string mesh_name, 
         std::string text_name, 
         std::string shader_fs,
         std::string shader_vs);
+    int add_element(std::string elem_name);
 };
 
 #endif

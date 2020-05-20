@@ -2,6 +2,7 @@
 #define _GAME_SCENE_H_
 
 #include <vector>
+#include "stage_parser.h"
 #include "framework.h"
 #include "game_camera.h"
 #include "mesh.h"

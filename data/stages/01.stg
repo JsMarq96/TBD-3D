@@ -1,7 +1,6 @@
 define items
-1 data/meshes/tree.obj data/shaders/ data/shaders/
-2 data/meshes/house.obj data/shaders/ data/shaders/
-3 data/meshes/player.obj data/shaders/ data/shaders/
+1 tree.obj
+2 house.obj
 define stage
 3 0.0 0.0 0.0
 1 0.0 20.0 0.0
