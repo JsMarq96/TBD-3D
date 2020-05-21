@@ -7,7 +7,8 @@ sGameScene::sGameScene() {
     player_model.setTranslation(0,0,0);
     player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     //player_body = Mesh::Get("data/spitfire/spitfire.ASE");
-    player_body = Mesh::Get("data/meshes/player_t4.obj");
+    player_body = Mesh::Get("data/meshes/player_t1.obj");
+    player_arm = Mesh::Get("data/meshes/player_arm.obj");
     player_texture = Texture::Get("data/player_text2.png");
     //player_texture = Texture::Get("data/spitfire/spitfire_color_spec.tga");
 
@@ -19,7 +20,7 @@ sGameScene::sGameScene() {
     scene_stages.push_back(test_stage);
 }
 
-//Vector3 eye1 = Vector3(0,1,2.7), up1, center1 = Vector3(0,1,0);
+Vector3 eye1 = Vector3(0,1,2.7), up1, center1 = Vector3(0,1,0);
 void sGameScene::render_scene() {
     Camera *curr_camera = Camera::current;
     // Render player
@@ -51,6 +52,14 @@ void sGameScene::render_scene() {
         player_shader->setUniform("u_model", player_model);
         player_body->render(GL_TRIANGLES, 1);
         player_shader->disable();
+    } else {
+        player_shader->enable();
+        player_shader->setUniform("u_color", Vector4(1,1,1,1));
+        player_shader->setUniform("u_viewprojection", curr_camera->viewprojection_matrix);
+        player_shader->setUniform("u_texture", player_texture);
+        player_shader->setUniform("u_model", player_model);
+        player_arm->render(GL_TRIANGLES, 1);
+        player_shader->disable();
     }
 
     // TODO: set delimitation by fog?
@@ -63,7 +72,7 @@ void sGameScene::render_scene() {
 
 }
 
-void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {  
+void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     player_model.rotate(Input::mouse_delta.x * CHAR_ROT_SPEED, Vector3(0.f,-1.f,0.f));
   
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
@@ -72,11 +81,15 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
         player_model.translate(.0f, .0f, .1f * CHAR_SPEED);
     }
 
-     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+    if (Input::isKeyPressed(SDL_SCANCODE_A)) {
         player_model.translate(-.1f * CHAR_SPEED, .0f, .0f);
     } else if (Input::isKeyPressed(SDL_SCANCODE_D)) {
         player_model.translate(.1f * CHAR_SPEED, .0f, .0f);
     }
+
+    scene_cam.cam_mode = THIRD_PERSON;
+    if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
+        scene_cam.cam_mode = FIRST_PERSON;
 
 
     //camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
@@ -91,6 +104,6 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     if (Input::isKeyPressed(SDL_SCANCODE_R)) center1 = center1 - Vector3(0,0.1,0);
     if (Input::isKeyPressed(SDL_SCANCODE_T)) center1 = center1 + Vector3(0,0.1,0);
 
-    if (Input::isKeyPressed(SDL_SCANCODE_F)) center1 = center1 - Vector3(0.1,0,0);
-    if (Input::isKeyPressed(SDL_SCANCODE_G)) center1 = center1 + Vector3(0.1,0,0);*/
+    if (Input::isKeyPressed(SDL_SCANCODE_F)) center1 = center1 - Vector3(0,0,0.1);
+    if (Input::isKeyPressed(SDL_SCANCODE_G)) center1 = center1 + Vector3(0,0,0.1);*/
 }
