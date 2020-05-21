@@ -39,3 +39,15 @@ void sRenderComponent::render(Camera *camera) {
         mesh->disableBuffers(curr_shader);
         curr_shader->disable();
 }
+
+bool sRenderComponent::testCollisionsWith(Vector3 position, float radius, Vector3 &normal) {
+    Mesh *mesh = Mesh::Get(mesh_id.c_str());
+    Vector3 collision_vector;
+    for (int i = 0; i < last_inserted_index; i++) {
+        if (mesh->testSphereCollision(models[i], position, radius, collision_vector, normal)) {
+            return true;
+        }
+    }
+    
+    return false;
+}

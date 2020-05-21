@@ -11,6 +11,7 @@
 #define ITEMS_PER_AREA 100
 #define DATA_DIR_LEN 40.f
 
+
 // Generic Rendering type
 struct sRenderComponent {
     std::string mesh_id;
@@ -18,7 +19,6 @@ struct sRenderComponent {
     std::string shader_vs_id;
     std::string shader_fs_id;
 
-    //bool is_rigid;
     Matrix44 models[ITEMS_PER_AREA];
 
     int last_inserted_index;
@@ -36,6 +36,8 @@ struct sRenderComponent {
 
     bool add_element(Matrix44 &model);
     void render(Camera *camara);
+    bool testCollisionsWith(Vector3 position, float radius, Vector3 &normal);
+    //bool testCollisions();
 };
 
 #endif

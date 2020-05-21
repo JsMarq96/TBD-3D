@@ -38,3 +38,16 @@ sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     x= n_x, y = n_y;
     width = n_width, heigth = n_heigh;
 }
+
+bool sStage::testStageCollisionsWith(Vector3 position, float radius, Vector3 &normal) {
+    std::vector<sRenderComponent*>::iterator it;
+    // Render elements
+    for (it = render_elements.begin(); it < render_elements.end(); it++) {
+        sRenderComponent* curr_item = *it;
+        
+        if (curr_item->testCollisionsWith(position, radius, normal)) {
+            return true;
+        }
+    }
+    return false;
+}

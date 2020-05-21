@@ -38,6 +38,8 @@ struct sStage {
         std::string shader_fs,
         std::string shader_vs);
     int add_element(std::string elem_name);
+
+    bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &normal);
 };
 
 #endif

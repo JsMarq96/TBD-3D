@@ -14,7 +14,7 @@
 #define PRESS_S 0b00100
 #define PRESS_D 0b01000
 
-#define CHAR_SPEED 3.f
+#define CHAR_SPEED 80.f
 #define CHAR_POINTED_SPEED 0.2f
 #define CHAR_ROT_SPEED 0.0005f
 #define CHAR_ROT_POINT_SPEED 0.00005f
@@ -26,6 +26,7 @@ struct sGameScene {
     sGameCamera scene_cam;
 
     Matrix44 player_model;
+    Vector3 speed;
     Mesh *player_body;
     Mesh *player_arm;
     Texture *player_texture;
