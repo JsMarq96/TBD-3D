@@ -13,26 +13,20 @@ void parse_stage(sStage* to_fill, std::string file_name) {
     std::ifstream stage_file(file_name);
 
     assert(stage_file.is_open() && "Could not open file");
-
-    getline(stage_file, curr_line);
-
-    assert(curr_line != "define items/n" && "Stage file format issue");
     std::unordered_map<int, int> element_index_map;
 
     // Parse the object definitions
     while(getline(stage_file, curr_line)) {
-        if (curr_line == "define stage/n")
+        if (curr_line == "define stage")
             break;
 
-        // Get thhe elemtns's in-map id
+        // Get the elemtns's in-map id
         int delim_index = curr_line.find(" ");
-        std::string rest = curr_line.substr(1, delim_index);
         int elem_id = std::stoi(curr_line.substr(0, delim_index));
+        std::string rest = curr_line.substr(delim_index);
 
         // get the Name of the element
-        delim_index = rest.find(" ");
-        std::string elem_name = rest.substr(0, delim_index);
-        rest = rest.substr(1, delim_index);
+        std::string elem_name = rest.substr(1);
 
         // Store the element and retrieve the in-stage id
         element_index_map[elem_id] = to_fill->add_element(elem_name);
@@ -41,27 +35,28 @@ void parse_stage(sStage* to_fill, std::string file_name) {
 
     // Parse the object position and instances
     while(getline(stage_file, curr_line)) {
-        if (curr_line == "end/n")
+        if (curr_line == "end")
             break;
 
         // Fetch the id
         int delim_index = curr_line.find(" ");
         int elem_id = std::stoi(curr_line.substr(0, delim_index));
-        std::string rest = curr_line.substr(1, delim_index);
+        std::string rest = curr_line.substr(delim_index+1);
 
+        
         // Fetch the x coord
         delim_index = rest.find(" ");
         float x = std::stof(rest.substr(0, delim_index));
-        rest = rest.substr(1, delim_index);
+        rest = rest.substr(delim_index + 1);
 
         // Fetch the y coord
         delim_index = rest.find(" ");
         float y = std::stof(rest.substr(0, delim_index));
-        rest = rest.substr(1, delim_index);
+        rest = rest.substr(delim_index + 1);
 
         // Fetch the z coord
         float z = std::stof(rest);
-        
+    
         // Add the instance to the stage, at the coordinates
         to_fill->add_instance(element_index_map[elem_id], setTranslationMat(x,y,z));
     }

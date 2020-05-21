@@ -12,44 +12,20 @@
 #include "texture.h"
 #include "game_camera.h"
 #include "mesh.h"
+#include "components/render_component.h"
 
-#define ITEMS_PER_AREA 100
-#define DATA_DIR_LEN 40.f
-
-// Generic Rendering type
-struct sRenderItems {
-    std::string mesh_id;
-    std::string texture_id;
-    std::string shader_vs_id;
-    std::string shader_fs_id;
-
-    //bool is_rigid;
-    Matrix44 models[ITEMS_PER_AREA];
-
-    int last_inserted_index;
-
-    sRenderItems(std::string &shader_fs,
-                 std::string &shader_vs,
-                 std::string &mesh);
-
-    sRenderItems() {
-        shader_fs_id = "";
-        shader_vs_id = "";
-        mesh_id = "";
-        last_inserted_index = -1;
-    }
-
-    bool add_element(Matrix44 &model);
-};
 
 // Generic Game Area
 struct sStage {
     int x, y;
     int width, heigth;
-    // To do
+    // To do: if the map gets to big, we can
+    // subdivide it in different stages
     std::vector<sStage*> next_areas;
 
-    std::vector<sRenderItems*> stage_elements;
+    std::vector<sRenderComponent*> render_elements;
+
+    //std::vector<sColiders> collider_elements;
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 

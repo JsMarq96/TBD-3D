@@ -8,7 +8,7 @@ sGameScene::sGameScene() {
     player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
     //player_body = Mesh::Get("data/spitfire/spitfire.ASE");
     player_body = Mesh::Get("data/meshes/player_t4.obj");
-    player_texture = Texture::Get("data/textures/player_text3.tga");
+    player_texture = Texture::Get("data/player_text2.png");
     //player_texture = Texture::Get("data/spitfire/spitfire_color_spec.tga");
 
     // Create test area
