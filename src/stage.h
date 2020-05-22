@@ -12,7 +12,7 @@
 #include "texture.h"
 #include "game_camera.h"
 #include "mesh.h"
-#include "components/render_component.h"
+#include "render_entity.h"
 
 
 // Generic Game Area
@@ -23,7 +23,7 @@ struct sStage {
     // subdivide it in different stages
     std::vector<sStage*> next_areas;
 
-    std::vector<sRenderComponent*> render_elements;
+    std::vector<sRenderEntity*> render_elements;
 
     //std::vector<sColiders> collider_elements;
     
@@ -36,7 +36,8 @@ struct sStage {
     int add_element(std::string mesh_name, 
         std::string text_name, 
         std::string shader_fs,
-        std::string shader_vs);
+        std::string shader_vs,
+        eColliderType col_type);
     int add_element(std::string elem_name);
 
     bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &normal);

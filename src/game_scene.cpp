@@ -85,12 +85,12 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
 
     // Test collitions
     // Set elevated player position
+    // Todo: generalize to kinetic entities
     Vector3 player_position = Vector3(player_model.m[12], player_model.m[13], player_model.m[14]);
     Vector3 collision_normals;
-    if (scene_stages[0]->testStageCollisionsWith(player_position, 2.0, collision_normals)) {
-        std::cout << "ayyy lmao collision with " << std::to_string(collision_normals.x) << std::endl;
+    if (scene_stages[0]->testStageCollisionsWith(player_position, 1.0, collision_normals)) {
         collision_normals = collision_normals.normalize();
-        collision_normals = collision_normals * -0.25;
+        collision_normals = collision_normals * 0.09;
         player_model.translate(collision_normals.x, 0., collision_normals.z);
     }
 }
