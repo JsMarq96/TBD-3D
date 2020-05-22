@@ -23,6 +23,7 @@ struct sRenderEntity {
     std::string texture_id;
     std::string shader_vs_id;
     std::string shader_fs_id;
+    bool fl_instancing;
 
     eColliderType col_type;
     float radius;
@@ -34,6 +35,7 @@ struct sRenderEntity {
     sRenderEntity(std::string &shader_fs,
                  std::string &shader_vs,
                  std::string &mesh,
+                 std::string &text_id,
                  eColliderType type);
 
     sRenderEntity() {
@@ -46,7 +48,7 @@ struct sRenderEntity {
 
     bool add_element(Matrix44 &model);
     void render(Camera *camara);
-    bool testCollisionsWith(Vector3 position, float radius, Vector3 &normal);
+    bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
     //bool testCollisions();
 };
 

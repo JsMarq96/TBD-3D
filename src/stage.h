@@ -25,6 +25,9 @@ struct sStage {
 
     std::vector<sRenderEntity*> render_elements;
 
+    Vector3 light_pos;
+
+
     //std::vector<sColiders> collider_elements;
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
@@ -40,7 +43,7 @@ struct sStage {
         eColliderType col_type);
     int add_element(std::string elem_name);
 
-    bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &normal);
+    bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 };
 
 #endif

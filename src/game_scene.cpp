@@ -6,11 +6,11 @@ sGameScene::sGameScene() {
     speed = Vector3(0,0,0);
     
     player_model.setTranslation(0,0,0);
-    player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    player_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
     //player_body = Mesh::Get("data/spitfire/spitfire.ASE");
-    player_body = Mesh::Get("data/meshes/player_t1.obj");
+    player_body = Mesh::Get("data/meshes/player_t4.obj");
     player_arm = Mesh::Get("data/meshes/player_arm.obj");
-    player_texture = Texture::Get("data/torpedo.tga");
+    player_texture = Texture::Get("data/textures/player_text.png");
     //player_texture = Texture::Get("data/spitfire/spitfire_color_spec.tga");
 
     // Create test area
@@ -77,8 +77,9 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
         scene_cam.cam_mode = FIRST_PERSON;
 
-
     // Update positions
+    speed.y = 0;
+    Vector3 old_player_position = Vector3(player_model.m[12],  1.0, player_model.m[14]);
     speed = speed * elapsed_time;
     player_model.translate(speed.x, speed.y, speed.z);
     speed = Vector3(0,0,0);
@@ -86,11 +87,14 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     // Test collitions
     // Set elevated player position
     // Todo: generalize to kinetic entities
-    Vector3 player_position = Vector3(player_model.m[12], player_model.m[13], player_model.m[14]);
-    Vector3 collision_normals;
-    if (scene_stages[0]->testStageCollisionsWith(player_position, 1.0, collision_normals)) {
-        collision_normals = collision_normals.normalize();
-        collision_normals = collision_normals * 0.09;
-        player_model.translate(collision_normals.x, 0., collision_normals.z);
+    Vector3 player_position = Vector3(player_model.m[12],  2.5, player_model.m[14]);
+    Vector3 collison_position, collision_normals;
+    if (scene_stages[0]->testStageCollisionsWith(player_position, 1.0, collison_position, collision_normals)) {        
+        Vector3 new_pos = (collison_position - player_position);
+        //new_pos = new_pos * -1;
+        new_pos = new_pos.normalize() * (1.0 - new_pos.length());
+        //new_pos = old_player_position - new_pos;
+        //collision_normals = collision_normals * 0.05;
+        player_model.translate(new_pos.x, 0., new_pos.z);
     }
 }
