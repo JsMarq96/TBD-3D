@@ -15,6 +15,10 @@ void parse_stage(sStage* to_fill, std::string file_name) {
     assert(stage_file.is_open() && "Could not open file");
     std::unordered_map<int, int> element_index_map;
 
+    // Get the floor image
+    getline(stage_file, curr_line);
+    to_fill->floor_img_dir = curr_line;
+
     // Parse the object definitions
     while(getline(stage_file, curr_line)) {
         if (curr_line == "define stage")

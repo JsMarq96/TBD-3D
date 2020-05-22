@@ -26,7 +26,7 @@ void sGameScene::render_scene() {
     // Render player
     scene_cam.get_camera(curr_camera, player_model);
 
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    glClearColor(0.1, 0.1, 0.1, 1.0);
 
 	// Clear the window and the depth buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

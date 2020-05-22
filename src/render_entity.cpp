@@ -5,12 +5,14 @@ sRenderEntity::sRenderEntity(std::string &shader_vs,
                  std::string &shader_fs,
                  std::string &mesh,
                  std::string &text_id,
-                 eColliderType type) {
+                 eColliderType type,
+                 bool is_instanced) {
     shader_fs_id = shader_vs;
     shader_vs_id = shader_fs;
     texture_id = text_id;
     mesh_id = mesh;
     col_type = type;
+    fl_instancing = is_instanced;
 
     last_inserted_index = -1;
 }
@@ -30,11 +32,18 @@ void sRenderEntity::render(Camera *camera) {
     curr_shader->enable();
         
     curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
-    curr_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
     curr_shader->setUniform("u_texture", Texture::Get(texture_id.c_str()));
-    curr_shader->setUniform("light_pos", Vector3(250, 60, 250));
-
+    curr_shader->setUniform("light_pos", Vector3(250, 120, 250));
     curr_shader->setUniform("camera_pos", camera->eye);
+    curr_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
+
+    // If the entity is rednered via instancing
+    if (fl_instancing) {
+        mesh->renderInstanced(GL_TRIANGLES, models, last_inserted_index-1);
+        curr_shader->disable();
+        return;
+    }
+
 
     mesh->enableBuffers(curr_shader);
 

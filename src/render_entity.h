@@ -8,7 +8,7 @@
 #include "texture.h"
 #include "camera.h"
 
-#define ITEMS_PER_AREA 100
+#define ITEMS_PER_AREA 220
 #define DATA_DIR_LEN 40.f
 
 enum eColliderType {
@@ -36,7 +36,8 @@ struct sRenderEntity {
                  std::string &shader_vs,
                  std::string &mesh,
                  std::string &text_id,
-                 eColliderType type);
+                 eColliderType type,
+                 bool is_instanced);
 
     sRenderEntity() {
         shader_fs_id = "";

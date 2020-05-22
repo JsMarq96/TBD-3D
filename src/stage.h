@@ -19,9 +19,11 @@
 struct sStage {
     int x, y;
     int width, heigth;
+
+    std::string floor_img_dir;
     // To do: if the map gets to big, we can
     // subdivide it in different stages
-    std::vector<sStage*> next_areas;
+    //std::vector<sStage*> next_areas;
 
     std::vector<sRenderEntity*> render_elements;
 
@@ -40,7 +42,8 @@ struct sStage {
         std::string text_name, 
         std::string shader_fs,
         std::string shader_vs,
-        eColliderType col_type);
+        eColliderType col_type,
+        bool is_instanced);
     int add_element(std::string elem_name);
 
     bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
