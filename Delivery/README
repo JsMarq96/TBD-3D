@@ -1,0 +1,19 @@
+Juan S. Marquerie - 192632 - juansebastian.Marquerie01@estudiant.upf.edu
+
+El documento de diseno: https://docs.google.com/document/d/1CBCmHalyErOvTHHqLXKkI7YbIM1m5vTfwmYy7I5GRDk/edit?usp=sharing
+
+Los controles son WASD para moverse, y rotar alrededor del personaje con el raton, y SHIFT para pasar a primera persona.
+
+
+En la carpeta de Data, esta la carpeta de stages, donde tengo un fichero que modela el escenado que se ejecuta:
+La estrucutra es:
+<imagen del suelo>
+<defines los objetos que vana a sparacer y los relaciones con un indice>
+...
+define stage
+<id y posicoin de cada instancia del objeto>
+...
+end
+
+Aparte del problema con las texturas que ya te comente con el modleo del personaje principal, la unica cosa que no he podido tener muy fina es la gestion de coliciones.
+He provado distintas maneras, pero no he conseguido algo decente...

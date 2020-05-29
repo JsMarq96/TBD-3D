@@ -10,7 +10,7 @@
 #include "framework.h"
 #include "shader.h"
 #include "texture.h"
-#include "game_player.h"
+#include "game_camera.h"
 #include "mesh.h"
 #include "render_entity.h"
 

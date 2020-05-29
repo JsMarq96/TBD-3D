@@ -16,6 +16,7 @@ enum eColliderType {
     CILINDER = 1
 };
 
+
 // Generic Rendering type
 struct sRenderEntity {
     std::string mesh_id;
