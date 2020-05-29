@@ -5,7 +5,6 @@
  *      - Change eye and up vectors to match model
  *      - Trail camera on thrid person view (?)
 */
-
 sPlayer::sPlayer(Vector3 start_pos) {
     // Init default player
     position = start_pos;
@@ -59,4 +58,17 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("u_model", model);
     meshes[cam_mode]->render(GL_TRIANGLES, 1);
     shader->disable();
+}
+
+void sPlayer::calculate_next_step(float elapsed_time) {
+    Vector3 can_displ = (speed * elapsed_time);
+        
+    // Rotare and add the displacement
+    Vector3 disp = Vector3(
+        (can_displ.x * cos(rotation.y)) - (can_displ.z * sin(rotation.y)),
+        0.f,
+        (can_displ.x * sin(rotation.y)) + (can_displ.z * cos(rotation.y))
+    );
+
+    position = position + disp;
 }

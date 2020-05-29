@@ -33,16 +33,13 @@ void sGameScene::render_scene() {
 }
 
 void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
-
-    player.position = player.position + (player.speed * elapsed_time);
-    player.position.y = 0;
+    // Get the direction and the rotation of the displacement
     player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
-    //player_model.rotate(Input::mouse_delta.x * CHAR_ROT_SPEED, Vector3(0.f,-1.f,0.f));
     player.speed = Vector3(0,0,0);
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-        player.speed = player.speed + Vector3(.0f, .0f, .1f * CHAR_SPEED);
+        player.speed = player.speed + Vector3(.0f, .0f, .-1f * CHAR_SPEED);
     } else if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-        player.speed =  player.speed + Vector3(.0f, .0f, -.1f * CHAR_SPEED);
+        player.speed =  player.speed + Vector3(.0f, .0f, .1f * CHAR_SPEED);
     }
 
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
@@ -51,10 +48,12 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
         player.speed = player.speed + Vector3(.1f * CHAR_SPEED, .0f, .0f);
     }
 
+    // Manage camera switching
     player.cam_mode = THIRD_PERSON;
     if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
         player.cam_mode = FIRST_PERSON;
 
+    player.calculate_next_step(elapsed_time);
     /*// Test collitions
     // Set elevated player position
     // Todo: generalize to kinetic entities

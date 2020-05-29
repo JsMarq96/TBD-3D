@@ -30,6 +30,7 @@ struct sPlayer {
     
     void get_camera(Camera *cam);
     void render(Camera *cam);
+    void calculate_next_step(float elapsed_time);
 };
 
 
