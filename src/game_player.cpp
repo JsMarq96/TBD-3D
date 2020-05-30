@@ -32,19 +32,28 @@ sPlayer::sPlayer() {
 void sPlayer::get_camera(Camera *cam) {
     Vector3 eye, up, center;
 
-    // Fill the player model
     model.setTranslation(position.x, position.y, position.z);
-    model.rotate(rotation.x, Vector3(1,0,0));
-    model.rotate(rotation.y, Vector3(0,1,0)); // ??
+    model.rotate(rotation.y, Vector3(0,1,0));
+
+    Matrix44 cam_model = model;
 
     if (cam_mode == FIRST_PERSON) {
-        eye = model * Vector3(.0f, 2.7f, 1.80f);
-        center = model * Vector3(.0f, 2.3f, -5.0f);
-        up = model.rotateVector(Vector3(0,1,0));
+        cam_model.translate(0,1.3,0);
+        /*model.setTranslation(
+            position.x,//- (-5. * sin(rotation.y)), 
+            position.y, 
+            position.z);+ (-5. * cos(rotation.y)));*/
+
+        eye = cam_model * Vector3(0, 1.2, 0.8);
+        center = cam_model * Vector3(0, 1.2, 0);
+        up = cam_model.rotateVector(Vector3(0, 1, 0));
     } else if (cam_mode == THIRD_PERSON) {
-        eye = model * Vector3(.0f, 2.7f, 1.80f);
-        center = model * Vector3(0.2f, 2.6f, 0.0f);
-        up = model.rotateVector(Vector3(0,1,0));
+        cam_model.translate(0,1.85,0.5);
+        // Fill the player model
+        //eye = model * Vector3(.0f, 2.7f, 1.80f);
+        eye = cam_model * Vector3(0, 1.2, 2);
+        center = cam_model * Vector3(0, 1, 0);
+        up = cam_model.rotateVector(Vector3(0, 1, 0));
     }
 
     cam->lookAt(eye, center, up);    
