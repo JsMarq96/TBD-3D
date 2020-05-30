@@ -56,7 +56,6 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
 
     player.calculate_next_step(elapsed_time);
 
-
     // Test for player collisions
     Vector3 coll_pos, coll_normal;
     if (scene_stages[0]->testStageCollisionsWith(player.position, .6f, coll_pos, coll_normal)) {

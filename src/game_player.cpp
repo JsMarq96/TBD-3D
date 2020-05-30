@@ -13,7 +13,7 @@ sPlayer::sPlayer(Vector3 start_pos) {
 
     texture = Texture::Get("data/textures/player_text.png");
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
-    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_t4.obj");
+    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
     meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arm.obj"); 
 }
 
@@ -25,7 +25,7 @@ sPlayer::sPlayer() {
 
     texture = Texture::Get("data/textures/player_text.png");
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
-    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_t4.obj");
+    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
     meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arm.obj"); 
 }
 
@@ -56,7 +56,7 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
     shader->setUniform("u_texture", texture);
     shader->setUniform("u_model", model);
-    meshes[cam_mode]->render(GL_TRIANGLES, 1);
+    meshes[cam_mode]->render(GL_TRIANGLES);
     shader->disable();
 }
 
