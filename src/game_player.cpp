@@ -60,6 +60,28 @@ void sPlayer::render(Camera *cam) {
     shader->disable();
 }
 
+void sPlayer::render_camera_fog(Camera *cam) {
+    Mesh mesh;
+    Matrix44 mod = model;
+    mesh.createQuad(0, 0, 50, 50, false);
+    mod.translate(0,0,-10);
+    Shader *shade = Shader::Get("data/shaders/basic.vs", "data/fog_perlin.fs");
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
+
+    shade->enable();
+    shade->setUniform("u_color", Vector4(1,1,1,0.4));
+    shade->setUniform("u_viewprojection", cam->viewprojection_matrix);
+    shade->setUniform("u_texture", texture);
+    shade->setUniform("u_model", mod);
+    shade->setUniform1Array("hash_lookup_table", hashes, 257);
+    mesh.render(GL_TRIANGLES);
+    shade->disable();
+
+    glDisable(GL_BLEND);
+}
+
 void sPlayer::calculate_next_step(float elapsed_time) {
     Vector3 can_displ = (speed * elapsed_time);
         
