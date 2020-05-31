@@ -12,7 +12,7 @@
 #include "texture.h"
 #include "game_player.h"
 #include "mesh.h"
-#include "render_entity.h"
+#include "enviorment_entity.h"
 
 
 // Generic Game Area
@@ -25,12 +25,12 @@ struct sStage {
     // subdivide it in different stages
     //std::vector<sStage*> next_areas;
 
-    std::vector<sRenderEntity*> render_elements;
+    std::vector<sEnviormentEntity*> render_elements;
 
     Vector3 light_pos;
 
-
-    //std::vector<sColiders> collider_elements;
+    // Map for AI navigation
+    uint8 *map;
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 
@@ -38,11 +38,21 @@ struct sStage {
 
     void add_instance(int type, Matrix44 model);
 
+    void print_map() {
+        std::cout << "====== MAP ======" << std::endl;
+        for (int i = 0; i < width/2; i++) {
+            for (int j = 0; j < heigth/2; j++) {
+                std::cout << " " << std::to_string(map[(i * width/2) + j]) << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "=================" << std::endl;
+    };
+
     int add_element(std::string mesh_name, 
         std::string text_name, 
         std::string shader_fs,
         std::string shader_vs,
-        eColliderType col_type,
         bool is_instanced);
     int add_element(std::string elem_name);
 

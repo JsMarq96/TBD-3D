@@ -13,11 +13,12 @@
 
 enum eColliderType {
     MESH = 0,
-    CILINDER = 1
+    CILINDER = 1,
+    BOX = 2
 };
 
 // Generic Rendering type
-struct sRenderEntity {
+struct sEnviormentEntity {
     std::string mesh_id;
     std::string texture_id;
     std::string shader_vs_id;
@@ -31,14 +32,13 @@ struct sRenderEntity {
 
     int last_inserted_index;
 
-    sRenderEntity(std::string &shader_fs,
+    sEnviormentEntity(std::string &shader_fs,
                  std::string &shader_vs,
                  std::string &mesh,
                  std::string &text_id,
-                 eColliderType type,
                  bool is_instanced);
 
-    sRenderEntity() {
+    sEnviormentEntity() {
         shader_fs_id = "";
         shader_vs_id = "";
         mesh_id = "";
@@ -49,6 +49,9 @@ struct sRenderEntity {
     bool add_element(Matrix44 &model);
     void render(Camera *camara);
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
+
+    void set_collider_as_cilinder(float c_radius) { col_type = CILINDER; radius = c_radius; };
+    void set_collider_as_mesh() { col_type = MESH; };
     //bool testCollisions();
 };
 

@@ -1,23 +1,21 @@
-#include "render_entity.h"
+#include "enviorment_entity.h"
 
 // Initialize the Render compoenet
-sRenderEntity::sRenderEntity(std::string &shader_vs,
+sEnviormentEntity::sEnviormentEntity(std::string &shader_vs,
                  std::string &shader_fs,
                  std::string &mesh,
                  std::string &text_id,
-                 eColliderType type,
                  bool is_instanced) {
     shader_fs_id = shader_vs;
     shader_vs_id = shader_fs;
     texture_id = text_id;
     mesh_id = mesh;
-    col_type = type;
     fl_instancing = is_instanced;
 
     last_inserted_index = -1;
 }
 
-bool sRenderEntity::add_element(Matrix44 &new_model) {
+bool sEnviormentEntity::add_element(Matrix44 &new_model) {
     if (last_inserted_index+1 == ITEMS_PER_AREA)
         return false;
     last_inserted_index++;
@@ -26,7 +24,7 @@ bool sRenderEntity::add_element(Matrix44 &new_model) {
     return true;
 }
 
-void sRenderEntity::render(Camera *camera) {
+void sEnviormentEntity::render(Camera *camera) {
     Shader *curr_shader = Shader::Get(shader_vs_id.c_str(), shader_fs_id.c_str());
     Mesh *mesh = Mesh::Get(mesh_id.c_str());
     curr_shader->enable();
@@ -43,7 +41,6 @@ void sRenderEntity::render(Camera *camera) {
         curr_shader->disable();
         return;
     }
-
 
     mesh->enableBuffers(curr_shader);
 
@@ -74,18 +71,18 @@ bool ciliderCollider(Vector3 pos1, float radius1, Vector3 pos2, float radius2, V
     return false;
 }
 
-bool sRenderEntity::testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal) {
+bool sEnviormentEntity::testCollisionsWith(Vector3 position, float adv_radius, Vector3 &coll_pos, Vector3 &normal) {
     Mesh *mesh = Mesh::Get(mesh_id.c_str());
     for (int i = 0; i <= last_inserted_index; i++) {
         bool res;
         Vector3 mesh_center;
         switch(col_type) {
             case MESH:
-                res = mesh->testSphereCollision(models[i], position, radius, coll_pos, normal);
+                res = mesh->testSphereCollision(models[i], position, adv_radius, coll_pos, normal);
                 break;
             case CILINDER:
                 mesh_center = Vector3(models[i].m[12], 0, models[i].m[14]);
-                res = ciliderCollider(position, radius, mesh_center, radius, coll_pos, normal);
+                res = ciliderCollider(position, adv_radius, mesh_center, radius, coll_pos, normal);
                 break;
         }
         if (res) {

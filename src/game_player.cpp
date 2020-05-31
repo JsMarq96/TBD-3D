@@ -84,7 +84,6 @@ void sPlayer::render_camera_fog(Camera *cam) {
     shade->setUniform("u_viewprojection", cam->viewprojection_matrix);
     shade->setUniform("u_texture", texture);
     shade->setUniform("u_model", mod);
-    shade->setUniform1Array("hash_lookup_table", hashes, 257);
     mesh.render(GL_TRIANGLES);
     shade->disable();
 

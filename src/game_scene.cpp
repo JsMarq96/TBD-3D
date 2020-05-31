@@ -8,6 +8,8 @@ sGameScene::sGameScene() {
 
     parse_stage(test_stage, "data/stages/01.stg");
 
+    test_stage->print_map();
+
     scene_stages.push_back(test_stage);
 }
 
