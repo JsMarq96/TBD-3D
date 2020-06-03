@@ -19,9 +19,9 @@ uint8 sGameMap::get(int x, int y) {
 
 // Randomly selects a random empty coordinate of the map
 Vector2 sGameMap::get_empty_coordinate() {
-    uint8 tmp = 1;
+    uint8 tmp = 0;
     Vector2 coords;
-    while (tmp != 0) {
+    while (tmp != 1) {
         coords.random(map_width);
         coords.x *= (coords.x < 0) ? -1 : 1;
         coords.y *= (coords.y < 0) ? -1 : 1;
@@ -33,7 +33,6 @@ Vector2 sGameMap::get_empty_coordinate() {
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
     result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
-    std::cout << result << " mappi" << std::endl;
 }
 
 // Casts a Ray from one point in the map to other,

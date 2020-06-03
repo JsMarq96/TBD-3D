@@ -27,14 +27,15 @@ struct sKinetics {
     Vector3 speed;
     Vector2 rotation;
 
-    void get_model_matrix(Matrix44 &model) {
-        model.setTranslation(position.x, position.y, position.z);
-        model.rotate(rotation.y, Vector3(0,1,0));
+    void get_model_matrix(Matrix44 *model) {
+        model->setTranslation(position.x, 0., position.z);
+        model->rotate(rotation.y, Vector3(0,1,0));
     }
 };
 
 enum eEnemyState: uint8 {
-    ROAM = 0,
+    STOPPED = 0,
+    ROAM,
     ATTACK,
     RUN_AFTER,
     RECOVERING

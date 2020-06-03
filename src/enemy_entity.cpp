@@ -7,8 +7,9 @@ sEnemyEntity::sEnemyEntity() {
     texture_id = "data/textures/player_text.png";
     last_inserted_index = -1;
 
-    for (int i = 0; i <  ENEMYS_PER_AREA; i++) {
+    for (int i = 0; i < ENEMYS_PER_AREA; i++) {
         action_index[i] = -1;
+        state[i] = STOPPED;
     }
 }
 
@@ -17,92 +18,48 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
     map.parse_coordinates_to_map(player_2d_pos);
 
-    for(int i = 0; i < ENEMYS_PER_AREA; i++) {
+    for(int i = 0; i <= last_inserted_index; i++) {
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
+        map.parse_coordinates_to_map(pos_2d);
         
         Vector2 enemy_facing = pos_2d.normalize();
         Vector2 to_player_dir = (player_2d_pos - pos_2d).normalize();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length()));
 
-        // Test if the enemy sees the player
-        if (angle >= HALF_ENEMY_FOV && angle <= (HALF_ENEMY_FOV * 2)) {
-            int player_distance = map.raycast_from_point_to_point(pos_2d, player_2d_pos, 20);
-            
-            if (player_distance > 0) {
-                // Player is in sight and kinda far
-                state[i] = RUN_AFTER;
-            } else if (player_distance == 0) {
-                // Attacks the player
-                state[i] = ATTACK;
+        if (state[i] == STOPPED) {
+            Vector2 point = map.get_empty_coordinate();
+
+            int result = -1;
+            map.get_path_to(pos_2d, point, enemy_steps[i], ENEMYS_PER_AREA, result);
+
+            if (result > 0) {
+                state[i] = ROAM;
+                poi[i] = point;
+                action_index[i] = 0;
+                std::cout << "Go to: " << poi[i].x << " "  << poi[i].y << std::endl;
             }
-        }
+        } else if (state[i] == ROAM) {
+            Vector2 next_point = Vector2(0,0);
+            map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_point);
+            std::cout << "Curr point " << next_point.x << " " << next_point.y << std::endl;
+            std::cout << "Enemy pso " << pos_2d.x << " " << pos_2d.y << std::endl;
 
-        // No player in sight, just chilling
-        if (state[i] == ROAM) {
-            // Roaming part
-            if (action_index[i] == -1) {
-                poi[i] = map.get_empty_coordinate();
-                // Trace path
-                int result;
-                map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM, result);
-                std::cout  << result << "> " << poi[i].x << "-" << poi[i].y << std::endl;
-                std::cout << "===========" << std::endl;
-                for (int j = 0; j < ENEMYS_PER_AREA; j++) {
-                    std::cout << std::to_string( enemy_steps[i][j]) << std::endl;
-                }
-                std::cout << "===========" << std::endl;
+            if ((next_point - pos_2d).length() <= 3) {
+                action_index[i]++;
 
-                if (result < 0) {
-                    action_index[i] = -1;
-                } else {
-                    action_index[i] = 0;
-                }
-            } else {
-                // Go to the next point in the path
-                // set to -1 if it reaches the end
-                Vector2 next_position;
-                map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_position);
-                //std::cout << action_index[i] << " - " << enemy_steps[i][action_index[i]] << std::endl;
-
-                // Set speed to the direction
-                Vector3 direction = Vector3(next_position.x, 0, next_position.y) - kinetic_elems[i].position;
-                direction = direction.normalize();
-                kinetic_elems[i].speed = direction * ENEMY_SPEED;
-                
-                float tmp = (next_position - pos_2d).length();
-                //std::cout << action_index[i]  << " + " << poi[i].x << " - " << poi[i].y  << "  - " << tmp << std::endl;
-                //std::cout << action_index[i] << " EPIC" << std::endl;
-                if ((next_position - pos_2d).length() <= 3) {
-                    action_index[i]++;
-                    if (action_index[i] >= MAX_STEPS_NUM) {
+                if (action_index[i] >= MAX_STEPS_NUM || enemy_steps[i][action_index[i]] == -1) {
+                    state[i] = STOPPED;
+                    std::cout << "stopped" << std::endl;
+                    for (int i = 0; i <  ENEMYS_PER_AREA; i++) {
                         action_index[i] = -1;
                     }
                 }
-
-                kinetic_elems[i].position = kinetic_elems[i].position + (kinetic_elems[i].speed * elapsed_time);
-            }
-        }
-
-        // The player is is sight
-        if (state[i] == RUN_AFTER) {
-            if (action_index[i] == -1) {
-                int result;
-                //map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM / 2, result);
             } else {
-                
+                Vector3 move_direction = Vector3(next_point.x - pos_2d.x, 0., next_point.y - pos_2d.y).normalize() * ENEMY_SPEED;
+                kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
             }
-
         }
-
-        // If its close enought with the player
-        if (state[i] == ATTACK) {
-
-        }
-
-        // If it has been shoot
-        if (state[i] == RECOVERING) {
-
-        }
+            
         
     }
 }
@@ -122,7 +79,7 @@ void sEnemyEntity::render(Camera *camara)  {
 
     for (int i = 0; i <= last_inserted_index; i++) {
         Matrix44 model;
-        kinetic_elems[i].get_model_matrix(model);
+        kinetic_elems[i].get_model_matrix(&model);
 
         curr_shader->setUniform("u_model", model);
         mesh->drawCall(GL_TRIANGLES, 1, 0);
