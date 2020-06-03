@@ -13,16 +13,17 @@ void sEnemyEntity::init() {
     }
 }
 
+
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
     Vector2 player_2d_pos = Vector2(player_2d_pos.x, player_2d_pos.y);
     for(int i = 0; i < ENEMYS_PER_AREA; i++) {
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
-        // Test if the enemy sees the player
         Vector2 enemy_facing = pos_2d.normalize();
         Vector2 to_player_dir = (player_2d_pos - pos_2d).normalize();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length()));
 
+        // Test if the enemy sees the player
         if (angle >= HALF_ENEMY_FOV && angle <= (HALF_ENEMY_FOV * 2)) {
             int player_distance = map.raycast_from_point_to_point(pos_2d, player_2d_pos, 20);
             
@@ -34,13 +35,13 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 state[i] = ATTACK;
             }
         }
-        
 
         // No player in sight, just chilling
-        if (state[i] ==  ROAM) {
+        if (state[i] == ROAM) {
             // Roaming part
             if (action_index[i] != -1) {
                 poi[i] = map.get_empty_coordinate();
+
                 // Trace path
                 int result;
                 map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM, result);
@@ -51,10 +52,21 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             } else {
                 // Go to the next point in the path
                 // set to -1 if it reaches the end
+                Vector2 next_position;
+                map.parse_map_index_to_coordinates(action_index[i], next_position);
 
+                // Set speed to the direction
+                Vector3 direction = Vector3(next_position.x, 0, next_position.y) - kinetic_elems[i].position;
+                direction = direction.normalize();
+                kinetic_elems[i].speed = direction * ENEMY_SPEED;
+
+                if ((next_position - pos_2d).length() <= 1.5) {
+                    action_index[i]++;
+                    if (action_index[i] >= MAX_STEPS_NUM) {
+                        action_index[i] = -1;
+                    }
+                }
             }
-
-            // If the target is in sight
         }
 
         // The player is is sight

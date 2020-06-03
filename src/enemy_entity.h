@@ -5,6 +5,7 @@
 #include <queue>
 #include <set>
 #include <unordered_map>
+
 #include "framework.h"
 #include "stage.h"
 #include "shader.h"
@@ -13,6 +14,7 @@
 #include "camera.h"
 #include "game.h"
 
+#define ENEMY_SPEED 50
 #define ENEMYS_PER_AREA 100
 #define MAX_STEPS_NUM 40
 #define DATA_DIR_LEN 40.f
@@ -58,18 +60,8 @@ struct sEnemyEntity {
                  std::string &mesh,
                  std::string &text_id);
 
-    sEnemyEntity() {
-        shader_fs_id = "";
-        shader_vs_id = "";
-        mesh_id = "";
-        last_inserted_index = -1;
-    }
-
-    void init() {
-        for (int i = 0; i <  ENEMYS_PER_AREA; i++) {
-            action_index[i] = -1;
-        }
-    }
+    sEnemyEntity();
+    void init();
 
     void update(float elapsed_time, sGameMap &map, Vector3 player_pos);
 

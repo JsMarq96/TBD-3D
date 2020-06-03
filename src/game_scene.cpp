@@ -11,6 +11,7 @@ sGameScene::sGameScene() {
     test_stage->print_map();
 
     scene_stages.push_back(test_stage);
+    std::cout << "eeee" << std::endl;
 }
 
 void sGameScene::render_scene() {

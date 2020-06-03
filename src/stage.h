@@ -7,13 +7,13 @@
 #include <vector>
 #include <string>
 #include <iterator>
+#include "extra/pathfinders.h"
 #include "framework.h"
 #include "shader.h"
 #include "texture.h"
 #include "game_player.h"
 #include "mesh.h"
 #include "enviorment_entity.h"
-#include "pathfinders.h"
 #include "game_map.h"
 
 // Generic Game Area

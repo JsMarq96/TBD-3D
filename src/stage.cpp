@@ -50,8 +50,8 @@ int sStage::add_element(std::string elem_name) {
         index = add_element("data/meshes/tree.obj","data/textures/tree.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
         render_elements[index]->set_collider_as_cilinder(1.0);
     } else if (elem_name == "house.obj") {
-        index = add_element("data/house_f2.obj","data/textures/tree.png","data/shaders/flat.fs", "data/shaders/basic.vs", false);
-        render_elements[index]->set_collider_as_mesh();
+        //index = add_element("data/house_f2.obj","data/textures/tree.png","data/shaders/flat.fs", "data/shaders/basic.vs", false);
+        //render_elements[index]->set_collider_as_mesh();
     } 
 
     return index;

@@ -12,8 +12,6 @@ uint8 sGameMap::get(int x, int y) {
     return map[(x * map_width) + y];
 };
 
-// Todo
-Vector2 sGameMap::translate_to_world_coord(Vector2 map_coord) { return map_coord; };
 
 // Randomly selects a random empty coordinate of the map
 Vector2 sGameMap::get_empty_coordinate() {
