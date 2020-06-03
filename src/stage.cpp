@@ -5,8 +5,6 @@ void sStage::render_stage(Camera *camera) {
     // First, we render the floor
     Mesh floor_mesh = Mesh();
     floor_mesh.createPlane(150);
-
-    // Draw floor
     Shader *shad = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
     shad->enable();
     shad->setUniform("u_texture", Texture::Get(floor_img_dir.c_str()));
@@ -15,16 +13,23 @@ void sStage::render_stage(Camera *camera) {
     shad->setUniform("u_model", Matrix44());
     shad->setUniform("light_pos", Vector3(250, 120, 250));
     shad->setUniform("camera_pos", camera->eye);
-
     floor_mesh.render(GL_TRIANGLES);
     shad->disable();
 
+    // Render enviorment elements elements
     std::vector<sEnviormentEntity*>::iterator it;
-    // Render elements
     for (it = render_elements.begin(); it < render_elements.end(); it++) {
         sEnviormentEntity* curr_item = *it;
         curr_item->render(camera);
     }
+
+    // Render enemys
+    enemys.render(camera);
+}
+
+void sStage::update_stage(float elapsed_time, Vector3 player_position) {
+    // Update the kinectic objects
+    enemys.update(elapsed_time, map, player_position);
 }
 
 void sStage::add_instance(int type, Matrix44 model) {
@@ -32,7 +37,7 @@ void sStage::add_instance(int type, Matrix44 model) {
     
     Vector3 position = model.getTranslation() *0.5;
 
-    map[int((position.x * width/2) + position.z)] = 1;
+    //map[int((position.x * width/2) + position.z)] = 1;
 }
 
 int sStage::add_element(std::string mesh_name, std::string text_name, std::string shader_fs, std::string shader_vs, bool is_instanced) {
@@ -64,11 +69,7 @@ sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     // Set default light position
     light_pos = Vector3(250, 120, 250);
 
-    map = new uint8[(width * heigth)/2];
-
-    for (int i = 0; i< (width * heigth)/2; i++) {
-        map[i] = 0;
-    }
+    map = sGameMap(width, heigth);
 }
 
 bool sStage::testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal) {

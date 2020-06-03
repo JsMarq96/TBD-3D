@@ -11,7 +11,6 @@ sGameScene::sGameScene() {
     test_stage->print_map();
 
     scene_stages.push_back(test_stage);
-    std::cout << "eeee" << std::endl;
 }
 
 void sGameScene::render_scene() {
@@ -60,7 +59,10 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
         player.cam_mode = FIRST_PERSON;
 
+    // Move player
     player.calculate_next_step(elapsed_time);
+    // Update the current stage
+    scene_stages[0]->update_stage(elapsed_time, player.position);
 
     // Test for player collisions
     Vector3 coll_pos, coll_normal;

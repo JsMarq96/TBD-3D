@@ -14,6 +14,7 @@
 #include "game_player.h"
 #include "mesh.h"
 #include "enviorment_entity.h"
+#include "enemy_entity.h"
 #include "game_map.h"
 
 // Generic Game Area
@@ -27,27 +28,24 @@ struct sStage {
     //std::vector<sStage*> next_areas;
 
     std::vector<sEnviormentEntity*> render_elements;
+    
+    sEnemyEntity enemys;
 
     Vector3 light_pos;
 
     // Map for AI navigation
-    uint8 *map;
+    sGameMap map;
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 
     void render_stage(Camera *camera);
 
+    void update_stage(float elapsed_time, Vector3 player_position);
+
     void add_instance(int type, Matrix44 model);
 
     void print_map() {
-        std::cout << "====== MAP ======" << std::endl;
-        for (int i = 0; i < width/2; i++) {
-            for (int j = 0; j < heigth/2; j++) {
-                std::cout << " " << std::to_string(map[(i * width/2) + j]) << " ";
-            }
-            std::cout << std::endl;
-        }
-        std::cout << "=================" << std::endl;
+        map.print_map();
     };
 
     int add_element(std::string mesh_name, 

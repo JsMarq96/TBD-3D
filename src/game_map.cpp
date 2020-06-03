@@ -6,6 +6,10 @@ sGameMap::sGameMap(int width, int height) {
     map_height = height / 2;
     map_width = width / 2;
     map = new uint8[map_width * map_height];
+
+    for (int i = 0; i <= (map_width * map_height); i++) {
+        map[i] = 0;
+    }
 };
 
 uint8 sGameMap::get(int x, int y) { 

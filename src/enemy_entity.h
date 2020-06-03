@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 #include "framework.h"
-#include "stage.h"
+#include "game_map.h"
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
@@ -26,6 +26,11 @@ struct sKinetics {
     Vector3 position;
     Vector3 speed;
     Vector2 rotation;
+
+    void get_model_matrix(Matrix44 &model) {
+        model.setTranslation(position.x, position.y, position.z);
+        model.rotate(rotation.y, Vector3(0,1,0));
+    }
 };
 
 enum eEnemyState: uint8 {
@@ -61,7 +66,6 @@ struct sEnemyEntity {
                  std::string &text_id);
 
     sEnemyEntity();
-    void init();
 
     void update(float elapsed_time, sGameMap &map, Vector3 player_pos);
 

@@ -1,21 +1,22 @@
 #include "enemy_entity.h"
 
 sEnemyEntity::sEnemyEntity() {
-    shader_fs_id = "";
-    shader_vs_id = "";
-    mesh_id = "";
+    shader_fs_id = "data/shaders/phong.ps";
+    shader_vs_id = "data/shaders/basic.vs";
+    mesh_id = "data/meshes/player_stading.OBJ";
+    texture_id = "data/textures/player_text.png";
     last_inserted_index = -1;
-}
 
-void sEnemyEntity::init() {
     for (int i = 0; i <  ENEMYS_PER_AREA; i++) {
         action_index[i] = -1;
     }
 }
 
-
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
     Vector2 player_2d_pos = Vector2(player_2d_pos.x, player_2d_pos.y);
+
+    map.parse_coordinates_to_map(player_2d_pos);
+
     for(int i = 0; i < ENEMYS_PER_AREA; i++) {
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
@@ -102,6 +103,19 @@ void sEnemyEntity::render(Camera *camara)  {
     curr_shader->setUniform("u_texture", Texture::Get(texture_id.c_str()));
     curr_shader->setUniform("light_pos", Vector3(250, 120, 250));
     curr_shader->setUniform("camera_pos", camara->eye);
-
     curr_shader->setUniform("u_viewprojection", camara->viewprojection_matrix);
+
+    mesh->enableBuffers(curr_shader);
+
+    for (int i = 0; i <= last_inserted_index; i++) {
+         std::cout << mesh_id << "qwsop" <<std::endl;
+        Matrix44 model;
+        kinetic_elems[i].get_model_matrix(model);
+
+        curr_shader->setUniform("u_model", model);
+        mesh->drawCall(GL_TRIANGLES, 1, 0);
+    }
+
+    mesh->disableBuffers(curr_shader);
+    curr_shader->disable();
 }

@@ -1,6 +1,7 @@
 #ifndef _GAME_MAP_H_
 #define _GAME_MAP_H_
 
+#include <iostream>
 #include "framework.h"
 #include "extra/pathfinders.h"
 
@@ -13,6 +14,8 @@ struct sGameMap {
     int map_height;
 
     sGameMap(int width, int height);
+
+    sGameMap() {};
 
     uint8 get(int x, int y);
 
@@ -42,6 +45,21 @@ struct sGameMap {
         result.y = (int) t_int;
 
         result = result * 2.0f;
+    }
+
+    void parse_coordinates_to_map(Vector2 &coords) {
+        coords = coords * 0.5f;
+    }
+
+    void print_map() {
+        std::cout << "====== MAP ======" << std::endl;
+        for (int i = 0; i < map_width; i++) {
+            for (int j = 0; j < map_height; j++) {
+                std::cout << " " << std::to_string(map[(i * map_width/2) + j]) << " ";
+            }
+            std::cout << std::endl;
+        }
+        std::cout << "=================" << std::endl;
     }
 };   
 #endif
