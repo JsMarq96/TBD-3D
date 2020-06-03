@@ -10,6 +10,8 @@ sGameScene::sGameScene() {
 
     test_stage->print_map();
 
+    test_stage->add_enemy_entity(Vector3(20,0,20));
+
     scene_stages.push_back(test_stage);
 }
 
@@ -34,7 +36,7 @@ void sGameScene::render_scene() {
     // Todo:  THICC FOG
     //player.render_camera_fog(curr_camera);
     // Render next areas??
-    //drawText(2, 2, "x:" + std::to_string(player_model.m[12]) + " y:" + std::to_string(player_model.m[13]) + " z:" + std::to_string(player_model.m[14]), Vector3(1, 1, 1), 2);
+    drawText(2, 2, "x:" + std::to_string(player.position.x) + " z:" + std::to_string(player.position.z), Vector3(1, 1, 1), 2);
 }
 
 void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {

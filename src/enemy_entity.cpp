@@ -40,33 +40,46 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         // No player in sight, just chilling
         if (state[i] == ROAM) {
             // Roaming part
-            if (action_index[i] != -1) {
+            if (action_index[i] == -1) {
                 poi[i] = map.get_empty_coordinate();
-
                 // Trace path
                 int result;
                 map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM, result);
+                std::cout  << result << "> " << poi[i].x << "-" << poi[i].y << std::endl;
+                std::cout << "===========" << std::endl;
+                for (int j = 0; j < ENEMYS_PER_AREA; j++) {
+                    std::cout << std::to_string( enemy_steps[i][j]) << std::endl;
+                }
+                std::cout << "===========" << std::endl;
 
-                if (result == -1) {
+                if (result < 0) {
                     action_index[i] = -1;
+                } else {
+                    action_index[i] = 0;
                 }
             } else {
                 // Go to the next point in the path
                 // set to -1 if it reaches the end
                 Vector2 next_position;
-                map.parse_map_index_to_coordinates(action_index[i], next_position);
+                map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_position);
+                //std::cout << action_index[i] << " - " << enemy_steps[i][action_index[i]] << std::endl;
 
                 // Set speed to the direction
                 Vector3 direction = Vector3(next_position.x, 0, next_position.y) - kinetic_elems[i].position;
                 direction = direction.normalize();
                 kinetic_elems[i].speed = direction * ENEMY_SPEED;
-
-                if ((next_position - pos_2d).length() <= 1.5) {
+                
+                float tmp = (next_position - pos_2d).length();
+                //std::cout << action_index[i]  << " + " << poi[i].x << " - " << poi[i].y  << "  - " << tmp << std::endl;
+                //std::cout << action_index[i] << " EPIC" << std::endl;
+                if ((next_position - pos_2d).length() <= 3) {
                     action_index[i]++;
                     if (action_index[i] >= MAX_STEPS_NUM) {
                         action_index[i] = -1;
                     }
                 }
+
+                kinetic_elems[i].position = kinetic_elems[i].position + (kinetic_elems[i].speed * elapsed_time);
             }
         }
 
@@ -74,7 +87,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         if (state[i] == RUN_AFTER) {
             if (action_index[i] == -1) {
                 int result;
-                map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM / 2, result);
+                //map.get_path_to(pos_2d, poi[i], enemy_steps[i], MAX_STEPS_NUM / 2, result);
             } else {
                 
             }
@@ -108,7 +121,6 @@ void sEnemyEntity::render(Camera *camara)  {
     mesh->enableBuffers(curr_shader);
 
     for (int i = 0; i <= last_inserted_index; i++) {
-         std::cout << mesh_id << "qwsop" <<std::endl;
         Matrix44 model;
         kinetic_elems[i].get_model_matrix(model);
 

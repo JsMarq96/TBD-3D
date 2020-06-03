@@ -42,7 +42,9 @@ struct sStage {
 
     void update_stage(float elapsed_time, Vector3 player_position);
 
-    void add_instance(int type, Matrix44 model);
+    void add_enviorment_instance(int type, Matrix44 model);
+
+    void add_enemy_entity(Vector3 position);
 
     void print_map() {
         map.print_map();

@@ -32,12 +32,16 @@ void sStage::update_stage(float elapsed_time, Vector3 player_position) {
     enemys.update(elapsed_time, map, player_position);
 }
 
-void sStage::add_instance(int type, Matrix44 model) {
+void sStage::add_enviorment_instance(int type, Matrix44 model) {
     render_elements[type]->add_element(model);
     
     Vector3 position = model.getTranslation() *0.5;
 
     //map[int((position.x * width/2) + position.z)] = 1;
+}
+
+void sStage::add_enemy_entity(Vector3 position) {
+    enemys.add_element(position);
 }
 
 int sStage::add_element(std::string mesh_name, std::string text_name, std::string shader_fs, std::string shader_vs, bool is_instanced) {

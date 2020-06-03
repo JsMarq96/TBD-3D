@@ -8,7 +8,7 @@ sGameMap::sGameMap(int width, int height) {
     map = new uint8[map_width * map_height];
 
     for (int i = 0; i <= (map_width * map_height); i++) {
-        map[i] = 0;
+        map[i] = 1;
     }
 };
 
@@ -23,6 +23,8 @@ Vector2 sGameMap::get_empty_coordinate() {
     Vector2 coords;
     while (tmp != 0) {
         coords.random(map_width);
+        coords.x *= (coords.x < 0) ? -1 : 1;
+        coords.y *= (coords.y < 0) ? -1 : 1;
         tmp = get(coords.x, coords.y);
     }
 
@@ -31,6 +33,7 @@ Vector2 sGameMap::get_empty_coordinate() {
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
     result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
+    std::cout << result << " mappi" << std::endl;
 }
 
 // Casts a Ray from one point in the map to other,
@@ -44,7 +47,7 @@ float sGameMap::raycast_from_point_to_point(Vector2 p1, Vector2 p2, float max_si
 
     for (x = 0; x < p2.x; x++) {
         // Is occuded
-        if (get(x,y) != 0) {
+        if (get(x,y) != 1) {
             return -1;
         }
 

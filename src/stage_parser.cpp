@@ -62,6 +62,6 @@ void parse_stage(sStage* to_fill, std::string file_name) {
         float z = std::stof(rest);
     
         // Add the instance to the stage, at the coordinates
-        to_fill->add_instance(element_index_map[elem_id], setTranslationMat(x,y,z));
+        to_fill->add_enviorment_instance(element_index_map[elem_id], setTranslationMat(x,y,z));
     }
 }

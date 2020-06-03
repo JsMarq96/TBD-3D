@@ -14,9 +14,9 @@
 #include "camera.h"
 #include "game.h"
 
-#define ENEMY_SPEED 50
+#define ENEMY_SPEED 5
 #define ENEMYS_PER_AREA 100
-#define MAX_STEPS_NUM 40
+#define MAX_STEPS_NUM 100
 #define DATA_DIR_LEN 40.f
 #define HALF_ENEMY_FOV 30.0f
 
@@ -69,7 +69,24 @@ struct sEnemyEntity {
 
     void update(float elapsed_time, sGameMap &map, Vector3 player_pos);
 
-    bool add_element(Matrix44 &model);
+    bool add_element(Vector3 position) {
+        last_inserted_index++;
+
+        if (last_inserted_index >= ENEMYS_PER_AREA) {
+            return false;
+        }
+        action_index[last_inserted_index] = -1;
+        state[last_inserted_index] = ROAM;
+        kinetic_elems[last_inserted_index].position = position;
+        kinetic_elems[last_inserted_index].speed = Vector3(0,0,0);
+        kinetic_elems[last_inserted_index].rotation = Vector2(0,0);
+
+        for (int i = 0; i < ENEMYS_PER_AREA; i++) {
+            enemy_steps[last_inserted_index][i] = -1;
+        }
+
+        return true;
+    };
     void render(Camera *camara);
 
     // Todo: ray collisions
