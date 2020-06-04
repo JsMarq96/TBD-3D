@@ -18,6 +18,8 @@ void parse_stage(sStage* to_fill, std::string file_name) {
     // Get the floor image
     getline(stage_file, curr_line);
     to_fill->floor_img_dir = curr_line;
+    //Texture *text = Texture::Get(curr_line.c_str());
+    //to_fill->heigth
 
     // Parse the object definitions
     while(getline(stage_file, curr_line)) {
@@ -46,7 +48,6 @@ void parse_stage(sStage* to_fill, std::string file_name) {
         int delim_index = curr_line.find(" ");
         int elem_id = std::stoi(curr_line.substr(0, delim_index));
         std::string rest = curr_line.substr(delim_index+1);
-
         
         // Fetch the x coord
         delim_index = rest.find(" ");

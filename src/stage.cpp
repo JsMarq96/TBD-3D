@@ -35,10 +35,10 @@ void sStage::update_stage(float elapsed_time, Vector3 player_position) {
 void sStage::add_enviorment_instance(int type, Matrix44 model) {
     render_elements[type]->add_element(model);
     
-    Vector3 position = model.getTranslation() *0.5;
+    Vector3 position = model.getTranslation();
 
     // Add scaled area
-    map.add_area(position.x, position.z, render_elements[type]->radius/2 );
+    map.add_area(position.x, position.z, render_elements[type]->radius);
     //map[int((position.x * width/2) + position.z)] = 1;
 }
 
@@ -75,7 +75,7 @@ sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     // Set default light position
     light_pos = Vector3(250, 120, 250);
 
-    map = sGameMap(width, heigth);
+    map = sGameMap(width, heigth, 0.5);
 }
 
 bool sStage::testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal) {

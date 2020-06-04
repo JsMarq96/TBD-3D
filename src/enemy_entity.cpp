@@ -16,11 +16,8 @@ sEnemyEntity::sEnemyEntity() {
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
     Vector2 player_2d_pos = Vector2(player_2d_pos.x, player_2d_pos.y);
 
-    map.parse_coordinates_to_map(player_2d_pos);
-
     for(int i = 0; i <= last_inserted_index; i++) {
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
-        map.parse_coordinates_to_map(pos_2d);
         
         // Calculate angle between the player position and the enemy's direction
         Vector2 enemy_facing = pos_2d.normalize();
@@ -59,6 +56,8 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 Vector3 move_direction = Vector3(next_point.x - pos_2d.x, 0., next_point.y - pos_2d.y).normalize() * ENEMY_SPEED;
                 kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
             }
+        } else if (state[i] == RUN_AFTER) {
+            
         }
             
         

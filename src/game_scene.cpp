@@ -4,6 +4,9 @@
 sGameScene::sGameScene() {
     curr_area = 0;
     srandom(time(NULL));
+
+    player = sPlayer(Vector3(150/2, 0, 150/2));
+
     // Create test area
     sStage* test_stage = new sStage(0, 0, 150, 150);
 

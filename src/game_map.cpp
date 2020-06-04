@@ -1,11 +1,14 @@
 #include "game_map.h"
 
-sGameMap::sGameMap(int width, int height) { 
+sGameMap::sGameMap(int width, int height, float scale) { 
     real_heigth = height;
     real_width = width;
-    map_height = height / 2;
-    map_width = width / 2;
+    map_height = height * (scale);
+    map_width = width * (scale);
     map = new uint8[map_width * map_height];
+    map_scale = scale;
+
+    std::cout << map_width << std::endl;
 
     for (int i = 0; i <= (map_width * map_height); i++) {
         map[i] = 1;
@@ -13,18 +16,28 @@ sGameMap::sGameMap(int width, int height) {
 };
 
 uint8 sGameMap::get(int x, int y) { 
-    if (x >= map_width || y >= map_height)
+    x *= 0.5;
+    y *= 0.5;
+    if (x >= map_width-1 || y >= map_height-1)
         return 1;
     return map[(x * map_width) + y];
 };
 
 void sGameMap::set(int x, int y, uint8 value) {
-    if (x >= map_width || y >= map_height)
+    x *= 0.5;
+    y *= 0.5;
+    //std::cout << x << "  " << y << std::endl << "---------" << std::endl;
+
+    if (x >= map_width-1 || y >= map_height-1)
         return;
     map[(x * map_width) + y] = value;
 };
 
 void sGameMap::add_area(int x, int y, float radius) {
+    x *= 0.5;
+    y *= 0.5;
+    radius *= 0.5;
+
     x -= radius;
     y -= radius;
     for (int dx = 0; dx < radius*2; dx++) {
@@ -46,9 +59,6 @@ Vector2 sGameMap::get_empty_coordinate() {
         coords.x *= (coords.x < 0) ? -1 : 1;
         coords.y *= (coords.y < 0) ? -1 : 1;
 
-        //coords.x = ((int) coords.x) % map_width;
-        //coords.y = ((int) coords.y) % map_height;
-
         tmp = get(coords.x, coords.y);
         std::cout << coords.x << " = " << coords.y  << " = " << map_width << std::endl;
     }
@@ -57,12 +67,17 @@ Vector2 sGameMap::get_empty_coordinate() {
 }
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
+    start = start * 0.5;
+    goal = goal * 0.5;
     result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
 }
 
 // Casts a Ray from one point in the map to other,
 // usign the Bressham line algortihm
 float sGameMap::raycast_from_point_to_point(Vector2 p1, Vector2 p2, float max_size) {
+    p1 = p1 * 0.5;
+    p2 = p2 * 0.5;
+
     int delta_x = p2.x - p1.x;
     int delta_y = p2.y - p1.y;
     int delta_err = 2*(delta_y / delta_x);

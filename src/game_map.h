@@ -12,8 +12,9 @@ struct sGameMap {
     int real_heigth;
     int map_width;
     int map_height;
+    int map_scale;
 
-    sGameMap(int width, int height);
+    sGameMap(int width, int height, float scale);
 
     sGameMap() {};
 
@@ -26,8 +27,8 @@ struct sGameMap {
     // Todo
     Vector2 translate_to_world_coord(Vector2 map_coord) {
         Vector2 coord;
-        coord.x = map_coord.x * 2;
-        coord.y = map_coord.y * 2;
+        coord.x = map_coord.x * map_scale;
+        coord.y = map_coord.y * map_scale;
 
         return coord;
     }
@@ -45,11 +46,11 @@ struct sGameMap {
         result.x = index % map_width;
         result.y = floor(index / map_width);
 
-        result = result * 2.0f;
+        result = result * (2);
     }
 
     void parse_coordinates_to_map(Vector2 &coords) {
-        coords = coords * 0.5f;
+        coords = coords * 0.5;
     }
 
     void print_map() {
