@@ -37,6 +37,8 @@ void sStage::add_enviorment_instance(int type, Matrix44 model) {
     
     Vector3 position = model.getTranslation() *0.5;
 
+    // Add scaled area
+    map.add_area(position.x, position.z, render_elements[type]->radius/2 );
     //map[int((position.x * width/2) + position.z)] = 1;
 }
 

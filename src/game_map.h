@@ -19,6 +19,10 @@ struct sGameMap {
 
     uint8 get(int x, int y);
 
+    void set(int x, int y, uint8 value);
+
+    void add_area(int x, int y, float radius);
+
     // Todo
     Vector2 translate_to_world_coord(Vector2 map_coord) {
         Vector2 coord;

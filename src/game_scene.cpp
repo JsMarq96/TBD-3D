@@ -2,9 +2,10 @@
 
 
 sGameScene::sGameScene() {
-    curr_area = 0;    
+    curr_area = 0;
+    srandom(time(NULL));
     // Create test area
-    sStage* test_stage = new sStage(0, 0, 50, 50);
+    sStage* test_stage = new sStage(0, 0, 150, 150);
 
     parse_stage(test_stage, "data/stages/01.stg");
 
@@ -63,7 +64,8 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
 
     // Move player
     player.calculate_next_step(elapsed_time);
-    // Update the current stage
+
+    // Update the current stage (mostly for the enemys)
     scene_stages[0]->update_stage(elapsed_time, player.position);
 
     // Test for player collisions

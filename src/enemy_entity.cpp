@@ -22,39 +22,40 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         map.parse_coordinates_to_map(pos_2d);
         
+        // Calculate angle between the player position and the enemy's direction
         Vector2 enemy_facing = pos_2d.normalize();
         Vector2 to_player_dir = (player_2d_pos - pos_2d).normalize();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length()));
 
-        if (state[i] == STOPPED) {
+        if (state[i] == STOPPED) { // If its stopped, select a new point, and set mode to ROAM
             Vector2 point = map.get_empty_coordinate();
 
             int result = -1;
+            // Save the enemy's path
             map.get_path_to(pos_2d, point, enemy_steps[i], ENEMYS_PER_AREA, result);
 
             if (result > 0) {
                 state[i] = ROAM;
                 poi[i] = point;
                 action_index[i] = 0;
-                std::cout << "Go to: " << poi[i].x << " "  << poi[i].y << std::endl;
             }
-        } else if (state[i] == ROAM) {
+        } else if (state[i] == ROAM) { // Traverse the Designated Path, and STOP when the end is reached
             Vector2 next_point = Vector2(0,0);
             map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_point);
-            std::cout << "Curr point " << next_point.x << " " << next_point.y << std::endl;
-            std::cout << "Enemy pso " << pos_2d.x << " " << pos_2d.y << std::endl;
 
-            if ((next_point - pos_2d).length() <= 3) {
+            if ((next_point - pos_2d).length() <= 1) {
+                // If it very near to the current destination point, go to the next
                 action_index[i]++;
 
+                // The path has reched the end, s we aneter STOPPED mode
                 if (action_index[i] >= MAX_STEPS_NUM || enemy_steps[i][action_index[i]] == -1) {
                     state[i] = STOPPED;
-                    std::cout << "stopped" << std::endl;
                     for (int i = 0; i <  ENEMYS_PER_AREA; i++) {
                         action_index[i] = -1;
                     }
                 }
             } else {
+                // Move towards the next point in the path
                 Vector3 move_direction = Vector3(next_point.x - pos_2d.x, 0., next_point.y - pos_2d.y).normalize() * ENEMY_SPEED;
                 kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
             }

@@ -13,19 +13,44 @@ sGameMap::sGameMap(int width, int height) {
 };
 
 uint8 sGameMap::get(int x, int y) { 
+    if (x >= map_width || y >= map_height)
+        return 1;
     return map[(x * map_width) + y];
 };
 
+void sGameMap::set(int x, int y, uint8 value) {
+    if (x >= map_width || y >= map_height)
+        return;
+    map[(x * map_width) + y] = value;
+};
+
+void sGameMap::add_area(int x, int y, float radius) {
+    x -= radius;
+    y -= radius;
+    for (int dx = 0; dx < radius*2; dx++) {
+        for (int dy = 0; dy < radius*2; dy++) {
+            set(x + dx, y + dy, 0);
+        }
+    }
+}
 
 // Randomly selects a random empty coordinate of the map
 Vector2 sGameMap::get_empty_coordinate() {
     uint8 tmp = 0;
     Vector2 coords;
     while (tmp != 1) {
-        coords.random(map_width);
+        //coords.random(map_width);
+        coords.x = (random(map_width) );
+        coords.y = (random(map_height) );
+
         coords.x *= (coords.x < 0) ? -1 : 1;
         coords.y *= (coords.y < 0) ? -1 : 1;
+
+        //coords.x = ((int) coords.x) % map_width;
+        //coords.y = ((int) coords.y) % map_height;
+
         tmp = get(coords.x, coords.y);
+        std::cout << coords.x << " = " << coords.y  << " = " << map_width << std::endl;
     }
 
     return coords;
