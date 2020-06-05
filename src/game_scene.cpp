@@ -14,7 +14,7 @@ sGameScene::sGameScene() {
 
     test_stage->print_map();
 
-    test_stage->add_enemy_entity(Vector3(20,0,20));
+    test_stage->add_enemy_entity(Vector3(150/2, 0, 150/2));
 
     scene_stages.push_back(test_stage);
 }

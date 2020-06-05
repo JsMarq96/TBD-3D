@@ -14,15 +14,26 @@ sEnemyEntity::sEnemyEntity() {
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
-    Vector2 player_2d_pos = Vector2(player_2d_pos.x, player_2d_pos.y);
+    Vector2 player_2d_pos = Vector2(player_pos.x, player_pos.z);
 
     for(int i = 0; i <= last_inserted_index; i++) {
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
         // Calculate angle between the player position and the enemy's direction
         Vector2 enemy_facing = Vector2(cos(kinetic_elems[i].angle), sin(kinetic_elems[i].angle)); //Vector2(kinetic_elems[i].rotation.x);
-        Vector2 to_player_dir = (player_2d_pos - pos_2d).normalize();
-        float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length()));
+        Vector2 to_player_dir = (pos_2d - player_2d_pos).normalize();
+        float enemy_player_distance = (pos_2d - player_2d_pos).length();
+        float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
+
+        if (angle > 100 && enemy_player_distance <= 1) {
+            // If it is facing to the player and its near, attack him
+            state[i] = ATTACK;
+        } else if (angle > 100 & enemy_player_distance <= 30) {
+            // If it is in the eyesight of the player and it is 
+            state[i] = RUN_AFTER;
+        }
+
+        std::cout << "Angle " << angle << std::endl;
 
         if (state[i] == STOPPED) { // If its stopped, select a new point, and set mode to ROAM
             Vector2 point = map.get_empty_coordinate();
@@ -60,7 +71,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
                 float new_direction = atan2(new_pos.y, new_pos.x);
                 
-                //player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
                 float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
                 kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
             }
