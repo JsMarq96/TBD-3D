@@ -59,11 +59,10 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * ENEMY_SPEED * elapsed_time);
 
                 float new_direction = atan2(new_pos.y, new_pos.x);
-                std:cout << lerp(new_direction, kinetic_elems[i].angle + 0.000001, 0.5) << std::endl;
                 
                 //player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
-
-                kinetic_elems[i].angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
+                float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
+                kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
             }
         } else if (state[i] == RUN_AFTER) {
             
