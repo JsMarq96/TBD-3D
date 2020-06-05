@@ -5,7 +5,7 @@
 #include <queue>
 #include <set>
 #include <unordered_map>
-
+#include "extra/tweeny/tweeny.h"
 #include "framework.h"
 #include "game_map.h"
 #include "shader.h"
@@ -15,6 +15,7 @@
 #include "game.h"
 
 #define ENEMY_SPEED 5
+#define ENEMY_ROT_SPEED 0.5
 #define ENEMYS_PER_AREA 100
 #define MAX_STEPS_NUM 100
 #define DATA_DIR_LEN 40.f
@@ -26,10 +27,11 @@ struct sKinetics {
     Vector3 position;
     Vector3 speed;
     Vector2 rotation;
+    float angle= 0.0f;
 
     void get_model_matrix(Matrix44 *model) {
         model->setTranslation(position.x, 0., position.z);
-        model->rotate(rotation.y, Vector3(0,1,0));
+        model->rotate(angle, Vector3(0,1,0));
     }
 };
 

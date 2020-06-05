@@ -3,7 +3,7 @@
 sEnemyEntity::sEnemyEntity() {
     shader_fs_id = "data/shaders/phong.ps";
     shader_vs_id = "data/shaders/basic.vs";
-    mesh_id = "data/meshes/player_stading.OBJ";
+    mesh_id = "data/meshes/enemy.obj";
     texture_id = "data/textures/player_text.png";
     last_inserted_index = -1;
 
@@ -20,7 +20,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
         // Calculate angle between the player position and the enemy's direction
-        Vector2 enemy_facing = pos_2d.normalize();
+        Vector2 enemy_facing = Vector2(cos(kinetic_elems[i].angle), sin(kinetic_elems[i].angle)); //Vector2(kinetic_elems[i].rotation.x);
         Vector2 to_player_dir = (player_2d_pos - pos_2d).normalize();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length()));
 
@@ -52,9 +52,18 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                     }
                 }
             } else {
+                Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
                 // Move towards the next point in the path
-                Vector3 move_direction = Vector3(next_point.x - pos_2d.x, 0., next_point.y - pos_2d.y).normalize() * ENEMY_SPEED;
-                kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
+                Vector2 new_pos = (next_point - pos_2d).normalize();
+                Vector3 move_direction = Vector3(next_point.x - pos_2d.x , 0., next_point.y - pos_2d.y).normalize();
+                kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * ENEMY_SPEED * elapsed_time);
+
+                float new_direction = atan2(new_pos.y, new_pos.x);
+                std:cout << lerp(new_direction, kinetic_elems[i].angle + 0.000001, 0.5) << std::endl;
+                
+                //player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
+
+                kinetic_elems[i].angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
             }
         } else if (state[i] == RUN_AFTER) {
             
