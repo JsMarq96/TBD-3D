@@ -3,10 +3,9 @@
 sGameMap::sGameMap(int width, int height, float scale) { 
     real_heigth = height;
     real_width = width;
-    map_height = height * (scale);
-    map_width = width * (scale);
+    map_height = height * (0.5);
+    map_width = width * (0.5);
     map = new uint8[map_width * map_height];
-    map_scale = scale;
 
     std::cout << map_width << std::endl;
 
@@ -26,7 +25,6 @@ uint8 sGameMap::get(int x, int y) {
 void sGameMap::set(int x, int y, uint8 value) {
     x *= 0.5;
     y *= 0.5;
-    //std::cout << x << "  " << y << std::endl << "---------" << std::endl;
 
     if (x >= map_width-1 || y >= map_height-1)
         return;
@@ -60,7 +58,6 @@ Vector2 sGameMap::get_empty_coordinate() {
         coords.y *= (coords.y < 0) ? -1 : 1;
 
         tmp = get(coords.x, coords.y);
-        std::cout << coords.x << " = " << coords.y  << " = " << map_width << std::endl;
     }
 
     return coords;
@@ -69,6 +66,7 @@ Vector2 sGameMap::get_empty_coordinate() {
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
     start = start * 0.5;
     goal = goal * 0.5;
+    //std::cout << goal.x << " - " << goal.y  << " : "  << start.x << " - " << start.y << std::endl;
     result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
 }
 

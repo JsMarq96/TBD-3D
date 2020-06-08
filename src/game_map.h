@@ -43,10 +43,10 @@ struct sGameMap {
 
     // for parsing the indexes produce by the A* search algrotihm
     void parse_map_index_to_coordinates(int index, Vector2& result) {
-        result.x = index % map_width;
-        result.y = floor(index / map_width);
+        result.x = (index % map_width) * 2;
+        result.y = (floor(index / map_width)) * 2;
 
-        result = result * (2);
+        //result = result * (2);
     }
 
     void parse_coordinates_to_map(Vector2 &coords) {

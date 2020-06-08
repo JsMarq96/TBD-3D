@@ -37,9 +37,9 @@ struct sKinetics {
 
 enum eEnemyState: uint8 {
     STOPPED = 0,
-    ROAM,
-    ATTACK,
-    RUN_AFTER,
+    ROAM = 1,
+    ATTACK = 2,
+    RUN_AFTER = 3,
     RECOVERING
 };
 
