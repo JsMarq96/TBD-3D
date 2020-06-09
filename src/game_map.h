@@ -5,6 +5,8 @@
 #include "framework.h"
 #include "extra/pathfinders.h"
 
+#define SIGN(x) ((x > 0) ? 1 : ((x == 0) ? 0 : -1))
+
 // Game Map for the AI to move in
 struct sGameMap {
     uint8 *map;
@@ -27,8 +29,8 @@ struct sGameMap {
     // Todo
     Vector2 translate_to_world_coord(Vector2 map_coord) {
         Vector2 coord;
-        coord.x = map_coord.x * map_scale;
-        coord.y = map_coord.y * map_scale;
+        coord.x = map_coord.x / 0.75;
+        coord.y = map_coord.y / 0.75;
 
         return coord;
     }
@@ -43,14 +45,14 @@ struct sGameMap {
 
     // for parsing the indexes produce by the A* search algrotihm
     void parse_map_index_to_coordinates(int index, Vector2& result) {
-        result.x = (index % map_width) * 2;
-        result.y = (floor(index / map_width)) * 2;
+        result.x = (index % map_width) / 0.75;
+        result.y = (floor(index / map_width)) / 0.75;
 
         //result = result * (2);
     }
 
     void parse_coordinates_to_map(Vector2 &coords) {
-        coords = coords * 0.5;
+        coords = coords * 0.75;
     }
 
     void print_map() {
