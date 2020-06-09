@@ -30,31 +30,37 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         float enemy_player_distance = (pos_2d - player_2d_pos).length();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
 
-        if (state[i] == RUN_AFTER && angle > 90 && enemy_player_distance <= 1.5) {
+        std::cout << " " << angle << std::endl;
+
+        if (state[i] == RUN_AFTER && angle > 80 && enemy_player_distance <= 1.5) {
             // If it is facing to the player and its near, attack him
-            //state[i] = ATTACK;
+            state[i] = ATTACK;
             //std::cout << "atack" << std::endl;
-        } else if (angle > 90 && enemy_player_distance <= 20) {
+        } else if (angle > 80 && enemy_player_distance <= 20) {
             // If it is in the eyesight of the player and it is
             float dist = map.raycast_from_point_to_point(pos_2d, player_2d_pos, 20);
 
-            std::cout << dist << " " << angle << std::endl;
-
             if (dist >= 0) {
-                Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
-                // Move towards the next point in the path
-                Vector2 new_pos = (player_2d_pos - pos_2d).normalize();
-                Vector3 move_direction = Vector3(player_2d_pos.x - pos_2d.x , 0., player_2d_pos.y - pos_2d.y).normalize();
-                kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * ENEMY_SPEED * elapsed_time);
-
-                float new_direction = atan2(new_pos.y, new_pos.x);
-                
-                float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
-                kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
+                state[i] = RUN_AFTER;
             }
         }
 
+        Vector3 move_direction = Vector3(0.f, 0.f, 0.f);
+        float new_direction = 0.f;
 
+        if (state[i] == RUN_AFTER) {
+            Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
+            // Move towards the next point in the path
+            Vector2 new_pos = (player_2d_pos - pos_2d).normalize();
+            move_direction = Vector3(player_2d_pos.x - pos_2d.x , 0., player_2d_pos.y - pos_2d.y).normalize();
+            new_direction = atan2(new_pos.y, new_pos.x);
+        } else if (state[i] == ATTACK) {
+
+        }
+
+        kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * ENEMY_SPEED * elapsed_time);
+        float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
+        kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
     }
 }
 
