@@ -78,7 +78,7 @@ void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_step
 }
 
 // Casts a Ray from one point in the map to other,
-// usign the Bressham line algortihm
+// usign the DDA line algortihm
 float sGameMap::raycast_from_point_to_point(Vector2 p2, Vector2 p1, float max_size) {
     p1 = p1 * 0.75;
     p2 = p2 * 0.75;
@@ -92,11 +92,9 @@ float sGameMap::raycast_from_point_to_point(Vector2 p2, Vector2 p1, float max_si
     float xi, yi;
     xi = p1.x+SIGN(p1.x)*0.5;
     yi = p1.y+SIGN(p1.y)*0.5;
-    std::cout << p1.x << " " << p1.y << " || " << p2.x << " " << p2.y << std::endl;
 
 	for (float i = 0; len >= i; i++) {
         // Is occuded
-        std::cout << std::to_string(map[int((xi * map_width) + yi)]) <<"  "<< xi <<" " << yi << std::endl;
         if (map[int((xi * map_width) + yi)] != 1) {
             return -1;
         }
