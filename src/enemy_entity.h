@@ -79,7 +79,7 @@ struct sEnemyEntity {
             return false;
         }
         action_index[last_inserted_index] = -1;
-        state[last_inserted_index] = ROAM;
+        state[last_inserted_index] = STOPPED;
         kinetic_elems[last_inserted_index].position = position;
         kinetic_elems[last_inserted_index].speed = Vector3(0,0,0);
         kinetic_elems[last_inserted_index].rotation = Vector2(0,0);

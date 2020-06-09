@@ -31,16 +31,17 @@ void sGameMap::set(int x, int y, uint8 value) {
     map[(x * map_width) + y] = value;
 };
 
-void sGameMap::add_area(int x, int y, float radius) {
+void sGameMap::add_area(float x, float y, float radius) {
     x *= 0.75;
     y *= 0.75;
     radius *= 0.75;
 
     x -= radius;
     y -= radius;
-    for (int dx = 0; dx < radius*2; dx++) {
-        for (int dy = 0; dy < radius*2; dy++) {
+    for (float dx = 0; dx < radius*2; dx++) {
+        for (float dy = 0; dy < radius*2; dy++) {
             //set(x + dx, y + dy, 0);
+            std::cout << std::to_string(x / 0.75) << " " << std::to_string(y) << " - " << std::to_string(int(((x + dx) * map_width) + y + dy)) << std::endl;
             map[int(((x + dx) * map_width) + y + dy)] = 0;
         }
     }
@@ -70,11 +71,11 @@ void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_step
     //std::cout << goal.x << " - " << goal.y  << " : "  << start.x << " - " << start.y << std::endl;
     result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
 
-    std::cout << result << " <-" << std::endl;
+    /*std::cout << result << " <- " << map_width * map_height << std::endl;
     for (int i = 0; i < max_steps; i++) {
         std::cout << steps[i] << std::endl;
     }
-    std::cout << "=========" << std::endl;
+    std::cout << "=========" << std::endl;*/
 }
 
 // Casts a Ray from one point in the map to other,

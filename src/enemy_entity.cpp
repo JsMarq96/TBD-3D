@@ -21,10 +21,11 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
     Vector2 player_2d_pos = Vector2(player_pos.x, player_pos.z);
 
     for(int i = 0; i <= last_inserted_index; i++) {
+        // Enemy 2d position
         Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
         // Calculate angle between the player position and the enemy's direction
-        Vector2 enemy_facing = Vector2(cos(kinetic_elems[i].angle), sin(kinetic_elems[i].angle)); //Vector2(kinetic_elems[i].rotation.x);
+        Vector2 enemy_facing = Vector2(cos(kinetic_elems[i].angle), sin(kinetic_elems[i].angle));
         Vector2 to_player_vector = (pos_2d - player_2d_pos);
         Vector2 to_player_dir = to_player_vector.normalize();
 
@@ -32,9 +33,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         
         float enemy_player_distance = (pos_2d - player_2d_pos).length();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
-
-        //std::cout << " " << angle << std::endl;
-
 
         // State transitions
         if (state[i] == RUN_AFTER && angle > 80 && enemy_player_distance <= 1.5) {
@@ -46,6 +44,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             float dist = map.raycast_from_point_to_point(pos_2d, player_2d_pos, 20);
 
             if (dist >= 0) {
+                //std::cout << dist << " " << angle << std::endl;
                 state[i] = RUN_AFTER;
             } else {
                 state[i] = STOPPED;
@@ -55,8 +54,11 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         Vector3 move_direction = Vector3(0.f, 0.f, 0.f);
         Vector2 new_pos = Vector2(0.f, 0.f);
 
+        //std::cout << (STOPPED == state[i]) << std::endl;
+
         // Code for each state
-        if (state[i] == STOPPED) { // If its stopped, select a new point, and set mode to ROAM
+        if (state[i] == STOPPED) { 
+            // If its stopped, select a new point, and set mode to ROAM
             Vector2 point = map.get_empty_coordinate();
 
             int result = -1;
@@ -65,13 +67,13 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
             if (result > 0) {
                 state[i] = ROAM;
-                poi[i] = point;
                 action_index[i] = 0;
             }
         } else if (state[i] == ROAM) {
             // Load Get next point
             Vector2 next_point = Vector2(0,0);
             map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_point);
+            //std::cout << next_point.x << " " << next_point.y << std::endl;
 
             if (enemy_steps[i][action_index[i]] != -1 && (next_point - pos_2d).length() <= 1) {
                 // If it very near to the current destination point, go to the next
@@ -90,6 +92,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 // Move towards the next point in the path
                 new_pos = (next_point - pos_2d).normalize();
                 move_direction = Vector3(next_point.x - pos_2d.x , 0., next_point.y - pos_2d.y).normalize();
+                //std::cout << kinetic_elems[i].position.x << " " << kinetic_elems[i].position.z << " - " << std::to_string(map.get(kinetic_elems[i].position.x, kinetic_elems[i].position.y)) << std::endl;
             }
 
         } else if (state[i] == RUN_AFTER) {

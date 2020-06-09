@@ -24,7 +24,7 @@ struct sGameMap {
 
     void set(int x, int y, uint8 value);
 
-    void add_area(int x, int y, float radius);
+    void add_area(float x, float y, float radius);
 
     // Todo
     Vector2 translate_to_world_coord(Vector2 map_coord) {
@@ -47,8 +47,7 @@ struct sGameMap {
     void parse_map_index_to_coordinates(int index, Vector2& result) {
         result.x = (index % map_width) / 0.75;
         result.y = (floor(index / map_width)) / 0.75;
-
-        //result = result * (2);
+        std::cout << result.x << " " << result.y << std::endl;
     }
 
     void parse_coordinates_to_map(Vector2 &coords) {
@@ -64,6 +63,6 @@ struct sGameMap {
             std::cout << std::endl;
         }
         std::cout << "=================" << std::endl;
-    }
+    }    
 };   
 #endif
