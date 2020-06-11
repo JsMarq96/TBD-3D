@@ -5,6 +5,8 @@
             particle_timer[i] = 0.0f;
             is_active[i] = false;
         }
+
+        can_shoot_timer = 0.0f;
         
         // Create model
         bullet_mesh.vertices.push_back(Vector3(0,0,0));
@@ -33,6 +35,8 @@
                 }
             }
         }
+
+        can_shoot_timer -= elapsed_time;
     }
 
     void sBulletEntity::render(Camera *cam) {

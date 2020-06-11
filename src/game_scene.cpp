@@ -71,6 +71,7 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
 
     // Player Shoot
     bool is_pressed = Input::isMousePressed(SDL_BUTTON_LEFT);
+    // Shoot bullet only when it is pressed
     if (is_pressed && prev_mouse_press != is_pressed) {
         std::cout << "BULLET: " <<  std::to_string(bullets.add_bullet(player.position + Vector3(0,2,0), player.direction)) << std::endl;
     }

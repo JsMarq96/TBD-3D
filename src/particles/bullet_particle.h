@@ -8,14 +8,17 @@
 #include "../texture.h"
 
 #define MAX_BULLET_SIZE 100
-#define BULLET_SPEED 15.f
+#define BULLET_SPEED 22.f
 #define BULLET_TIMER_RANGE 1.5f
+#define BULLET_COOLDOWN 0.5f
 
 struct sBulletEntity {
     Vector3 position[MAX_BULLET_SIZE];
     Vector3 direction[MAX_BULLET_SIZE];
     float particle_timer[MAX_BULLET_SIZE];
     bool is_active[MAX_BULLET_SIZE];
+
+    float can_shoot_timer;
 
     Mesh bullet_mesh;
 
@@ -25,6 +28,9 @@ struct sBulletEntity {
     void render(Camera *cam);
 
     bool add_bullet(Vector3 origin, Vector3 dir) {
+        if (can_shoot_timer > 0.0f)
+            return false;
+
         for (int i = 0; i < MAX_BULLET_SIZE; i++) {
             if (is_active[i])
                 continue;
@@ -33,6 +39,8 @@ struct sBulletEntity {
             direction[i] = dir;
             particle_timer[i] = 0.f;
             is_active[i] = true;
+            can_shoot_timer = BULLET_COOLDOWN;
+            
             return true;
         }
 
