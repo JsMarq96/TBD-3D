@@ -8,6 +8,7 @@
 #include "mesh.h"
 #include "stage.h"
 #include "input.h"
+#include "particles/bullet_particle.h"
 
 #define PRESS_W 0b00001
 #define PRESS_A 0b00010
@@ -24,6 +25,9 @@ struct sGameScene {
     int curr_area;
 
     sPlayer player;
+    sBulletEntity bullets;
+
+    bool prev_mouse_press = false;
 
     sGameScene(); 
 

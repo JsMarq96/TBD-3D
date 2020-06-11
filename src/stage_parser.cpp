@@ -44,7 +44,6 @@ void parse_stage(sStage* to_fill, std::string file_name) {
         if (curr_line == "end")
             break;
 
-        std::cout << curr_line << std::endl;
         // Fetch the id
         int delim_index = curr_line.find(" ");
         int elem_id = std::stoi(curr_line.substr(0, delim_index));

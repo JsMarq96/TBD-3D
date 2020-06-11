@@ -37,6 +37,8 @@ void sGameScene::render_scene() {
     // Render area
     scene_stages[0]->render_stage(curr_camera);
 
+    bullets.render(curr_camera);
+
     // Todo:  THICC FOG
     //player.render_camera_fog(curr_camera);
     // Render next areas??
@@ -44,7 +46,6 @@ void sGameScene::render_scene() {
 }
 
 void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
-    Vector3 prev_position = player.position;
     // Get the direction and the rotation of the displacement
     player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
     player.speed = Vector3(0,0,0);
@@ -67,6 +68,16 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
 
     // Move player
     player.calculate_next_step(elapsed_time);
+
+    // Player Shoot
+    bool is_pressed = Input::isMousePressed(SDL_BUTTON_LEFT);
+    if (is_pressed && prev_mouse_press != is_pressed) {
+        std::cout << "BULLET: " <<  std::to_string(bullets.add_bullet(player.position + Vector3(0,2,0), player.direction)) << std::endl;
+    }
+    prev_mouse_press = is_pressed;
+
+    // Update bullets
+    bullets.update(elapsed_time);
 
     // Update the current stage (mostly for the enemys)
     scene_stages[0]->update_stage(elapsed_time, player.position);

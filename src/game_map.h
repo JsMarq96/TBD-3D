@@ -47,7 +47,7 @@ struct sGameMap {
     void parse_map_index_to_coordinates(int index, Vector2& result) {
         result.x = (index % map_width) / 0.75;
         result.y = (floor(index / map_width)) / 0.75;
-        std::cout << result.x << " " << result.y << std::endl;
+        //std::cout << result.x << " " << result.y << std::endl;
     }
 
     void parse_coordinates_to_map(Vector2 &coords) {

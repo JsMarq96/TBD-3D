@@ -14,6 +14,7 @@ enum CamType : uint8 {
 };
 
 struct sPlayer {
+    Vector3 direction;
     Vector3 position;
     Vector3 speed;
     Vector3 rotation;

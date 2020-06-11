@@ -2,7 +2,7 @@
 
 include Makefile.inc
 
-SOURCES = src/extra/*.cpp src/extra/tweeny/*.cpp src/extra/coldet/*.cpp src/*.cpp
+SOURCES = src/extra/*.cpp src/particles/*.cpp src/extra/tweeny/*.cpp src/extra/coldet/*.cpp src/*.cpp
 
 OBJECTS = $(patsubst %.cpp, %.o, $(wildcard $(SOURCES)))
 DEPENDS = $(patsubst %.cpp, %.d, $(wildcard $(SOURCES)))

@@ -101,4 +101,8 @@ void sPlayer::calculate_next_step(float elapsed_time) {
     );
 
     position = position + disp;
+
+    if (disp.length() > 0) {
+        direction = disp.normalize();
+    }
 }

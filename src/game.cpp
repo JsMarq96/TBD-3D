@@ -53,6 +53,8 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	torpedo_model.setTranslation(0, -5, 0);
 	curr_scene = new sGameScene();
 
+	curr_scene->update_scene(0.0f, 0);
+
 	//hide the cursor
 	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
 }
