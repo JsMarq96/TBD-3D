@@ -38,6 +38,9 @@ void sPlayer::get_camera(Camera *cam) {
     Matrix44 cam_model = model;
 
     if (cam_mode == FIRST_PERSON) {
+        model.rotate(rotation.x, Vector3(1,0,0));
+        cam_model.rotate(rotation.x, Vector3(1,0,0));
+
         cam_model.translate(0,1.3,0);
         /*model.setTranslation(
             position.x,//- (-5. * sin(rotation.y)), 
@@ -48,6 +51,8 @@ void sPlayer::get_camera(Camera *cam) {
         center = cam_model * Vector3(0, 1.2, 0);
         up = cam_model.rotateVector(Vector3(0, 1, 0));
     } else if (cam_mode == THIRD_PERSON) {
+        cam_model.rotate(rotation.x * 0.25, Vector3(1,0,0));
+
         cam_model.translate(0,1.85,0.5);
         // Fill the player model
         //eye = model * Vector3(.0f, 2.7f, 1.80f);
