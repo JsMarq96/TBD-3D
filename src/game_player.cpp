@@ -102,7 +102,10 @@ void sPlayer::calculate_next_step(float elapsed_time) {
 
     position = position + disp;
 
-    if (disp.length() > 0) {
-        direction = disp.normalize();
-    }
+    // Get front player direction
+    direction = Vector3(
+        (0.f * cos(rotation.y)) - (-1 * sin(rotation.y)),
+        0.f,
+        (0.f * sin(rotation.y)) + (-1 * cos(rotation.y))
+    );
 }
