@@ -51,7 +51,7 @@ void sPlayer::get_camera(Camera *cam) {
         center = cam_model * Vector3(0, 1.2, 0);
         up = cam_model.rotateVector(Vector3(0, 1, 0));
     } else if (cam_mode == THIRD_PERSON) {
-        cam_model.rotate(rotation.x * 0.25, Vector3(1,0,0));
+        cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
 
         cam_model.translate(0,1.85,0.5);
         // Fill the player model
@@ -109,8 +109,14 @@ void sPlayer::calculate_next_step(float elapsed_time) {
 
     // Get front player direction
     direction = Vector3(
-        (0.f * cos(rotation.y)) - (-1 * sin(rotation.y)),
+        (1.0 * sin(rotation.y)),
         0.f,
-        (0.f * sin(rotation.y)) + (-1 * cos(rotation.y))
+        (-1.0 * cos(rotation.y))
+    );
+
+    direction = Vector3(
+        direction.x,
+        (direction.y * cos(rotation.x)) + (direction.z * sin(rotation.x)),
+        (-1. * direction.y * sin(rotation.x)) + (direction.z * cos(rotation.x))
     );
 }
