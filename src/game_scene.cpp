@@ -49,6 +49,12 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     // Get the direction and the rotation of the displacement
     player.rotation.y = player.rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
     player.rotation.x = player.rotation.x - (Input::mouse_delta.y * CHAR_ROT_SPEED);
+    
+    if (player.cam_mode == THIRD_PERSON) {
+        player.rotation.x = clamp(player.rotation.x, -0.99, 1.6);
+    } else {
+        player.rotation.x = clamp(player.rotation.x, -0.99, 0.95);
+    }
 
     player.speed = Vector3(0,0,0);
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {

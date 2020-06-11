@@ -20,6 +20,12 @@
 
         bullet_mesh.vertices.push_back(Vector3(0.2,0.1,0));
         bullet_mesh.uvs.push_back(Vector2(1,0));
+
+         bullet_mesh.vertices.push_back(Vector3(0.2,0.1,0.2));
+        bullet_mesh.uvs.push_back(Vector2(1,1));
+
+         bullet_mesh.vertices.push_back(Vector3(-0.2,0.1,0.2));
+        bullet_mesh.uvs.push_back(Vector2(1,1));
     }
 
     void sBulletEntity::update(float elapsed_time) {

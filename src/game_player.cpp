@@ -118,5 +118,9 @@ void sPlayer::calculate_next_step(float elapsed_time) {
         direction.x,
         (direction.y * cos(rotation.x)) + (direction.z * sin(rotation.x)),
         (-1. * direction.y * sin(rotation.x)) + (direction.z * cos(rotation.x))
-    );
+    ).normalize();
+
+    direction = model.frontVector() * -1.f;
+    //std::cout << rotation.x << std::endl;
+    //std::cout << direction.x << " " << direction.y << " " << direction.z << std::endl;
 }
