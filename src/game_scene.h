@@ -15,11 +15,6 @@
 #define PRESS_S 0b00100
 #define PRESS_D 0b01000
 
-#define CHAR_SPEED 60.f
-#define CHAR_POINTED_SPEED 0.2f
-#define CHAR_ROT_SPEED 0.0005f
-#define CHAR_ROT_POINT_SPEED 0.00005f
-
 struct sGameScene {
     std::vector<sStage*> scene_stages;
     int curr_area;

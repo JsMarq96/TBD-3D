@@ -40,22 +40,15 @@ void sPlayer::get_camera(Camera *cam) {
     if (cam_mode == FIRST_PERSON) {
         model.rotate(rotation.x, Vector3(1,0,0));
         cam_model.rotate(rotation.x, Vector3(1,0,0));
-
         cam_model.translate(0,1.3,0);
-        /*model.setTranslation(
-            position.x,//- (-5. * sin(rotation.y)), 
-            position.y, 
-            position.z);+ (-5. * cos(rotation.y)));*/
 
         eye = cam_model * Vector3(0, 1.2, 0.8);
         center = cam_model * Vector3(0, 1.2, 0);
         up = cam_model.rotateVector(Vector3(0, 1, 0));
     } else if (cam_mode == THIRD_PERSON) {
         cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
-
         cam_model.translate(0,1.85,0.5);
-        // Fill the player model
-        //eye = model * Vector3(.0f, 2.7f, 1.80f);
+
         eye = cam_model * Vector3(0, 1.2, 2);
         center = cam_model * Vector3(0, 1, 0);
         up = cam_model.rotateVector(Vector3(0, 1, 0));
@@ -95,7 +88,35 @@ void sPlayer::render_camera_fog(Camera *cam) {
     glDisable(GL_BLEND);
 }
 
-void sPlayer::calculate_next_step(float elapsed_time) {
+void sPlayer::update(float elapsed_time) {
+    // Get the direction and the rotation of the displacement
+    rotation.y = rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
+    rotation.x = rotation.x - (Input::mouse_delta.y * CHAR_ROT_SPEED);
+    
+    if (cam_mode == THIRD_PERSON) {
+        rotation.x = clamp(rotation.x, -0.99, 1.6);
+    } else {
+        rotation.x = clamp(rotation.x, -0.99, 0.95);
+    }
+
+    speed = Vector3(0,0,0);
+    
+    if (Input::isKeyPressed(SDL_SCANCODE_W)) {
+        speed = speed + Vector3(.0f, .0f, -.1f * charecter_speed[cam_mode]);
+    } else if (Input::isKeyPressed(SDL_SCANCODE_S)) {
+        speed =  speed + Vector3(.0f, .0f, .1f * charecter_speed[cam_mode]);
+    }
+
+    if (Input::isKeyPressed(SDL_SCANCODE_A)) {
+        speed = speed + Vector3(-.1f * charecter_speed[cam_mode], .0f, .0f);
+    } else if (Input::isKeyPressed(SDL_SCANCODE_D)) {
+        speed = speed + Vector3(.1f * charecter_speed[cam_mode], .0f, .0f);
+    }
+
+    // Manage camera switching
+    cam_mode = THIRD_PERSON;
+    if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
+        cam_mode = FIRST_PERSON;
     Vector3 can_displ = (speed * elapsed_time);
         
     // Rotare and add the displacement
@@ -108,19 +129,5 @@ void sPlayer::calculate_next_step(float elapsed_time) {
     position = position + disp;
 
     // Get front player direction
-    /*direction = Vector3(
-        (1.0 * sin(rotation.y)),
-        0.f,
-        (-1.0 * cos(rotation.y))
-    );
-
-    direction = Vector3(
-        direction.x,
-        (direction.y * cos(rotation.x)) + (direction.z * sin(rotation.x)),
-        (-1. * direction.y * sin(rotation.x)) + (direction.z * cos(rotation.x))
-    ).normalize();*/
-
     direction = model.frontVector() * -1.f;
-    //std::cout << rotation.x << std::endl;
-    //std::cout << direction.x << " " << direction.y << " " << direction.z << std::endl;
 }

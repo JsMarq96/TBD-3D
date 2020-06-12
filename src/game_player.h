@@ -6,11 +6,17 @@
 #include "texture.h"
 #include "shader.h"
 #include "mesh.h"
+#include "input.h"
+
+#define CHAR_SPEED 60.f
+#define CHAR_SLOW_SPEED 25.f
+#define CHAR_POINTED_SPEED 0.2f
+#define CHAR_ROT_SPEED 0.0005f
+#define CHAR_ROT_POINT_SPEED 0.00005f
 
 enum CamType : uint8 {
     THIRD_PERSON = 0,
-    FIRST_PERSON,
-    MENU // Todo: far future
+    FIRST_PERSON = 1,
 };
 
 struct sPlayer {
@@ -24,7 +30,9 @@ struct sPlayer {
 
     Texture *texture;
     Shader *shader;
-    Mesh *meshes[3];
+    Mesh *meshes[2];
+
+    float charecter_speed[2] = { CHAR_SPEED, CHAR_SLOW_SPEED };
 
     sPlayer(Vector3 start_pos);
     sPlayer();
@@ -32,7 +40,7 @@ struct sPlayer {
     void get_camera(Camera *cam);
     void render(Camera *cam);
     void render_camera_fog(Camera *cam);
-    void calculate_next_step(float elapsed_time);
+    void update(float elapsed_time);
 };
 
 
