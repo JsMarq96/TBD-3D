@@ -19,7 +19,10 @@ bool sEnviormentEntity::add_element(Matrix44 &new_model) {
     if (last_inserted_index+1 == ITEMS_PER_AREA)
         return false;
     last_inserted_index++;
-    
+    if (fl_instancing) {
+        float angle = rand() * 180;
+        new_model.rotate(angle, Vector3(0,1,0));
+    }
     models[last_inserted_index] = new_model;
     return true;
 }

@@ -101,6 +101,7 @@ void sPlayer::update(float elapsed_time) {
 
     speed = Vector3(0,0,0);
     
+    // WASD movements
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
         speed = speed + Vector3(.0f, .0f, -.1f * charecter_speed[cam_mode]);
     } else if (Input::isKeyPressed(SDL_SCANCODE_S)) {

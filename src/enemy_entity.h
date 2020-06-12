@@ -97,7 +97,6 @@ struct sEnemyEntity {
 
     // Todo: ray collisions
     void testBulletCollisions(sBulletEntity &bullet_controller);
-    bool testParticleCollisions(Vector3* positions, Vector3* directions, int particle_num, float part_len);
 
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 

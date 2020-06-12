@@ -38,8 +38,8 @@ void sGameMap::add_area(float x, float y, float radius) {
 
     x -= radius;
     y -= radius;
-    for (float dx = 0; dx < radius*2; dx++) {
-        for (float dy = 0; dy < radius*2; dy++) {
+    for (float dx = 0; dx <= radius*2; dx++) {
+        for (float dy = 0; dy <= radius*2; dy++) {
             //set(x + dx, y + dy, 0);
             //std::cout << std::to_string(x / 0.75) << " " << std::to_string(y) << " - " << std::to_string(int(((x + dx) * map_width) + y + dy)) << std::endl;
             map[int(((x + dx) * map_width) + y + dy)] = 0;

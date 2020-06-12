@@ -142,24 +142,7 @@ void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point) {
     if (coll_point.y > 1.9) { // Headshot!
         std::cout << "HEADSHOT";
     }
-    std::cout << "  SHOT" << coll_point.y << std::endl;
-}
-
-
-bool sEnemyEntity::testParticleCollisions(Vector3* positions, Vector3* directions, int particle_num, float part_len) {
-    Mesh *mesh = Mesh::Get(mesh_id.c_str());
-
-    for (int i = 0; i <= last_inserted_index; i++) {
-        Matrix44 *model;
-
-        kinetic_elems[i].get_model_matrix(model);
-
-        for (int j = 0; j < particle_num; j++) {
-            //mesh->testRayCollision(model, positions[i], directions[i], )
-        }
-    }
-
-    return false;
+    std::cout << "  SHOT y: " << coll_point.y << std::endl;
 }
 
 void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
