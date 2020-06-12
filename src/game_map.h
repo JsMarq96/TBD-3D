@@ -20,9 +20,9 @@ struct sGameMap {
 
     sGameMap() {};
 
-    uint8 get(int x, int y);
+    uint8 get(float x, float y);
 
-    void set(int x, int y, uint8 value);
+    void set(float x, float y, uint8 value);
 
     void add_area(float x, float y, float radius);
 
@@ -58,7 +58,7 @@ struct sGameMap {
         std::cout << "====== MAP ======" << std::endl;
         for (int i = 0; i < map_width; i++) {
             for (int j = 0; j < map_height; j++) {
-                std::cout << " " << std::to_string(map[(i * map_width/2) + j]) << " ";
+                std::cout << " " << std::to_string(map[(i * map_width) + j]) << " ";
             }
             std::cout << std::endl;
         }

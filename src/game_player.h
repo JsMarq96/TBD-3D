@@ -28,7 +28,7 @@ struct sPlayer {
 
     CamType cam_mode;
 
-    Texture *texture;
+    Texture *texture[2];
     Shader *shader;
     Mesh *meshes[2];
 

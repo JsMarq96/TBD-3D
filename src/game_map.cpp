@@ -14,35 +14,53 @@ sGameMap::sGameMap(int width, int height, float scale) {
     }
 };
 
-uint8 sGameMap::get(int x, int y) { 
+uint8 sGameMap::get(float x, float y) { 
     x *= 0.75;
     y *= 0.75;
     if (x >= map_width-1 || y >= map_height-1)
         return 1;
-    return map[(x * map_width) + y];
+    return map[int((x * map_width) + y)];
 };
 
-void sGameMap::set(int x, int y, uint8 value) {
+void sGameMap::set(float x, float y, uint8 value) {
     x *= 0.75;
     y *= 0.75;
 
     if (x >= map_width-1 || y >= map_height-1)
         return;
-    map[(x * map_width) + y] = value;
+    map[int((x * map_width) + y)] = value;
 };
 
 void sGameMap::add_area(float x, float y, float radius) {
-    x *= 0.75;
-    y *= 0.75;
-    radius *= 0.75;
+    /*float x = 0, y = radius, v = 1- radius;
 
-    x -= radius;
-    y -= radius;
-    for (float dx = 0; dx <= radius*2; dx++) {
-        for (float dy = 0; dy <= radius*2; dy++) {
+	set(x1, y1, 0);
+
+	for (; y > x; x++) {
+		if (v < 0) {
+			v += 2 * x + 3;
+		} else {
+			v += 2 * (x - y) + 5;
+			y--; 
+		}
+			
+		// Draw pixel with the reflections
+		for (int i = x * (-1); i < x; i++) {
+			set(i + x1, y + y1, 0);
+			set(i + x1, (-1 * y) + y1, 0);
+		}
+		for (int i = (-1 * y); i < y; i++) {
+			set(i + y1, x + x1, 0);
+			set(i + y1, (-1 * x) + x1, 0);
+		}
+	}*/
+    
+    for (float dx = -1 * radius; dx <= radius; dx ++) {
+        for (float dy = -1 * radius; dy <= radius; dy ++) {
             //set(x + dx, y + dy, 0);
             //std::cout << std::to_string(x / 0.75) << " " << std::to_string(y) << " - " << std::to_string(int(((x + dx) * map_width) + y + dy)) << std::endl;
-            map[int(((x + dx) * map_width) + y + dy)] = 0;
+            //map[int((x + dx) * map_width + (y + dy))] = 0;
+            set(dx + x, dy + y, 0);
         }
     }
 }

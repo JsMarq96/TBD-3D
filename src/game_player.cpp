@@ -11,10 +11,12 @@ sPlayer::sPlayer(Vector3 start_pos) {
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
 
-    texture = Texture::Get("data/textures/player_text.png");
+    texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
+    texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
+
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
     meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
-    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arm.obj"); 
+    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arms.obj"); 
 }
 
 sPlayer::sPlayer() {
@@ -23,10 +25,12 @@ sPlayer::sPlayer() {
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
 
-    texture = Texture::Get("data/textures/player_text.png");
+    texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
+    texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
+
     shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
     meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
-    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arm.obj"); 
+    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arms.obj");
 }
 
 void sPlayer::get_camera(Camera *cam) {
@@ -61,7 +65,7 @@ void sPlayer::render(Camera *cam) {
     shader->enable();
     shader->setUniform("u_color", Vector4(1,1,1,1));
     shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
-    shader->setUniform("u_texture", texture);
+    shader->setUniform("u_texture", texture[cam_mode]);
     shader->setUniform("u_model", model);
     meshes[cam_mode]->render(GL_TRIANGLES);
     shader->disable();
@@ -80,7 +84,7 @@ void sPlayer::render_camera_fog(Camera *cam) {
     shade->enable();
     shade->setUniform("u_color", Vector4(1,1,1,0.4));
     shade->setUniform("u_viewprojection", cam->viewprojection_matrix);
-    shade->setUniform("u_texture", texture);
+    //shade->setUniform("u_texture", texture);
     shade->setUniform("u_model", mod);
     mesh.render(GL_TRIANGLES);
     shade->disable();
