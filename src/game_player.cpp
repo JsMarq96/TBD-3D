@@ -108,7 +108,7 @@ void sPlayer::calculate_next_step(float elapsed_time) {
     position = position + disp;
 
     // Get front player direction
-    direction = Vector3(
+    /*direction = Vector3(
         (1.0 * sin(rotation.y)),
         0.f,
         (-1.0 * cos(rotation.y))
@@ -118,7 +118,7 @@ void sPlayer::calculate_next_step(float elapsed_time) {
         direction.x,
         (direction.y * cos(rotation.x)) + (direction.z * sin(rotation.x)),
         (-1. * direction.y * sin(rotation.x)) + (direction.z * cos(rotation.x))
-    ).normalize();
+    ).normalize();*/
 
     direction = model.frontVector() * -1.f;
     //std::cout << rotation.x << std::endl;

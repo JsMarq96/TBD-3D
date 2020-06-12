@@ -136,3 +136,57 @@ void sEnemyEntity::render(Camera *camara)  {
     mesh->disableBuffers(curr_shader);
     curr_shader->disable();
 }
+
+void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point) {
+
+    if (coll_point.y > 1.9) { // Headshot!
+        std::cout << "HEADSHOT";
+    }
+    std::cout << "  SHOT" << coll_point.y << std::endl;
+}
+
+
+bool sEnemyEntity::testParticleCollisions(Vector3* positions, Vector3* directions, int particle_num, float part_len) {
+    Mesh *mesh = Mesh::Get(mesh_id.c_str());
+
+    for (int i = 0; i <= last_inserted_index; i++) {
+        Matrix44 *model;
+
+        kinetic_elems[i].get_model_matrix(model);
+
+        for (int j = 0; j < particle_num; j++) {
+            //mesh->testRayCollision(model, positions[i], directions[i], )
+        }
+    }
+
+    return false;
+}
+
+void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
+    Mesh* mesh = Mesh::Get(mesh_id.c_str());
+
+    for (int i = 0; i <= last_inserted_index; i++) {
+        Matrix44 model;
+
+        kinetic_elems[i].get_model_matrix(&model);
+
+        Vector3 normal, coll_point;
+        for (int j = 0; j <= MAX_BULLET_SIZE; j++) {
+            if (!bullet_controller.is_active[j])
+                continue;
+            if (mesh->testRayCollision(model,
+                    bullet_controller.position[i], 
+                    bullet_controller.direction[i], 
+                    coll_point, 
+                    normal, 
+                    BULLET_LENGHT,
+                    true)) {
+
+                bullet_controller.remove_bullet(j);
+                enemy_is_shoot(j, coll_point);
+            }
+        }
+    }
+
+    //return false;
+}

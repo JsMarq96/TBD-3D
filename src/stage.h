@@ -8,6 +8,7 @@
 #include <string>
 #include <iterator>
 #include "extra/pathfinders.h"
+#include "particles/bullet_particle.h"
 #include "framework.h"
 #include "shader.h"
 #include "texture.h"
@@ -40,7 +41,7 @@ struct sStage {
 
     void render_stage(Camera *camera);
 
-    void update_stage(float elapsed_time, Vector3 player_position);
+    void update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position);
 
     void add_enviorment_instance(int type, Matrix44 model);
 
@@ -58,6 +59,8 @@ struct sStage {
     int add_element(std::string elem_name);
 
     bool testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
+
+    bool testStageParticleCollisions(Vector3* origins, Vector3* direction, int part_num, float lenght);
 };
 
 #endif

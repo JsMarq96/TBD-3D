@@ -80,7 +80,7 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     // Player Shoot
     bool is_pressed = Input::isMousePressed(SDL_BUTTON_LEFT);
     // Shoot bullet only when it is pressed
-    if (is_pressed && prev_mouse_press != is_pressed) {
+    if (is_pressed && prev_mouse_press != is_pressed && player.cam_mode == FIRST_PERSON) {
         std::cout << "BULLET: " <<  std::to_string(bullets.add_bullet(player.position + Vector3(0,2,0), player.direction)) << std::endl;
     }
     prev_mouse_press = is_pressed;
@@ -89,7 +89,7 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     bullets.update(elapsed_time);
 
     // Update the current stage (mostly for the enemys)
-    scene_stages[0]->update_stage(elapsed_time, player.position);
+    scene_stages[0]->update_stage(elapsed_time, bullets, player.position);
 
     // Test for player collisions
     Vector3 coll_pos, coll_normal;

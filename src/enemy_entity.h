@@ -13,6 +13,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "game.h"
+#include "particles/bullet_particle.h"
 
 #define ENEMY_SPEED 5
 #define ENEMY_ROT_SPEED 0.5
@@ -92,7 +93,12 @@ struct sEnemyEntity {
     };
     void render(Camera *camara);
 
+    void enemy_is_shoot(int index, Vector3 coll_point);
+
     // Todo: ray collisions
+    void testBulletCollisions(sBulletEntity &bullet_controller);
+    bool testParticleCollisions(Vector3* positions, Vector3* directions, int particle_num, float part_len);
+
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 
     void set_collider_cilinder(float c_radius) { radius = c_radius; };

@@ -11,6 +11,7 @@
 #define BULLET_SPEED 22.f
 #define BULLET_TIMER_RANGE 1.5f
 #define BULLET_COOLDOWN 0.5f
+#define BULLET_LENGHT 0.2
 
 struct sBulletEntity {
     Vector3 position[MAX_BULLET_SIZE];
@@ -45,6 +46,10 @@ struct sBulletEntity {
         }
 
         return false;
+    };
+
+    void remove_bullet(int index) {
+        is_active[index] = false;
     };
 };
 

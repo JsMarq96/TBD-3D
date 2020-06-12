@@ -27,8 +27,10 @@ void sStage::render_stage(Camera *camera) {
     enemys.render(camera);
 }
 
-void sStage::update_stage(float elapsed_time, Vector3 player_position) {
+void sStage::update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position) {
     // Update the kinectic objects
+    enemys.testBulletCollisions(bullet_controller);
+
     enemys.update(elapsed_time, map, player_position);
 }
 
@@ -87,6 +89,21 @@ bool sStage::testStageCollisionsWith(Vector3 position, float radius, Vector3 &co
         if (curr_item->testCollisionsWith(position, radius, coll_pos, normal)) {
             return true;
         }
+    }
+    return false;
+}
+
+// Todo: Accesory in order to add bullet holes... If i have the time
+bool sStage::testStageParticleCollisions(Vector3* origins, Vector3* direction, int part_num, float lenght) {
+    std::vector<sEnviormentEntity*>::iterator it;
+    // Render elements
+    for (it = render_elements.begin(); it < render_elements.end(); it++) {
+        sEnviormentEntity* curr_item = *it;
+        
+        //curr_item->
+        //if (curr_item->testCollisionsWith(position, radius, coll_pos, normal)) {
+        //    return true;
+        //}
     }
     return false;
 }
