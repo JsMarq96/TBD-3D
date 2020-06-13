@@ -63,11 +63,25 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
             int result = -1;
             // Save the enemy's path
-            map.get_path_to(pos_2d, point, enemy_steps[i], MAX_STEPS_NUM, result);
+            map.get_path_to(pos_2d * 0.5, point, enemy_steps[i], MAX_STEPS_NUM, result);
 
             if (result > 0) {
                 state[i] = ROAM;
                 action_index[i] = 0;
+
+                sGameMap map_i = map;
+
+                for (int j = 0; j < MAX_STEPS_NUM; j++){
+                    if (enemy_steps[i][j] < 0) {
+                        break;
+                    }
+                    Vector2 vec_pos = Vector2();
+                    map.parse_map_index_to_coordinates(j, vec_pos);
+                    map_i.set(vec_pos.x, vec_pos.y, j+1);
+                }
+                map_i.print_map();
+
+                std::cout << "---------" << std::endl;
             }
         } else if (state[i] == ROAM) {
             // Load Get next point
@@ -96,6 +110,9 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             }
 
         } else if (state[i] == RUN_AFTER) {
+
+            
+
             Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
             // Move towards the next point in the path
             new_pos = (player_2d_pos - pos_2d).normalize();
@@ -144,6 +161,7 @@ void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point) {
     }
     std::cout << "  SHOT y: " << coll_point.y << std::endl;
 }
+
 
 void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
     Mesh* mesh = Mesh::Get(mesh_id.c_str());

@@ -1,13 +1,11 @@
 #include "game_map.h"
 
-sGameMap::sGameMap(int width, int height, float scale) { 
+sGameMap::sGameMap(int width, int height) { 
     real_heigth = height;
     real_width = width;
-    map_height = height * (0.75);
-    map_width = width * (0.75);
+    map_height = height * (0.5);
+    map_width = width * (0.5);
     map = new uint8[map_width * map_height];
-
-    std::cout << map_width << std::endl;
 
     for (int i = 0; i <= (map_width * map_height); i++) {
         map[i] = 1;
@@ -15,17 +13,24 @@ sGameMap::sGameMap(int width, int height, float scale) {
 };
 
 uint8 sGameMap::get(float x, float y) { 
-    x *= 0.75;
-    y *= 0.75;
+    x *= 0.5;
+    y *= 0.5;
     if (x >= map_width-1 || y >= map_height-1)
         return 1;
     return map[int((x * map_width) + y)];
 };
 
 void sGameMap::set(float x, float y, uint8 value) {
-    x *= 0.75;
-    y *= 0.75;
+    x = (x * 0.5);
+    y = (y * 0.5);
 
+
+    if (x >= map_width-1 || y >= map_height-1)
+        return;
+    map[int((x * map_width) + y)] = value;
+};
+
+void sGameMap::set_global(float x, float y, uint8 value) {
     if (x >= map_width-1 || y >= map_height-1)
         return;
     map[int((x * map_width) + y)] = value;
@@ -55,10 +60,10 @@ void sGameMap::add_area(float x, float y, float radius) {
 		}
 	}*/
     
-    for (float dx = -1 * radius; dx <= radius; dx ++) {
-        for (float dy = -1 * radius; dy <= radius; dy ++) {
+    for (float dx = -1 * radius; dx <= radius * 0.5f; dx++) {
+        for (float dy = -1 * radius; dy <= radius * 0.5f; dy++) {
             //set(x + dx, y + dy, 0);
-            //std::cout << std::to_string(x / 0.75) << " " << std::to_string(y) << " - " << std::to_string(int(((x + dx) * map_width) + y + dy)) << std::endl;
+            std::cout << std::to_string(round((dx + x) * 0.5)) << " " << std::to_string(round((dy + y) * 0.5)) << " - " << std::to_string(radius * 0.5) << std::endl;
             //map[int((x + dx) * map_width + (y + dy))] = 0;
             set(dx + x, dy + y, 0);
         }
@@ -84,10 +89,10 @@ Vector2 sGameMap::get_empty_coordinate() {
 }
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
-    start = start * 0.75;
-    goal = goal * 0.75;
+    start = start * 0.5;
+    goal = goal * 0.5;
     //std::cout << goal.x << " - " << goal.y  << " : "  << start.x << " - " << start.y << std::endl;
-    result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
+    result = AStarFindPathNoTie(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
 
     /*std::cout << result << " <- " << map_width * map_height << std::endl;
     for (int i = 0; i < max_steps; i++) {
@@ -99,8 +104,8 @@ void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_step
 // Casts a Ray from one point in the map to other,
 // usign the DDA line algortihm
 float sGameMap::raycast_from_point_to_point(Vector2 p2, Vector2 p1, float max_size) {
-    p1 = p1 * 0.75;
-    p2 = p2 * 0.75;
+    p1 = p1 * 0.5;
+    p2 = p2 * 0.5;
 
     float dx = p2.x - p1.x, dy = p2.y - p1.y;
 	float len = max( abs(dx), abs(dy));

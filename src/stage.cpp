@@ -82,7 +82,7 @@ sStage::sStage(int n_x, int n_y, int n_width, int n_heigh) {
     // Set default light position
     light_pos = Vector3(250, 120, 250);
 
-    map = sGameMap(width, heigth, 0.5);
+    map = sGameMap(width, heigth);
 }
 
 bool sStage::testStageCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal) {
