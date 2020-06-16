@@ -74,22 +74,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 }
             }
         } else if (state[i] == RUN_AFTER) {
-            /*Vector2 next_pos;
-            int result;
-
-            map.get_path_to(enemy_pos_2d, player_2d_pos, enemy_steps[i], 20, result);
-
-            if (result > 0) {
-                action_index[i] = 0;
-                state[i] = ROAM;
-            }
-
-            map.parse_map_index_to_coordinates(enemy_steps[i][0], next_pos);
-
-            new_pos = (next_pos - enemy_pos_2d).normalize();
-            move_direction = Vector3(next_pos.x - enemy_pos_2d.x, 0.f, next_pos.y - enemy_pos_2d.y).normalize() * ENEMY_RUN_SPEED;*/
-            //std::cout << "RUNIIN" << std::endl;
-
             new_pos = to_player_dir;
             move_direction = Vector3(to_player_dir.x, 0.f, to_player_dir.y).normalize() * ENEMY_RUN_SPEED;
         } else if (state[i] == STOPPED) {

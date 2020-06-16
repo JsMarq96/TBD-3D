@@ -12,20 +12,17 @@
         bullet_mesh.vertices.push_back(Vector3(0,0,0));
         bullet_mesh.uvs.push_back(Vector2(0,0));
 
-        bullet_mesh.vertices.push_back(Vector3(0.2,0,0));
-        bullet_mesh.uvs.push_back(Vector2(1,0));
-
         bullet_mesh.vertices.push_back(Vector3(0.0,0.1,0));
         bullet_mesh.uvs.push_back(Vector2(0,0));
 
-        bullet_mesh.vertices.push_back(Vector3(0.2,0.1,0));
-        bullet_mesh.uvs.push_back(Vector2(1,0));
-
-         bullet_mesh.vertices.push_back(Vector3(0.2,0.1,0.2));
+        bullet_mesh.vertices.push_back(Vector3(0.1,0.0,0));
         bullet_mesh.uvs.push_back(Vector2(1,1));
 
-         bullet_mesh.vertices.push_back(Vector3(-0.2,0.1,0.2));
+         bullet_mesh.vertices.push_back(Vector3(0.1,0.1,0.1));
         bullet_mesh.uvs.push_back(Vector2(1,1));
+
+        //bullet_mesh.vertices.push_back(Vector3(-0.2,0.1,0.2));
+        //bullet_mesh.uvs.push_back(Vector2(1,1));
     }
 
     void sBulletEntity::update(float elapsed_time) {
@@ -48,6 +45,8 @@
     void sBulletEntity::render(Camera *cam) {
         Shader *curr_shader = Shader::Get("data/shaders/basic.vs", "data/shaders/bullet.ps");
         curr_shader->enable();
+
+        glDisable(GL_CULL_FACE);
             
         curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
         curr_shader->setUniform("u_texture", Texture::Get("data/textures/bullet_texture.png"));
@@ -68,5 +67,8 @@
         }
 
         bullet_mesh.disableBuffers(curr_shader);
+
+        glEnable(GL_CULL_FACE);
+
         curr_shader->disable();
     }

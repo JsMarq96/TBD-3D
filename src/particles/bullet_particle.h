@@ -8,7 +8,7 @@
 #include "../texture.h"
 
 #define MAX_BULLET_SIZE 100
-#define BULLET_SPEED 22.f
+#define BULLET_SPEED 35.f
 #define BULLET_TIMER_RANGE 1.5f
 #define BULLET_COOLDOWN 0.5f
 #define BULLET_LENGHT 0.2
@@ -18,6 +18,8 @@ struct sBulletEntity {
     Vector3 direction[MAX_BULLET_SIZE];
     float particle_timer[MAX_BULLET_SIZE];
     bool is_active[MAX_BULLET_SIZE];
+
+    int bullet_num;
 
     float can_shoot_timer;
 

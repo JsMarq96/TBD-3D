@@ -28,6 +28,8 @@ struct sPlayer {
 
     CamType cam_mode;
 
+    float shoot_anim;
+
     Texture *texture[2];
     Shader *shader;
     Mesh *meshes[2];
@@ -41,6 +43,7 @@ struct sPlayer {
     void render(Camera *cam);
     void render_camera_fog(Camera *cam);
     void update(float elapsed_time);
+    void shoot_animation();
 };
 
 

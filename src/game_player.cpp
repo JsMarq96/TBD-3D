@@ -37,12 +37,12 @@ void sPlayer::get_camera(Camera *cam) {
     Vector3 eye, up, center;
 
     model.setTranslation(position.x, position.y, position.z);
-    model.rotate(rotation.y, Vector3(0,1,0));
+    model.rotate(rotation.y, Vector3(0,1,0));    
 
     Matrix44 cam_model = model;
 
     if (cam_mode == FIRST_PERSON) {
-        model.rotate(rotation.x, Vector3(1,0,0));
+        model.rotate(lerp(rotation.x,  rotation.x + -0.1, shoot_anim), Vector3(1,0,0));
         cam_model.rotate(rotation.x, Vector3(1,0,0));
         cam_model.translate(0,1.3,0);
 
@@ -92,7 +92,17 @@ void sPlayer::render_camera_fog(Camera *cam) {
     glDisable(GL_BLEND);
 }
 
+void sPlayer::shoot_animation() {
+    shoot_anim = 0.6f;
+
+    rotation.x += -0.02;
+    rotation.y += 0.02;
+}
 void sPlayer::update(float elapsed_time) {
+    if (shoot_anim > 0) {
+        shoot_anim -= elapsed_time;
+    }
+
     // Get the direction and the rotation of the displacement
     rotation.y = rotation.y - (Input::mouse_delta.x * CHAR_ROT_SPEED);
     rotation.x = rotation.x - (Input::mouse_delta.y * CHAR_ROT_SPEED);
