@@ -31,7 +31,7 @@ void main()
 
 	vec3 result;
 	if (double_light) {
-		result = (diffuse  + (second_light_diffuse * 1.5) + ambient) * texture2D( u_texture, v_uv ).xyz;
+		result = ( (second_light_diffuse * 5.0) + ambient) * texture2D( u_texture, v_uv ).xyz;
 		cam_pix_dist = clamp(cam_pix_dist / 160.0, 0.0, 1.0);
 	} else {
 		result = (diffuse + ambient) * texture2D( u_texture, v_uv ).xyz;

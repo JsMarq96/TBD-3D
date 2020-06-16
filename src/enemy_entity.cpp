@@ -69,7 +69,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
                     state[i] = STOPPED;
                 } else {
-                    std:cout << "next step" << std::endl;
                     action_index[i]++;
                 }
             }
@@ -80,8 +79,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             if (random(1.0f) > 0.5f) {
                 int result;
                 Vector2 poi = map.get_near_empty_coordinate(enemy_pos_2d);
-
-                std::cout <<  "STOP " << poi.x << " " << poi.y  << " - " << enemy_pos_2d.x << " " << enemy_pos_2d.y << std::endl;
 
                 map.get_path_to(enemy_pos_2d, poi, enemy_steps[i], MAX_STEPS_NUM, result);
 
