@@ -20,9 +20,14 @@ sGameScene::sGameScene() {
 }
 
 void sGameScene::render_scene() {
+    Vector3 shoot_light_pos;
+    bool has_shot;
+
     Camera *curr_camera = Camera::current;
     // Render player
     player.get_camera(curr_camera);
+
+    has_shot = player.has_shoot(shoot_light_pos);
 
     glClearColor(0.07, 0.07, 0.07, 1.0);
 
@@ -35,7 +40,7 @@ void sGameScene::render_scene() {
 
     // TODO: set delimitation by fog?
     // Render area
-    scene_stages[0]->render_stage(curr_camera);
+    scene_stages[0]->render_stage(curr_camera, has_shot, shoot_light_pos);
 
     bullets.render(curr_camera);
 

@@ -1,7 +1,7 @@
 #include "stage.h"
 
 // Todo: frustum coling
-void sStage::render_stage(Camera *camera) {
+void sStage::render_stage(Camera *camera, bool double_light, Vector3 sec_light) {
     // First, we render the floor
     Mesh floor_mesh = Mesh();
     floor_mesh.createPlane(150);
@@ -13,6 +13,8 @@ void sStage::render_stage(Camera *camera) {
     shad->setUniform("u_model", Matrix44());
     shad->setUniform("light_pos", Vector3(250, 120, 250));
     shad->setUniform("camera_pos", camera->eye);
+    shad->setUniform("double_light", double_light);
+    shad->setUniform("second_light_pos", sec_light);
     floor_mesh.render(GL_TRIANGLES);
     shad->disable();
 
@@ -20,7 +22,7 @@ void sStage::render_stage(Camera *camera) {
     std::vector<sEnviormentEntity*>::iterator it;
     for (it = render_elements.begin(); it < render_elements.end(); it++) {
         sEnviormentEntity* curr_item = *it;
-        curr_item->render(camera);
+        curr_item->render(camera, double_light, sec_light);
     }
 
     // Render enemys

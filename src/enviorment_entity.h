@@ -47,7 +47,7 @@ struct sEnviormentEntity {
     }
 
     bool add_element(Matrix44 &model);
-    void render(Camera *camara);
+    void render(Camera *camara, bool double_light, Vector3 sec_light);
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 
     void set_collider_as_cilinder(float c_radius) { col_type = CILINDER; radius = c_radius; };

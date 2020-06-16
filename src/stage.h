@@ -39,7 +39,7 @@ struct sStage {
     
     sStage(int n_x, int n_y, int n_width, int n_heigh);
 
-    void render_stage(Camera *camera);
+    void render_stage(Camera *camara, bool double_light, Vector3 sec_light);
 
     void update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position);
 

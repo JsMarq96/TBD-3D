@@ -67,8 +67,12 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
     shader->setUniform("u_texture", texture[cam_mode]);
     shader->setUniform("u_model", model);
+    shader->setUniform("double_light", has_shot_on_frame);
+    shader->setUniform("second_light_pos", position);
     meshes[cam_mode]->render(GL_TRIANGLES);
     shader->disable();
+
+    has_shot_on_frame = false;
 }
 
 void sPlayer::render_camera_fog(Camera *cam) {
@@ -84,20 +88,20 @@ void sPlayer::render_camera_fog(Camera *cam) {
     shade->enable();
     shade->setUniform("u_color", Vector4(1,1,1,0.4));
     shade->setUniform("u_viewprojection", cam->viewprojection_matrix);
-    //shade->setUniform("u_texture", texture);
     shade->setUniform("u_model", mod);
     mesh.render(GL_TRIANGLES);
     shade->disable();
 
     glDisable(GL_BLEND);
+
 }
 
 void sPlayer::shoot_animation() {
     shoot_anim = 0.6f;
 
-    rotation.x += -0.02;
-    rotation.y += 0.02;
+    has_shot_on_frame = true;
 }
+
 void sPlayer::update(float elapsed_time) {
     if (shoot_anim > 0) {
         shoot_anim -= elapsed_time;

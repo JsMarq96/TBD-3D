@@ -27,7 +27,7 @@ bool sEnviormentEntity::add_element(Matrix44 &new_model) {
     return true;
 }
 
-void sEnviormentEntity::render(Camera *camera) {
+void sEnviormentEntity::render(Camera *camera, bool double_light, Vector3 sec_light) {
     Shader *curr_shader = Shader::Get(shader_vs_id.c_str(), shader_fs_id.c_str());
     Mesh *mesh = Mesh::Get(mesh_id.c_str());
     curr_shader->enable();
@@ -36,6 +36,8 @@ void sEnviormentEntity::render(Camera *camera) {
     curr_shader->setUniform("u_texture", Texture::Get(texture_id.c_str()));
     curr_shader->setUniform("light_pos", Vector3(250, 120, 250));
     curr_shader->setUniform("camera_pos", camera->eye);
+    curr_shader->setUniform("double_light", double_light);
+    curr_shader->setUniform("second_light_pos", sec_light);
     curr_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 
     // If the entity is rednered via instancing
