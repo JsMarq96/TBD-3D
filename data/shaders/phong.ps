@@ -18,8 +18,8 @@ void main()
 	vec3 reflect_dir = reflect(-light_pos, v_normal);
 	vec3 light_dir = normalize(light_pos - v_position);
 
-	vec3 second_light_reflect_dir = reflect(-second_light_pos, v_normal);
-	vec3 second_light_dir = normalize(second_light_pos - v_position);
+	vec3 second_light_reflect_dir = reflect(-camera_pos, v_normal);
+	vec3 second_light_dir = normalize(camera_pos - v_position);
 
 	// White light
 	vec3 diffuse = vec3(0.5,0.5,0.5) * max(dot(v_normal, light_dir), 0.0);
@@ -32,7 +32,7 @@ void main()
 	vec3 result;
 	if (double_light) {
 		result = ( (second_light_diffuse * 5.0) + ambient) * texture2D( u_texture, v_uv ).xyz;
-		cam_pix_dist = clamp(cam_pix_dist / 160.0, 0.0, 1.0);
+		cam_pix_dist = clamp(cam_pix_dist / 150.0, 0.0, 1.0);
 	} else {
 		result = (diffuse + ambient) * texture2D( u_texture, v_uv ).xyz;
 		cam_pix_dist = clamp(cam_pix_dist / 40.0, 0.0, 1.0);
