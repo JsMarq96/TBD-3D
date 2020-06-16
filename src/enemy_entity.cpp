@@ -22,29 +22,28 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
     for(int i = 0; i <= last_inserted_index; i++) {
         // Enemy 2d position
-        Vector2 pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
+        Vector2 enemy_pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
         // Calculate angle between the player position and the enemy's direction
         Vector2 enemy_facing = Vector2(cos(kinetic_elems[i].angle), sin(kinetic_elems[i].angle));
-        Vector2 to_player_vector = (pos_2d - player_2d_pos);
+        Vector2 to_player_vector = (enemy_pos_2d - player_2d_pos);
         Vector2 to_player_dir = to_player_vector.normalize();
 
         Vector3 to_player_3d = Vector3(to_player_dir.x, 0.f, to_player_dir.y).normalize();
         
-        float enemy_player_distance = (pos_2d - player_2d_pos).length();
+        float enemy_player_distance = (enemy_pos_2d - player_2d_pos).length();
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
 
         // State transitions
-        if (state[i] == RUN_AFTER && angle > 80 && enemy_player_distance <= 1.5) {
+        if (angle > 80 && enemy_player_distance <= 1.5) {
             // If it is facing to the player and its near, attack him
             state[i] = ATTACK;
             //std::cout << "atack" << std::endl;
         } else if (angle > 80 && enemy_player_distance <= 20) {
             // If it is in the eyesight of the player and it is
-            float dist = map.raycast_from_point_to_point(pos_2d, player_2d_pos, 20);
+            float dist = map.raycast_from_point_to_point(enemy_pos_2d, player_2d_pos, 20);
 
             if (dist >= 0) {
-                //std::cout << dist << " " << angle << std::endl;
                 state[i] = RUN_AFTER;
             } else {
                 state[i] = STOPPED;
@@ -56,74 +55,59 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
         //std::cout << (STOPPED == state[i]) << std::endl;
 
-        // Code for each state
-        if (state[i] == STOPPED) { 
-            // If its stopped, select a new point, and set mode to ROAM
-            Vector2 point = map.get_empty_coordinate();
+        if (state[i] == ROAM || state[i] == RUN_AFTER) {
+            Vector2 next_pos;
 
-            int result = -1;
-            // Save the enemy's path
-            map.get_path_to(pos_2d * 0.5, point, enemy_steps[i], MAX_STEPS_NUM, result);
+            if (state[i] == RUN_AFTER) {
+                int result;
+                Vector2 poi = map.get_near_empty_coordinate(enemy_pos_2d);
 
-            if (result > 0) {
-                state[i] = ROAM;
-                action_index[i] = 0;
-
-                sGameMap map_i = map;
-
-                for (int j = 0; j < MAX_STEPS_NUM; j++){
-                    if (enemy_steps[i][j] < 0) {
-                        break;
-                    }
-                    Vector2 vec_pos = Vector2();
-                    map.parse_map_index_to_coordinates(j, vec_pos);
-                    map_i.set(vec_pos.x, vec_pos.y, j+1);
+                // Cleanup
+                for (int j = 0; j < 21; j++) {
+                    enemy_steps[i][j] = -1;
                 }
-                map_i.print_map();
 
-                std::cout << "---------" << std::endl;
+                map.get_path_to(enemy_pos_2d, poi, enemy_steps[i], 20, result);
+
+                if (result > 0) {
+                    action_index[i] = 0;
+                }
             }
-        } else if (state[i] == ROAM) {
-            // Load Get next point
-            Vector2 next_point = Vector2(0,0);
-            map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_point);
-            //std::cout << next_point.x << " " << next_point.y << std::endl;
 
-            if (enemy_steps[i][action_index[i]] != -1 && (next_point - pos_2d).length() <= 1) {
-                // If it very near to the current destination point, go to the next
-                action_index[i]++;
+            map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_pos);
 
-                // The path has reched the end, s we aneter STOPPED mode
-                if (action_index[i] >= MAX_STEPS_NUM || enemy_steps[i][action_index[i]] == -1 ) {
+            new_pos = (player_2d_pos - enemy_pos_2d).normalize();
+            move_direction = Vector3(enemy_pos_2d.x - next_pos.x, 0.f, enemy_pos_2d.y - next_pos.y).normalize();
+
+            if ((enemy_pos_2d - next_pos).length() < 1) {
+                if (action_index[i] == ENEMYS_PER_AREA-1 || enemy_steps[i][action_index[i] + 1]  == -1 ) {
+                    action_index[i] = -1;
+
                     state[i] = STOPPED;
-                    // Cleanup fro the steps
-                    for (int j = 0; enemy_steps[i][j] != -1 || j < MAX_STEPS_NUM ; j++) {
-                        enemy_steps[i][j] = -1;
-                    }
+                } else {
+                    action_index[i]++;
+                }
+            }
+        } else if (state[i] == STOPPED) {
+            if (random(1.0f) > 0.5f) {
+                int result;
+                Vector2 poi = map.get_near_empty_coordinate(enemy_pos_2d);
+
+                map.get_path_to(enemy_pos_2d, poi, enemy_steps[i], MAX_STEPS_NUM, result);
+
+                if (result > 0) {
+                    action_index[i] = 0;
+                    state[i] = ROAM;
                 }
             } else {
-                Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
-                // Move towards the next point in the path
-                new_pos = (next_point - pos_2d).normalize();
-                move_direction = Vector3(next_point.x - pos_2d.x , 0., next_point.y - pos_2d.y).normalize();
-                //std::cout << kinetic_elems[i].position.x << " " << kinetic_elems[i].position.z << " - " << std::to_string(map.get(kinetic_elems[i].position.x, kinetic_elems[i].position.y)) << std::endl;
+                state[i] = STOPPED;
             }
-
-        } else if (state[i] == RUN_AFTER) {
-
-            
-
-            Vector3 enemy_facing_3d = Vector3(enemy_facing.x, 0., enemy_facing.y);
-            // Move towards the next point in the path
-            new_pos = (player_2d_pos - pos_2d).normalize();
-            move_direction = Vector3(player_2d_pos.x - pos_2d.x , 0., player_2d_pos.y - pos_2d.y).normalize();
-        } else if (state[i] == ATTACK) {
-            // TODO
         }
 
         // Apply directions
         float new_direction = atan2(new_pos.y, new_pos.x);
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * ENEMY_SPEED * elapsed_time);
+        
         float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
         kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
     }

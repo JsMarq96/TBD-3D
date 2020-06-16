@@ -10,13 +10,10 @@
 // Game Map for the AI to move in
 struct sGameMap {
     uint8 *map;
-    int real_width;
-    int real_heigth;
-    int map_width;
-    int map_height;
-    int map_scale;
+    int width;
+    int height;
 
-    sGameMap(int width, int height);
+    sGameMap(int m_width, int m_height);
 
     sGameMap() {};
 
@@ -28,31 +25,21 @@ struct sGameMap {
 
     void add_area(float x, float y, float radius);
 
-    // Todo
-    Vector2 translate_to_world_coord(Vector2 map_coord) {
-        Vector2 coord;
-        coord.x = map_coord.x / 0.5;
-        coord.y = map_coord.y / 0.5;
-
-        return coord;
-    }
-
     // Randomly selects a random empty coordinate of the map
     Vector2 get_empty_coordinate();
 
     Vector2 get_near_empty_coordinate(Vector2 pos) {
-        pos = pos * 0.5;
-        uint8 tmp = 0;
+        uint8 tmp = 1;
         Vector2 coords;
         while (tmp != 1) {
-            coords.x = pos.x + (random(1.0f) * 20.f) - 10.f;
-            coords.y = pos.y + (random(1.0f) * 20.f) - 10.f;
+            coords.x = pos.x + (random(1.0f) * 30.f) - 15.f;
+            coords.y = pos.y + (random(1.0f) * 30.f) - 15.f;
 
             coords.x = max(coords.x, 0.f);
             coords.y = max(coords.y, 0.f);
 
-            coords.x = min(coords.x, (float) map_width);
-            coords.y = min(coords.y, (float) map_height);            
+            coords.x = min(coords.x, (float) width);
+            coords.y = min(coords.y, (float) height);            
 
             tmp = get(coords.x, coords.y);
         }
@@ -67,20 +54,15 @@ struct sGameMap {
 
     // for parsing the indexes produce by the A* search algrotihm
     void parse_map_index_to_coordinates(int index, Vector2& result) {
-        result.x = (index % map_width) * 2;
-        result.y = (floor(index / map_width)) *2;
-        //std::cout << result.x << " " << result.y << std::endl;
-    }
-
-    void parse_coordinates_to_map(Vector2 &coords) {
-        coords = coords * 0.5;
+        result.x = (index % width);
+        result.y = (floor(index / width));
     }
 
     void print_map() {
         std::cout << "====== MAP ======" << std::endl;
-        for (int i = 0; i <= map_width; i++) {
-            for (int j = 0; j <= map_height; j++) {
-                std::cout << " " << std::to_string(map[(i * map_width) + j]) << " ";
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                std::cout << " " << std::to_string(map[(i * width) + j]) << " ";
             }
             std::cout << std::endl;
         }

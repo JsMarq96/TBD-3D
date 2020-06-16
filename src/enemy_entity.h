@@ -27,7 +27,6 @@
 struct sKinetics {
     Vector3 position;
     Vector3 speed;
-    Vector2 rotation;
     float angle= 0.0f;
 
     void get_model_matrix(Matrix44 *model) {
@@ -83,7 +82,6 @@ struct sEnemyEntity {
         state[last_inserted_index] = STOPPED;
         kinetic_elems[last_inserted_index].position = position;
         kinetic_elems[last_inserted_index].speed = Vector3(0,0,0);
-        kinetic_elems[last_inserted_index].rotation = Vector2(0,0);
 
         for (int i = 0; i < ENEMYS_PER_AREA; i++) {
             enemy_steps[last_inserted_index][i] = -1;

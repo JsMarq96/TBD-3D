@@ -1,74 +1,38 @@
 #include "game_map.h"
 
-sGameMap::sGameMap(int width, int height) { 
-    real_heigth = height;
-    real_width = width;
-    map_height = height * (0.5);
-    map_width = width * (0.5);
-    map = new uint8[map_width * map_height];
+sGameMap::sGameMap(int m_width, int m_height) { 
+    height = m_height;
+    width = m_width;
+    map = new uint8[width * height];
 
-    for (int i = 0; i <= (map_width * map_height); i++) {
+    for (int i = 0; i < (width * height); i++) {
         map[i] = 1;
     }
 };
 
 uint8 sGameMap::get(float x, float y) { 
-    x *= 0.5;
-    y *= 0.5;
-    if (x >= map_width-1 || y >= map_height-1)
+    if (x >= width || y >= height)
         return 1;
-    return map[int((x * map_width) + y)];
+    return map[int((x * width) + y)];
 };
 
 void sGameMap::set(float x, float y, uint8 value) {
-    x = (x * 0.5);
-    y = (y * 0.5);
-
-
-    if (x >= map_width-1 || y >= map_height-1)
+    if (x >= width || y >= height)
         return;
-    map[int((x * map_width) + y)] = value;
+    map[int((x * width) + y)] = value;
 };
 
-void sGameMap::set_global(float x, float y, uint8 value) {
-    if (x >= map_width-1 || y >= map_height-1)
-        return;
-    map[int((x * map_width) + y)] = value;
+void sGameMap::add_area(float x, float y, float size) {
+	int d_size = ceil((size) );
+	int c_x = ceil(x - ceil(d_size/2)), c_y = ceil(y - ceil(d_size/2));
+
+	for (int i = 0; i < d_size; i++) {
+		for (int j = 0; j < d_size; j++) {
+			set(c_x + i, c_y + j, 0);
+
+		}
+	}
 };
-
-void sGameMap::add_area(float x, float y, float radius) {
-    /*float x = 0, y = radius, v = 1- radius;
-
-	set(x1, y1, 0);
-
-	for (; y > x; x++) {
-		if (v < 0) {
-			v += 2 * x + 3;
-		} else {
-			v += 2 * (x - y) + 5;
-			y--; 
-		}
-			
-		// Draw pixel with the reflections
-		for (int i = x * (-1); i < x; i++) {
-			set(i + x1, y + y1, 0);
-			set(i + x1, (-1 * y) + y1, 0);
-		}
-		for (int i = (-1 * y); i < y; i++) {
-			set(i + y1, x + x1, 0);
-			set(i + y1, (-1 * x) + x1, 0);
-		}
-	}*/
-    
-    for (float dx = -1 * radius; dx <= radius * 0.5f; dx++) {
-        for (float dy = -1 * radius; dy <= radius * 0.5f; dy++) {
-            //set(x + dx, y + dy, 0);
-            std::cout << std::to_string(round((dx + x) * 0.5)) << " " << std::to_string(round((dy + y) * 0.5)) << " - " << std::to_string(radius * 0.5) << std::endl;
-            //map[int((x + dx) * map_width + (y + dy))] = 0;
-            set(dx + x, dy + y, 0);
-        }
-    }
-}
 
 // Randomly selects a random empty coordinate of the map
 Vector2 sGameMap::get_empty_coordinate() {
@@ -76,8 +40,8 @@ Vector2 sGameMap::get_empty_coordinate() {
     Vector2 coords;
     while (tmp != 1) {
         //coords.random(map_width);
-        coords.x = (random(map_width) );
-        coords.y = (random(map_height) );
+        coords.x = (random(width) );
+        coords.y = (random(height) );
 
         coords.x *= (coords.x < 0) ? -1 : 1;
         coords.y *= (coords.y < 0) ? -1 : 1;
@@ -89,10 +53,8 @@ Vector2 sGameMap::get_empty_coordinate() {
 }
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
-    start = start * 0.5;
-    goal = goal * 0.5;
     //std::cout << goal.x << " - " << goal.y  << " : "  << start.x << " - " << start.y << std::endl;
-    result = AStarFindPathNoTie(start.x, start.y, goal.x, goal.y, map, map_width, map_height, steps, max_steps);
+    result = AStarFindPathNoTie(start.x, start.y, goal.x, goal.y, map, width, height, steps, max_steps);
 
     /*std::cout << result << " <- " << map_width * map_height << std::endl;
     for (int i = 0; i < max_steps; i++) {
@@ -104,9 +66,6 @@ void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_step
 // Casts a Ray from one point in the map to other,
 // usign the DDA line algortihm
 float sGameMap::raycast_from_point_to_point(Vector2 p2, Vector2 p1, float max_size) {
-    p1 = p1 * 0.5;
-    p2 = p2 * 0.5;
-
     float dx = p2.x - p1.x, dy = p2.y - p1.y;
 	float len = max( abs(dx), abs(dy));
 	// Calculate slopes
@@ -119,7 +78,7 @@ float sGameMap::raycast_from_point_to_point(Vector2 p2, Vector2 p1, float max_si
 
 	for (float i = 0; len >= i; i++) {
         // Is occuded
-        if (map[int((xi * map_width) + yi)] != 1) {
+        if (map[int((xi * width) + yi)] != 1) {
             return -1;
         }
 
