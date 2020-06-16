@@ -29,9 +29,10 @@ struct sGameMap {
     Vector2 get_empty_coordinate();
 
     Vector2 get_near_empty_coordinate(Vector2 pos) {
-        uint8 tmp = 1;
+        uint8 tmp = 0;
         Vector2 coords;
         while (tmp != 1) {
+            tmp = 1;
             coords.x = pos.x + (random(1.0f) * 30.f) - 15.f;
             coords.y = pos.y + (random(1.0f) * 30.f) - 15.f;
 

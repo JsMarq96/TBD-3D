@@ -54,7 +54,7 @@ Vector2 sGameMap::get_empty_coordinate() {
 
 void sGameMap::get_path_to(Vector2 start, Vector2 goal, int* steps, int max_steps, int &result) {
     //std::cout << goal.x << " - " << goal.y  << " : "  << start.x << " - " << start.y << std::endl;
-    result = AStarFindPathNoTie(start.x, start.y, goal.x, goal.y, map, width, height, steps, max_steps);
+    result = AStarFindPathNoTieDiag(start.x, start.y, goal.x, goal.y, map, width, height, steps, max_steps);
 
     /*std::cout << result << " <- " << map_width * map_height << std::endl;
     for (int i = 0; i < max_steps; i++) {

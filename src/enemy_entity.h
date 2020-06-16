@@ -15,7 +15,8 @@
 #include "game.h"
 #include "particles/bullet_particle.h"
 
-#define ENEMY_SPEED 5
+#define ENEMY_ROAM_SPEED 2.5
+#define ENEMY_RUN_SPEED 4.5
 #define ENEMY_ROT_SPEED 0.5
 #define ENEMYS_PER_AREA 100
 #define MAX_STEPS_NUM 100
@@ -36,11 +37,11 @@ struct sKinetics {
 };
 
 enum eEnemyState: uint8 {
-    STOPPED = 0,
-    ROAM = 1,
-    ATTACK = 2,
-    RUN_AFTER = 3,
-    RECOVERING
+    ROAM = 0,
+    RUN_AFTER = 1,
+    STOPPED = 2,
+    ATTACK = 3,
+    RECOVERING = 4
 };
 
 // Generic Rendering type
