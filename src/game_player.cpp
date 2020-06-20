@@ -83,7 +83,6 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("second_light_pos", position);
     shader->setUniform("camera_pos", cam->eye);
 
-
     if (cam_mode == THIRD_PERSON) {
         meshes[cam_mode]->renderAnimated( GL_TRIANGLES, &animations[player_state]->skeleton );
     } else {
@@ -137,20 +136,23 @@ void sPlayer::update(float elapsed_time) {
         rotation.x = clamp(rotation.x, -0.99, 0.95);
     }
 
-    speed = Vector3(0,0,0);
+    Vector3 new_speed = Vector3(0,0,0);
     
     // WASD movements
     if (Input::isKeyPressed(SDL_SCANCODE_W)) {
-        speed = speed + Vector3(.0f, .0f, -.1f * charecter_speed[cam_mode]);
+        new_speed = new_speed + Vector3(.0f, .0f, -.1f * charecter_speed[cam_mode]);
     } else if (Input::isKeyPressed(SDL_SCANCODE_S)) {
-        speed =  speed + Vector3(.0f, .0f, .1f * charecter_speed[cam_mode]);
+        new_speed =  new_speed + Vector3(.0f, .0f, .1f * charecter_speed[cam_mode]);
     }
 
     if (Input::isKeyPressed(SDL_SCANCODE_A)) {
-        speed = speed + Vector3(-.1f * charecter_speed[cam_mode], .0f, .0f);
+        new_speed = new_speed + Vector3(-.1f * charecter_speed[cam_mode], .0f, .0f);
     } else if (Input::isKeyPressed(SDL_SCANCODE_D)) {
-        speed = speed + Vector3(.1f * charecter_speed[cam_mode], .0f, .0f);
+        new_speed = new_speed + Vector3(.1f * charecter_speed[cam_mode], .0f, .0f);
     }
+
+    speed = speed + (new_speed - speed) * elapsed_time * 3.;
+    std::cout << speed.x << " " << speed.z << std::endl;
 
     // Manage camera switching
     cam_mode = THIRD_PERSON;
@@ -168,7 +170,7 @@ void sPlayer::update(float elapsed_time) {
     position = position + disp;
 
     // Set movement states
-    if (disp.length() > 0) {
+    if (disp.length() > 0.01) {
        player_state = RUNNING;
     } else {
         player_state = STANDING;
