@@ -72,7 +72,6 @@ void sPlayer::get_camera(Camera *cam) {
 
 void sPlayer::render(Camera *cam) {
     Shader* shader = shaders[cam_mode];
-    animations[player_state]->assignTime(Game::instance->time);
 
     shader->enable();
     shader->setUniform("u_color", Vector4(1,1,1,1));
@@ -84,7 +83,15 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("camera_pos", cam->eye);
 
     if (cam_mode == THIRD_PERSON) {
-        meshes[cam_mode]->renderAnimated( GL_TRIANGLES, &animations[player_state]->skeleton );
+        animations[STANDING]->assignTime(Game::instance->time);
+        animations[RUNNING]->assignTime(Game::instance->time);
+
+        Skeleton blend_sk; 
+
+        // Blending using the normalized lenht of the speed vector
+        blendSkeleton(&animations[STANDING]->skeleton, &animations[RUNNING]->skeleton, speed.length() / 0.6f, &blend_sk);
+
+        meshes[cam_mode]->renderAnimated( GL_TRIANGLES, &blend_sk);
     } else {
         meshes[cam_mode]->render(GL_TRIANGLES);
     }
@@ -151,8 +158,8 @@ void sPlayer::update(float elapsed_time) {
         new_speed = new_speed + Vector3(.1f * charecter_speed[cam_mode], .0f, .0f);
     }
 
-    speed = speed + (new_speed - speed) * elapsed_time * 3.;
-    std::cout << speed.x << " " << speed.z << std::endl;
+    // Speed Acceleration / deacceleration
+    speed = speed + (new_speed - speed) * elapsed_time * 3.f;
 
     // Manage camera switching
     cam_mode = THIRD_PERSON;
@@ -170,7 +177,7 @@ void sPlayer::update(float elapsed_time) {
     position = position + disp;
 
     // Set movement states
-    if (disp.length() > 0.01) {
+    if (disp.length() > 0.01f) {
        player_state = RUNNING;
     } else {
         player_state = STANDING;
