@@ -63,7 +63,7 @@
 
             curr_shader->setUniform("u_model", model);
 
-            bullet_mesh.drawCall(GL_TRIANGLES, 1, 0);
+            bullet_mesh.render(GL_TRIANGLES);
         }
 
         bullet_mesh.disableBuffers(curr_shader);

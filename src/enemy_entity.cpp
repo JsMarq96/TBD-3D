@@ -118,7 +118,7 @@ void sEnemyEntity::render(Camera *camara)  {
         kinetic_elems[i].get_model_matrix(&model);
 
         curr_shader->setUniform("u_model", model);
-        mesh->drawCall(GL_TRIANGLES, 1, 0);
+        mesh->render(GL_TRIANGLES);
     }
 
     mesh->disableBuffers(curr_shader);

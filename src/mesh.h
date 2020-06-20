@@ -11,11 +11,20 @@ class Shader; //for binding
 class Image; //for displace
 class Skeleton; //for skinned meshes
 
-#define MESH_BIN_VERSION 8 //this is used to regenerate bins if the format changes
+//version from 11/5/2020
+#define MESH_BIN_VERSION 11 //this is used to regenerate bins if the format changes
 
 struct BoneInfo {
 	char name[32]; //max 32 chars per bone name
 	Matrix44 bind_pose;
+};
+
+struct sSubmeshInfo
+{
+	char name[64];
+	char material[64];
+	int start;//in primitive
+	int length;//in primitive
 };
 
 class Mesh
@@ -30,14 +39,14 @@ public:
 
 	std::string name;
 
-	std::vector<std::string> material_name; 
-	std::vector<unsigned int> material_range; 
+	std::vector<sSubmeshInfo> submeshes; //contains info about every submesh
 
 	std::vector< Vector3 > vertices; //here we store the vertices
 	std::vector< Vector3 > normals;	 //here we store the normals
 	std::vector< Vector2 > uvs;	 //here we store the texture coordinates
+	std::vector< Vector2 > uvs1; //secondary sets of uvs
 	std::vector< Vector4 > colors; //here we store the colors
-
+	
 	struct tInterleaved {
 		Vector3 vertex;
 		Vector3 normal;
@@ -69,14 +78,16 @@ public:
 	unsigned int interleaved_vbo_id;
 	unsigned int bones_vbo_id;
 	unsigned int weights_vbo_id;
+	unsigned int uvs1_vbo_id;
 
 	Mesh();
 	~Mesh();
 
 	void clear();
 
-	void render( unsigned int primitive, int submesh_id = 0, int num_instances = 0 );
+	void render( unsigned int primitive, int submesh_id = -1, int num_instances = 0 );
 	void renderInstanced(unsigned int primitive, const Matrix44* instanced_models, int number);
+	void renderInstanced(unsigned int primitive, const std::vector<Vector3> positions, const char* uniform_name );
 	void renderBounding( const Matrix44& model, bool world_bounding = true );
 	void renderFixedPipeline(int primitive); //sloooooooow
 	void renderAnimated(unsigned int primitive, Skeleton *sk);
@@ -88,8 +99,7 @@ public:
 	bool readBin(const char* filename);
 	bool writeBin(const char* filename);
 
-	unsigned int getNumSubmaterials() { return (unsigned int)material_name.size(); }
-	unsigned int getNumSubmeshes() { return (unsigned int)material_range.size(); }
+	unsigned int getNumSubmeshes() { return (unsigned int)submeshes.size(); }
 	unsigned int getNumVertices() { return (unsigned int)interleaved.size() ? (unsigned int)interleaved.size() : (unsigned int)vertices.size(); }
 
 	//collision testing
@@ -113,6 +123,7 @@ public:
 	void displace(Image* heightmap, float altitude);
 	static Mesh* getQuad(); //get global quad
 
+	void updateBoundingBox();
 
 	//optimize meshes
 	void uploadToVRAM();

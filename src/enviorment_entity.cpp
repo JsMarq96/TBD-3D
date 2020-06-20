@@ -51,7 +51,7 @@ void sEnviormentEntity::render(Camera *camera, bool double_light, Vector3 sec_li
 
     for (int i = 0; i <= last_inserted_index; i++) {
         curr_shader->setUniform("u_model", models[i]);
-        mesh->drawCall(GL_TRIANGLES, 1, 0);
+        mesh->render(GL_TRIANGLES);
     }
 
     mesh->disableBuffers(curr_shader);

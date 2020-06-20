@@ -7,6 +7,8 @@
 #include "shader.h"
 #include "mesh.h"
 #include "input.h"
+#include "animation.h"
+#include "game.h"
 
 #define CHAR_SPEED 60.f
 #define CHAR_SLOW_SPEED 25.f
@@ -19,6 +21,11 @@ enum CamType : uint8 {
     FIRST_PERSON = 1,
 };
 
+enum ePlayerStates : uint8 {
+    STANDING = 0,
+    RUNNING = 1
+};
+
 struct sPlayer {
     Vector3 direction;
     Vector3 position;
@@ -27,13 +34,15 @@ struct sPlayer {
     Matrix44 model;
 
     CamType cam_mode;
+    ePlayerStates player_state;
 
     float shoot_anim;
     bool has_shot_on_frame;
 
     Texture *texture[2];
-    Shader *shader;
+    Shader *shaders[2];
     Mesh *meshes[2];
+    Animation *animations[2];
 
     float charecter_speed[2] = { CHAR_SPEED, CHAR_SLOW_SPEED };
 

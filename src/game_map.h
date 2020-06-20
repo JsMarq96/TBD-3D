@@ -60,14 +60,14 @@ struct sGameMap {
     }
 
     void print_map() {
-        std::cout << "====== MAP ======" << std::endl;
+        /*std::cout << "====== MAP ======" << std::endl;
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 std::cout << " " << std::to_string(map[(i * width) + j]) << " ";
             }
             std::cout << std::endl;
         }
-        std::cout << "=================" << std::endl;
+        std::cout << "=================" << std::endl;*/
     }    
 };   
 #endif

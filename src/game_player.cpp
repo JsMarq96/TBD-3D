@@ -14,9 +14,14 @@ sPlayer::sPlayer(Vector3 start_pos) {
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
 
-    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
-    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
-    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arms.obj"); 
+    shaders[FIRST_PERSON] = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
+    shaders[THIRD_PERSON] = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.ps");
+
+    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player.mesh");
+    meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arms.obj");
+
+    animations[STANDING] = Animation::Get("data/animations/animations_idle.skanim");
+    animations[RUNNING] = Animation::Get("data/animations/animations_walking.skanim");    
 }
 
 sPlayer::sPlayer() {
@@ -28,9 +33,13 @@ sPlayer::sPlayer() {
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
 
-    shader = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
-    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player_stading.OBJ");
+    shaders[FIRST_PERSON] = Shader::Get("data/shaders/basic.vs", "data/shaders/phong.ps");
+    shaders[THIRD_PERSON] = Shader::Get("data/shaders/skinning.vs", "data/shaders/phong.ps");
+
+    meshes[THIRD_PERSON] = Mesh::Get("data/meshes/player.mesh");
     meshes[FIRST_PERSON] = Mesh::Get("data/meshes/player_arms.obj");
+
+    animations[THIRD_PERSON] = Animation::Get("data/animations/animations_idle.skanim");
 }
 
 void sPlayer::get_camera(Camera *cam) {
@@ -62,6 +71,9 @@ void sPlayer::get_camera(Camera *cam) {
 }
 
 void sPlayer::render(Camera *cam) {
+    Shader* shader = shaders[cam_mode];
+    animations[player_state]->assignTime(Game::instance->time);
+
     shader->enable();
     shader->setUniform("u_color", Vector4(1,1,1,1));
     shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
@@ -69,7 +81,15 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("u_model", model);
     shader->setUniform("double_light", has_shot_on_frame);
     shader->setUniform("second_light_pos", position);
-    meshes[cam_mode]->render(GL_TRIANGLES);
+    shader->setUniform("camera_pos", cam->eye);
+
+
+    if (cam_mode == THIRD_PERSON) {
+        meshes[cam_mode]->renderAnimated( GL_TRIANGLES, &animations[player_state]->skeleton );
+    } else {
+        meshes[cam_mode]->render(GL_TRIANGLES);
+    }
+
     shader->disable();
 
     has_shot_on_frame = false;
@@ -146,6 +166,13 @@ void sPlayer::update(float elapsed_time) {
     );
 
     position = position + disp;
+
+    // Set movement states
+    if (disp.length() > 0) {
+       player_state = RUNNING;
+    } else {
+        player_state = STANDING;
+    }
 
     // Get front player direction
     direction = model.frontVector() * -1.f;
