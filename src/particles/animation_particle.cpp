@@ -102,12 +102,15 @@
             plane_mesh.uvs.push_back(Vector2(frame_u, frame_v + uv_frag_size));// p3
 
             // Second triangle
-            plane_mesh.uvs.push_back(Vector2(frame_u + uv_frag_size, frame_v)); // p2
             plane_mesh.uvs.push_back(Vector2(frame_u, frame_v + uv_frag_size)); // p3
+            plane_mesh.uvs.push_back(Vector2(frame_u + uv_frag_size, frame_v)); // p2
             plane_mesh.uvs.push_back(Vector2(frame_u + uv_frag_size, frame_v + uv_frag_size)); // p4
 
             Matrix44 model;
             model.setTranslation(positions[i].x, positions[i].y, positions[i].z);
+
+            // Set rotation to facing to camera
+            model.rotate(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI, Vector3(0.0f, 1.0f, 0.0f));
 
             curr_shader->setUniform("u_model", model);
 
