@@ -1,5 +1,5 @@
-src/particles/*.o src/particles/*.d: src/particles/bullet_particle.cpp \
- /usr/include/stdc-predef.h src/particles/bullet_particle.h \
+src/particles/*.o src/particles/*.d: src/particles/animation_particle.cpp \
+ /usr/include/stdc-predef.h src/particles/animation_particle.h \
  src/particles/../framework.h /usr/include/c++/10.1.0/vector \
  /usr/include/c++/10.1.0/bits/stl_algobase.h \
  /usr/include/c++/10.1.0/x86_64-pc-linux-gnu/bits/c++config.h \
