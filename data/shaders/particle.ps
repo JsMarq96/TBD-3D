@@ -1,0 +1,28 @@
+varying vec3 v_position;
+varying vec3 v_world_position;
+varying vec3 v_normal;
+varying vec2 v_uv;
+
+uniform vec3 camera_pos;
+uniform sampler2D u_texture;
+
+
+void main()
+{
+	vec3 fog_color = vec3(0.07, 0.07, 0.07);
+
+	// Add fog
+	float cam_pix_dist = length(v_world_position - camera_pos);
+    cam_pix_dist = clamp(cam_pix_dist / 150.0, 0.0, 1.0);
+
+    vec4 text_color = texture2D( u_texture, v_uv );
+
+    // Not draw transparent pixels
+    if (text_color.a <= 0.0) {
+        discard;
+    }
+
+	vec3 result = mix(fog_color, text_color.xyz, 1.0 - cam_pix_dist);
+
+	gl_FragColor = vec4( result, 1.0 ) ;
+}

@@ -14,6 +14,7 @@
 #include "camera.h"
 #include "game.h"
 #include "particles/bullet_particle.h"
+#include "particles/animation_particle.h"
 
 #define ENEMY_ROAM_SPEED 2.5
 #define ENEMY_RUN_SPEED 4.5
@@ -64,6 +65,9 @@ struct sEnemyEntity {
 
     int last_inserted_index;
 
+    // Extras
+    sAnimationParticles blood;
+
     sEnemyEntity(std::string &shader_fs,
                  std::string &shader_vs,
                  std::string &mesh,
@@ -92,7 +96,7 @@ struct sEnemyEntity {
     };
     void render(Camera *camara);
 
-    void enemy_is_shoot(int index, Vector3 coll_point);
+    void enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_normal);
 
     // Todo: ray collisions
     void testBulletCollisions(sBulletEntity &bullet_controller);

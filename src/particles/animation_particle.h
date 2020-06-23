@@ -22,7 +22,7 @@ struct sAnimationParticles {
     bool is_kinetic;
     Vector3 direction;
 
-
+    sAnimationParticles() {};
     sAnimationParticles(Texture* text, int width, int height, int max_fram, float anim_duration);
 
     // Creates a Kinetic particle

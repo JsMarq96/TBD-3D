@@ -44,6 +44,10 @@
 
             elem_timer[i] += elaped_time;
 
+            if (elem_timer[i] >= animation_duration) {
+                is_active[i] = false;
+            }
+
             if (is_kinetic) {
                 positions[i] = positions[i] + direction;
             }
@@ -80,11 +84,14 @@
                 continue;
 
             // Get the texture fragment of the current animation
-            int index = floor(animation_duration / max_frames);
+            int index = floor(lerp(animation_duration, max_frames, elem_timer[i]));
             // Get the UV coordinates of the quad that we want to presenet
-            int frame_x = index % text_width, frame_y = floor(index/text_width);
-            float frame_u = lerp(1.0, text_width, frame_x), frame_v = lerp(1.0, text_height, frame_y);
-            float uv_frag_size = lerp(1.0, text_width, frame_x + 1);
+            int frame_x = index % text_width, frame_y = floor(index/text_height);
+
+            // Assuming that the tiles in the texture are squares
+            float uv_frag_size = 1.0f / text_width;
+            float frame_u = frame_x * uv_frag_size, frame_v = frame_y * uv_frag_size;
+            
             
             // Configure the UVs of the quad, to reflect the part of the image that is drawing
             plane_mesh.uvs.clear();

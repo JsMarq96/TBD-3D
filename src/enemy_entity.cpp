@@ -15,6 +15,8 @@ sEnemyEntity::sEnemyEntity() {
             enemy_steps[i][j] = -1;
         }
     }
+
+    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit_text.png"), 4, 4, 13, 0.15);
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
@@ -98,6 +100,8 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
         kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
     }
+
+    blood.update(elapsed_time);
 }
 
 void sEnemyEntity::render(Camera *camara)  {
@@ -123,14 +127,19 @@ void sEnemyEntity::render(Camera *camara)  {
 
     mesh->disableBuffers(curr_shader);
     curr_shader->disable();
+
+    blood.render(camara);
 }
 
-void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point) {
+void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_normal) {
 
     if (coll_point.y > 1.9) { // Headshot!
         std::cout << "HEADSHOT";
     }
     std::cout << "  SHOT y: " << coll_point.y << std::endl;
+
+    // Added blood splatter
+    blood.add_instance(kinetic_elems[index].position + coll_point + (coll_normal * 0.5));
 }
 
 
@@ -155,7 +164,7 @@ void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
                     true)) {
 
                 bullet_controller.remove_bullet(j);
-                enemy_is_shoot(j, coll_point);
+                enemy_is_shoot(j, coll_point, normal);
             }
         }
     }
