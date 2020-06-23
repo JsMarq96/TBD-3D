@@ -9,12 +9,14 @@
 #include "input.h"
 #include "animation.h"
 #include "game.h"
+#include "particles/animation_particle.h"
 
 #define CHAR_SPEED 60.f
 #define CHAR_SLOW_SPEED 25.f
 #define CHAR_POINTED_SPEED 0.2f
 #define CHAR_ROT_SPEED 0.0005f
 #define CHAR_ROT_POINT_SPEED 0.00005f
+#define MUZZLE_FLASH_DURATION 0.02f
 
 enum CamType : uint8 {
     THIRD_PERSON = 0,
@@ -43,6 +45,8 @@ struct sPlayer {
     Shader *shaders[2];
     Mesh *meshes[2];
     Animation *animations[2];
+
+    sAnimationParticles muzzle_flash;
 
     float charecter_speed[2] = { CHAR_SPEED, CHAR_SLOW_SPEED };
 

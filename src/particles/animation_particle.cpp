@@ -110,7 +110,8 @@
             model.setTranslation(positions[i].x, positions[i].y, positions[i].z);
 
             // Set rotation to facing to camera
-            model.rotate(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI, Vector3(0.0f, 1.0f, 0.0f));
+            //std::cout << abs(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI) << std::endl;
+            model.rotate(abs(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI), Vector3(0.0f, 1.0f, 0.0f));
 
             curr_shader->setUniform("u_model", model);
 
