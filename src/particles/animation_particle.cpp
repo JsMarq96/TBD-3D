@@ -73,6 +73,8 @@
         plane_mesh.vertices.push_back(Vector3(0.25f, -0.25f, 0.0f)); // p4
 
         glDisable(GL_CULL_FACE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             
         curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
         curr_shader->setUniform("u_texture", texture_sheet);
@@ -119,6 +121,7 @@
         }
 
         glEnable(GL_CULL_FACE);
+        glDisable(GL_BLEND);
 
         curr_shader->disable();
     }

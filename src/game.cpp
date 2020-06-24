@@ -56,7 +56,7 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	curr_scene->update_scene(0.0f, 0);
 
 	//hide the cursor
-	SDL_ShowCursor(!mouse_locked); //hide or show the mouse
+	SDL_ShowCursor(SDL_DISABLE); //hide or show the mouse
 }
 
 

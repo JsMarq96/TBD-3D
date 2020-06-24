@@ -16,7 +16,7 @@ sEnemyEntity::sEnemyEntity() {
         }
     }
 
-    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit_text.png"), 4, 4, 13, 0.15);
+    blood = sAnimationParticles(Texture::Get("data/particles/blood_particle.png"), 5, 6, 13, 0.25);
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
