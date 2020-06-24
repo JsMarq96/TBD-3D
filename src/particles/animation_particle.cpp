@@ -1,6 +1,6 @@
 #include "animation_particle.h"
 
-    sAnimationParticles::sAnimationParticles(Texture* text, int width, int height, int max_fram, float anim_duration) {
+    sAnimationParticles::sAnimationParticles(Texture* text, int width, int height, float n_size, int max_fram, float anim_duration) {
         texture_sheet = text;
         text_width = width, text_height = height;
         max_frames = max_fram;
@@ -11,7 +11,7 @@
             is_active[i] = false;
         }
 
-
+        size = n_size;
     }
 
     // Creates a Kinetic particle
@@ -63,14 +63,14 @@
         Mesh plane_mesh;
 
         // First triangle
-        plane_mesh.vertices.push_back(Vector3(-0.25f, 0.25f, 0.0f)); // p1
-        plane_mesh.vertices.push_back(Vector3(0.25f, 0.25f, 0.0f)); // p2
-        plane_mesh.vertices.push_back(Vector3(-0.25f, -0.25f, 0.0f)); // p3
+        plane_mesh.vertices.push_back(Vector3(-1 * size/2, size/2, 0.0f)); // p1
+        plane_mesh.vertices.push_back(Vector3(size/2, size/2, 0.0f)); // p2
+        plane_mesh.vertices.push_back(Vector3(-1 * size/2, -1 * size/2, 0.0f)); // p3
 
         // Second triangle
-        plane_mesh.vertices.push_back(Vector3(0.25f, 0.25f, 0.0f)); // p2
-        plane_mesh.vertices.push_back(Vector3(-0.25f, -0.25f, 0.0f)); // p3
-        plane_mesh.vertices.push_back(Vector3(0.25f, -0.25f, 0.0f)); // p4
+        plane_mesh.vertices.push_back(Vector3(size/2, size/2, 0.0f)); // p2
+        plane_mesh.vertices.push_back(Vector3(-1 * size/2, -1 * size/2, 0.0f)); // p3
+        plane_mesh.vertices.push_back(Vector3(size/2, -1 * size/2, 0.0f)); // p4
 
         glDisable(GL_CULL_FACE);
         glEnable(GL_BLEND);
@@ -94,7 +94,8 @@
             float uv_frag_size = 1.0f / text_width;
             float frame_u = frame_x * uv_frag_size, frame_v = frame_y * uv_frag_size;
             
-            
+            std::cout << frame_x << " " << frame_y << std::endl;
+
             // Configure the UVs of the quad, to reflect the part of the image that is drawing
             plane_mesh.uvs.clear();
 
@@ -114,9 +115,11 @@
             // Set rotation to facing to camera
             //std::cout << abs(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI) << std::endl;
             model.rotate(abs(atan2(cam->eye.y - positions[i].y, cam->eye.x - positions[i].x) * 180.f / PI), Vector3(0.0f, 1.0f, 0.0f));
-
             curr_shader->setUniform("u_model", model);
+            plane_mesh.render(GL_TRIANGLES);
 
+            model.rotate(90.0f, Vector3(0.0f, 1.0f, 0.0f));
+            curr_shader->setUniform("u_model", model);
             plane_mesh.render(GL_TRIANGLES);
         }
 

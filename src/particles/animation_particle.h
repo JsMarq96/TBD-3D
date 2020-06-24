@@ -16,6 +16,8 @@ struct sAnimationParticles {
 
     Texture* texture_sheet;
 
+    float size;
+
     int text_width, text_height;
     int max_frames;
     float animation_duration;
@@ -23,7 +25,7 @@ struct sAnimationParticles {
     Vector3 direction;
 
     sAnimationParticles() {};
-    sAnimationParticles(Texture* text, int width, int height, int max_fram, float anim_duration);
+    sAnimationParticles(Texture* text, int width, int height, float size, int max_fram, float anim_duration);
 
     // Creates a Kinetic particle
     void set_kinetic(Vector3 dir);

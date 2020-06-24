@@ -16,7 +16,7 @@ sEnemyEntity::sEnemyEntity() {
         }
     }
 
-    blood = sAnimationParticles(Texture::Get("data/particles/blood_particle.png"), 5, 6, 13, 0.25);
+    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.7f, 13, 0.25);
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
@@ -139,7 +139,7 @@ void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_no
     std::cout << "  SHOT y: " << coll_point.y << std::endl;
 
     // Added blood splatter
-    blood.add_instance(kinetic_elems[index].position + coll_point + (coll_normal * 0.5));
+    blood.add_instance(kinetic_elems[index].position + coll_point);
 }
 
 
