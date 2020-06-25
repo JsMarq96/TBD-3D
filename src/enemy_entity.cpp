@@ -98,8 +98,9 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         }
 
         // Apply kinetic changes
-        kinetic_elems[i].speed = kinetic_elems[i].position  - (move_direction * elapsed_time);
+        kinetic_elems[i].speed = kinetic_elems[i].speed + (move_direction - kinetic_elems[i].speed) * elapsed_time;
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
+        std::cout << kinetic_elems[i].speed.length()  / ENEMY_RUN_SPEED << " " << kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED<< std::endl;
         
         float tmp_angle = acos( clamp(enemy_facing.dot(new_pos), -1.0f, 1.0f) );
         kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time;
@@ -122,12 +123,14 @@ void sEnemyEntity::render(Camera *camara)  {
     mesh->enableBuffers(curr_shader);
 
     for (int i = 0; i <= last_inserted_index; i++) {
+        animations[STOPPED]->assignTime(Game::instance->time + i);
         animations[ROAM]->assignTime(Game::instance->time + i);
         animations[RUN_AFTER]->assignTime(Game::instance->time + i);
 
         Skeleton blend_sk;
 
-        blendSkeleton(&animations[ROAM]->skeleton, &animations[RUN_AFTER]->skeleton, kinetic_elems[i].speed.length() / ENEMY_RUN_SPEED, &blend_sk);
+        blendSkeleton(&animations[STOPPED]->skeleton, &animations[ROAM]->skeleton, kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED, &blend_sk);
+        blendSkeleton(&blend_sk, &animations[RUN_AFTER]->skeleton, kinetic_elems[i].speed.length() / ENEMY_RUN_SPEED, &blend_sk);
 
         Matrix44 model;
         kinetic_elems[i].get_model_matrix(&model);
