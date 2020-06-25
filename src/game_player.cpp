@@ -23,7 +23,7 @@ sPlayer::sPlayer(Vector3 start_pos) {
     animations[STANDING] = Animation::Get("data/animations/animations_idle.skanim");
     animations[RUNNING] = Animation::Get("data/animations/animations_walking.skanim"); 
 
-    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 1.0f, 60, MUZZLE_FLASH_DURATION);  
+    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION);  
 }
 
 sPlayer::sPlayer() {
@@ -43,7 +43,7 @@ sPlayer::sPlayer() {
 
     animations[THIRD_PERSON] = Animation::Get("data/animations/animations_idle.skanim");
 
-    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 1.0f, 60, MUZZLE_FLASH_DURATION);  
+    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION);  
 }
 
 void sPlayer::get_camera(Camera *cam) {
@@ -133,7 +133,7 @@ void sPlayer::shoot_animation() {
 
     has_shot_on_frame = true;
 
-    muzzle_flash.add_instance(position + (direction * 1.5f) + Vector3(0.0f, 2.f, 0.0f));
+    muzzle_flash.add_instance(position + (direction * 2.0f) + Vector3(0.0f, 2.2f, 0.0f));
 }
 
 void sPlayer::update(float elapsed_time) {

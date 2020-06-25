@@ -16,7 +16,7 @@ sEnemyEntity::sEnemyEntity() {
         }
     }
 
-    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.7f, 13, 0.25);
+    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.0f, 13, 0.25);
 
     animations[STOPPED] = Animation::Get("data/animations/animations_zombie_idle.skanim");
     animations[ROAM] = Animation::Get("data/animations/animations_walking_zombie.skanim"); 
@@ -44,7 +44,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         if (angle < 60.f && enemy_player_distance <= 0.7f) {
             // If it is facing to the player and its near, attack him
             state[i] = ATTACK;
-            //std::cout << "atack" << std::endl;
         } else if (angle < 60.f && enemy_player_distance <= 20.0f) {
             // If it is in the eyesight of the player and it is
             float dist = map.raycast_from_point_to_point(enemy_pos_2d, player_2d_pos, 20.f);
@@ -58,8 +57,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
         Vector3 move_direction = Vector3(0.f, 0.f, 0.f);
         Vector2 new_pos = Vector2(0.f, 0.f);
-
-        //std::cout << (STOPPED == state[i]) << std::endl;
 
         if (state[i] == ROAM) {
             Vector2 next_pos;
@@ -100,7 +97,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         // Apply kinetic changes
         kinetic_elems[i].speed = kinetic_elems[i].speed + (move_direction - kinetic_elems[i].speed) * elapsed_time;
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
-        std::cout << kinetic_elems[i].speed.length()  / ENEMY_RUN_SPEED << " " << kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED<< std::endl;
+        //std::cout << kinetic_elems[i].speed.length()  / ENEMY_RUN_SPEED << " " << kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED<< std::endl;
         
         float tmp_angle = acos( clamp(enemy_facing.dot(new_pos), -1.0f, 1.0f) );
         kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time;
@@ -182,6 +179,4 @@ void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
             }
         }
     }
-
-    //return false;
 }
