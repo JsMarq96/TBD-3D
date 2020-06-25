@@ -33,7 +33,6 @@ HCHANNEL sAudioController::play_3D(std::string name, Vector3 position) {
     BASS_Apply3D();
 
     channel_audio = BASS_ChannelPlay(audio_contr->audio, FALSE);
-    std::cout << "epic" << std::endl;
 
     return channel_audio;
 }

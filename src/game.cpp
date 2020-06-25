@@ -7,23 +7,26 @@
 #include "input.h"
 #include "animation.h"
 #include "game_scene.h"
+#include "menu_scene.h"
+
 #include <bass.h>
 
 #include <cmath>
 #include <cassert>
 
 //some globals
-Shader* shader = NULL;
-Animation* anim = NULL;
-float angle = 0;
-Matrix44 plane_model;
-Matrix44 torpedo_model;
-bool attached_torpedo = true;
-
-bool free_cam = false;
 Game* Game::instance = NULL;
 
 sGameScene *curr_scene = NULL;
+sMenuScene *menu_scene = NULL;
+
+enum eGameState {
+	MENU = 0,
+	GAME = 1,
+	ENDGAME = 2
+};
+
+eGameState current_game_state;
 
 Game::Game(int window_width, int window_height, SDL_Window* window)
 {
@@ -54,16 +57,18 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	}
 
 
-	torpedo_model.setTranslation(0, -5, 0);
 	curr_scene = new sGameScene();
-
 	curr_scene->update_scene(0.0f, 0);
 
+	menu_scene = new sMenuScene();
+	menu_scene->update_scene(0.0f, 0);
+
+	current_game_state = MENU;
 	//hide the cursor
 	SDL_ShowCursor(SDL_DISABLE); //hide or show the mouse
 }
 
-
+/*
 void renderMesh(Matrix44 m, Mesh* mesh, Texture* texture, int submesh = 0)
 {
 	if (!shader)
@@ -84,12 +89,23 @@ void renderMesh(Matrix44 m, Mesh* mesh, Texture* texture, int submesh = 0)
 
 	//disable shader
 	shader->disable();
-}
+}*/
 
 //what to do when the image has to be draw
 void Game::render(void)
 {
-	curr_scene->render_scene();
+	switch (current_game_state) {
+	case MENU:
+		menu_scene->render_scene();
+		break;
+	case GAME:
+		curr_scene->render_scene();
+		break;
+	
+	default:
+		break;
+	}
+	
 	/*Vector3 eye = plane_model * Vector3(0,10,30);
 	Vector3 center = plane_model * Vector3();
 	Vector3 up = plane_model.rotateVector(Vector3(0, 1, 0));
@@ -143,18 +159,29 @@ void Game::render(void)
 void Game::update(double seconds_elapsed)
 {
 	Input::centerMouse();
-	float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
+	//float speed = seconds_elapsed * 100; //the speed is defined by the seconds_elapsed so it goes constant
 
 	//example
-	angle += (float)seconds_elapsed * 10.0f;
+	//angle += (float)seconds_elapsed * 10.0f;
 
 	uint8 key_presses = 0;
-	curr_scene->update_scene(elapsed_time, key_presses);
+	
+	switch (current_game_state) {
+	case MENU:
+		menu_scene->update_scene(elapsed_time, key_presses);
+		break;
+	case GAME:
+		curr_scene->update_scene(elapsed_time, key_presses);
+		break;
+	
+	default:
+		break;
+	}
 
 	
 
 	//mouse input to rotate the cam
-	if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
+	/*if ((Input::mouse_state & SDL_BUTTON_LEFT) || mouse_locked ) //is left button pressed?
 	{
 		camera->rotate(Input::mouse_delta.x * 0.005f, Vector3(0.0f,-1.0f,0.0f));
 		camera->rotate(Input::mouse_delta.y * 0.005f, camera->getLocalVector( Vector3(-1.0f,0.0f,0.0f)));
@@ -182,7 +209,7 @@ void Game::update(double seconds_elapsed)
 	if (!free_cam)
 	{
 		plane_model.translate(0, 0, seconds_elapsed * -10);
-	}
+	}*/
 }
 
 //Keyboard event handler (sync input)
@@ -191,7 +218,7 @@ void Game::onKeyDown( SDL_KeyboardEvent event )
 	switch(event.keysym.sym)
 	{
 		case SDLK_ESCAPE: must_exit = true; break; //ESC key, kill the app
-		case SDLK_TAB: free_cam = !free_cam; break;
+		//case SDLK_TAB: free_cam = !free_cam; break;
 		case SDLK_F1: Shader::ReloadAll(); break; 
 	}
 }

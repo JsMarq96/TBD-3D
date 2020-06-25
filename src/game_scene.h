@@ -10,11 +10,6 @@
 #include "input.h"
 #include "particles/bullet_particle.h"
 
-#define PRESS_W 0b00001
-#define PRESS_A 0b00010
-#define PRESS_S 0b00100
-#define PRESS_D 0b01000
-
 struct sGameScene {
     std::vector<sStage*> scene_stages;
     int curr_area;

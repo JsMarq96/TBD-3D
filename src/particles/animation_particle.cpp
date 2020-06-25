@@ -94,8 +94,6 @@
             float uv_frag_size = 1.0f / text_width;
             float frame_u = frame_x * uv_frag_size, frame_v = frame_y * uv_frag_size;
             
-            std::cout << frame_x << " " << frame_y << std::endl;
-
             // Configure the UVs of the quad, to reflect the part of the image that is drawing
             plane_mesh.uvs.clear();
 
