@@ -97,13 +97,12 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             }
         }
 
-        // Apply directions
-        float new_direction = atan2(new_pos.y, new_pos.x);
+        // Apply kinetic changes
+        kinetic_elems[i].speed = kinetic_elems[i].position  - (move_direction * elapsed_time);
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
-        kinetic_elems[i].speed = move_direction;
         
-        float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.2);
-        kinetic_elems[i].angle += (new_direction - kinetic_elems[i].angle) * elapsed_time;
+        float tmp_angle = acos( clamp(enemy_facing.dot(new_pos), -1.0f, 1.0f) );
+        kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time;
     }
 
     blood.update(elapsed_time);
