@@ -13,6 +13,7 @@
 #include "texture.h"
 #include "camera.h"
 #include "game.h"
+#include "animation.h"
 #include "particles/bullet_particle.h"
 #include "particles/animation_particle.h"
 
@@ -38,9 +39,9 @@ struct sKinetics {
 };
 
 enum eEnemyState: uint8 {
-    ROAM = 0,
+    STOPPED = 0,
     RUN_AFTER = 1,
-    STOPPED = 2,
+    ROAM = 2,
     ATTACK = 3,
     RECOVERING = 4
 };
@@ -67,6 +68,8 @@ struct sEnemyEntity {
 
     // Extras
     sAnimationParticles blood;
+
+    Animation *animations[3];
 
     sEnemyEntity(std::string &shader_fs,
                  std::string &shader_vs,

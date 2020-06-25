@@ -23,7 +23,7 @@ sPlayer::sPlayer(Vector3 start_pos) {
     animations[STANDING] = Animation::Get("data/animations/animations_idle.skanim");
     animations[RUNNING] = Animation::Get("data/animations/animations_walking.skanim"); 
 
-    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.50f, 60, MUZZLE_FLASH_DURATION);  
+    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 1.0f, 60, MUZZLE_FLASH_DURATION);  
 }
 
 sPlayer::sPlayer() {
@@ -43,7 +43,7 @@ sPlayer::sPlayer() {
 
     animations[THIRD_PERSON] = Animation::Get("data/animations/animations_idle.skanim");
 
-    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.50f, 60, MUZZLE_FLASH_DURATION);  
+    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 1.0f, 60, MUZZLE_FLASH_DURATION);  
 }
 
 void sPlayer::get_camera(Camera *cam) {
@@ -55,12 +55,12 @@ void sPlayer::get_camera(Camera *cam) {
     Matrix44 cam_model = model;
 
     if (cam_mode == FIRST_PERSON) {
-        model.rotate(lerp(rotation.x,  rotation.x + -0.1, shoot_anim), Vector3(1,0,0));
+        model.rotate(lerp(rotation.x,  rotation.x + -0.1f, shoot_anim), Vector3(1,0,0));
         cam_model.rotate(rotation.x, Vector3(1,0,0));
-        cam_model.translate(0,1.3,0);
+        cam_model.translate(0,1.2f + sin(Game::instance->time *2.6) * 0.005,0);
 
-        eye = cam_model * Vector3(0, 1.2, 0.8);
-        center = cam_model * Vector3(0, 1.2, 0);
+        eye = cam_model * Vector3(0, 1.2f, 0.8f);
+        center = cam_model * Vector3(0, 1.2f, 0);
         up = cam_model.rotateVector(Vector3(0, 1, 0));
     } else if (cam_mode == THIRD_PERSON) {
         cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
@@ -133,7 +133,7 @@ void sPlayer::shoot_animation() {
 
     has_shot_on_frame = true;
 
-    //muzzle_flash.add_instance(position + (direction * 1.5f) + Vector3(0.0f, 2.f, 0.0f));
+    muzzle_flash.add_instance(position + (direction * 1.5f) + Vector3(0.0f, 2.f, 0.0f));
 }
 
 void sPlayer::update(float elapsed_time) {

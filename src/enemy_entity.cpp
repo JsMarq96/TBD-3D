@@ -2,9 +2,9 @@
 
 sEnemyEntity::sEnemyEntity() {
     shader_fs_id = "data/shaders/phong.ps";
-    shader_vs_id = "data/shaders/basic.vs";
-    mesh_id = "data/meshes/enemy.obj";
-    texture_id = "data/textures/player_text.png";
+    shader_vs_id = "data/shaders/skinning.vs";
+    mesh_id = "data/meshes/enemy.mesh";
+    texture_id = "data/textures/enemy_text.png";
     last_inserted_index = -1;
 
     for (int i = 0; i < ENEMYS_PER_AREA; i++) {
@@ -17,6 +17,10 @@ sEnemyEntity::sEnemyEntity() {
     }
 
     blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.7f, 13, 0.25);
+
+    animations[STOPPED] = Animation::Get("data/animations/animations_zombie_idle.skanim");
+    animations[ROAM] = Animation::Get("data/animations/animations_walking_zombie.skanim"); 
+    animations[RUN_AFTER] = Animation::Get("data/animations/animations_zombie_run.skanim"); 
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
@@ -96,9 +100,10 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         // Apply directions
         float new_direction = atan2(new_pos.y, new_pos.x);
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
+        kinetic_elems[i].speed = move_direction;
         
-        float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.5);
-        kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time * 2;
+        float tmp_angle = lerp(new_direction, kinetic_elems[i].angle, 0.2);
+        kinetic_elems[i].angle += (new_direction - kinetic_elems[i].angle) * elapsed_time;
     }
 
     blood.update(elapsed_time);
@@ -118,11 +123,18 @@ void sEnemyEntity::render(Camera *camara)  {
     mesh->enableBuffers(curr_shader);
 
     for (int i = 0; i <= last_inserted_index; i++) {
+        animations[ROAM]->assignTime(Game::instance->time + i);
+        animations[RUN_AFTER]->assignTime(Game::instance->time + i);
+
+        Skeleton blend_sk;
+
+        blendSkeleton(&animations[ROAM]->skeleton, &animations[RUN_AFTER]->skeleton, kinetic_elems[i].speed.length() / ENEMY_RUN_SPEED, &blend_sk);
+
         Matrix44 model;
         kinetic_elems[i].get_model_matrix(&model);
 
         curr_shader->setUniform("u_model", model);
-        mesh->render(GL_TRIANGLES);
+        mesh->renderAnimated( GL_TRIANGLES, &blend_sk);
     }
 
     mesh->disableBuffers(curr_shader);
