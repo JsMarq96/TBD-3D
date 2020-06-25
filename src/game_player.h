@@ -9,6 +9,7 @@
 #include "input.h"
 #include "animation.h"
 #include "game.h"
+#include "audio_controller.h"
 #include "particles/animation_particle.h"
 
 #define CHAR_SPEED 60.f
@@ -17,6 +18,10 @@
 #define CHAR_ROT_SPEED 0.0005f
 #define CHAR_ROT_POINT_SPEED 0.00005f
 #define MUZZLE_FLASH_DURATION 0.04f
+
+#define GUN_FIRE_SOUND_DIR "data/sounds/gun_shot.wav"
+#define GUN_PULL_SOUND_DIR "data/sounds/gun_cock.wav"
+#define GUN_HIDE_SOUND_DIR "data/sounds/gun_putaway.wav"
 
 enum CamType : uint8 {
     THIRD_PERSON = 0,
@@ -35,6 +40,7 @@ struct sPlayer {
     Vector3 rotation;
     Matrix44 model;
 
+    float camera_animation;
     CamType cam_mode;
     ePlayerStates player_state;
 

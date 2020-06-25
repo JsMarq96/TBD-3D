@@ -16,7 +16,7 @@ sEnemyEntity::sEnemyEntity() {
         }
     }
 
-    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.0f, 13, 0.25);
+    blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.0f, 13, 0.15);
 
     animations[STOPPED] = Animation::Get("data/animations/animations_zombie_idle.skanim");
     animations[ROAM] = Animation::Get("data/animations/animations_walking_zombie.skanim"); 

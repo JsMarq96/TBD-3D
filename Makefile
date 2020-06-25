@@ -7,7 +7,7 @@ SOURCES = src/extra/*.cpp src/particles/*.cpp src/extra/tweeny/*.cpp src/extra/c
 OBJECTS = $(patsubst %.cpp, %.o, $(wildcard $(SOURCES)))
 DEPENDS = $(patsubst %.cpp, %.d, $(wildcard $(SOURCES)))
 
-SDL_LIB = -lSDL2 
+SDL_LIB = -lSDL2 -lbass
 GLUT_LIB = -lGL -lGLU 
 
 LIBS = $(SDL_LIB) $(GLUT_LIB)

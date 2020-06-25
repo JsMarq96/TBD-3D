@@ -46,32 +46,49 @@ sPlayer::sPlayer() {
     muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION);  
 }
 
+/**
+*   Calculate the camera and animate the camera
+*/
 void sPlayer::get_camera(Camera *cam) {
-    Vector3 eye, up, center;
+    Vector3 eye, center, up, fp_eye, fp_up, fp_center, tp_eye, tp_up, tp_center;
 
     model.setTranslation(position.x, position.y, position.z);
     model.rotate(rotation.y, Vector3(0,1,0));    
 
     Matrix44 cam_model = model;
+    Matrix44 player_model = model;
+
+    // Calculate the First person cam
+    player_model.rotate(lerp(rotation.x,  rotation.x + -0.1f, shoot_anim), Vector3(1,0,0));
+    cam_model.rotate(rotation.x, Vector3(1,0,0));
+    cam_model.translate(0,1.2f + sin(Game::instance->time *2.6) * 0.005,0); // Sin for the breathing
+
+    fp_eye = cam_model * Vector3(0, 1.2f, 0.8f);
+    fp_center = cam_model * Vector3(0, 1.2f, 0);
+    fp_up = cam_model.rotateVector(Vector3(0, 1, 0));
+
+    // Restablish the camera
+    cam_model = model;
+
+    // calculate the Third person cam
+    cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
+    cam_model.translate(0,1.85,0.5);
+
+    tp_eye = cam_model * Vector3(0, 1.2, 2);
+    tp_center = cam_model * Vector3(0, 1, 0);
+    tp_up = cam_model.rotateVector(Vector3(0, 1, 0));
+
+
+    // Interpolate between the camaras
+    eye = lerp(tp_eye, fp_eye, camera_animation);
+    center = lerp(tp_center, fp_center, camera_animation);
+    up = lerp(tp_up, fp_up, camera_animation);
+
+    cam->lookAt(eye, center, up); 
 
     if (cam_mode == FIRST_PERSON) {
-        model.rotate(lerp(rotation.x,  rotation.x + -0.1f, shoot_anim), Vector3(1,0,0));
-        cam_model.rotate(rotation.x, Vector3(1,0,0));
-        cam_model.translate(0,1.2f + sin(Game::instance->time *2.6) * 0.005,0);
-
-        eye = cam_model * Vector3(0, 1.2f, 0.8f);
-        center = cam_model * Vector3(0, 1.2f, 0);
-        up = cam_model.rotateVector(Vector3(0, 1, 0));
-    } else if (cam_mode == THIRD_PERSON) {
-        cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
-        cam_model.translate(0,1.85,0.5);
-
-        eye = cam_model * Vector3(0, 1.2, 2);
-        center = cam_model * Vector3(0, 1, 0);
-        up = cam_model.rotateVector(Vector3(0, 1, 0));
-    }
-
-    cam->lookAt(eye, center, up);    
+        model = player_model;
+    }   
 }
 
 void sPlayer::render(Camera *cam) {
@@ -86,6 +103,7 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("second_light_pos", position);
     shader->setUniform("camera_pos", cam->eye);
 
+    // Switch the model depending on the camera animation
     if (cam_mode == THIRD_PERSON) {
         animations[STANDING]->assignTime(Game::instance->time);
         animations[RUNNING]->assignTime(Game::instance->time);
@@ -134,6 +152,8 @@ void sPlayer::shoot_animation() {
     has_shot_on_frame = true;
 
     muzzle_flash.add_instance(position + (direction * 2.0f) + Vector3(0.0f, 2.2f, 0.0f));
+
+    sAudioController::play_3D(GUN_FIRE_SOUND_DIR, position + (direction * 2.0f));
 }
 
 void sPlayer::update(float elapsed_time) {
@@ -171,10 +191,28 @@ void sPlayer::update(float elapsed_time) {
     // Speed Acceleration / deacceleration
     speed = speed + (new_speed - speed) * elapsed_time * 3.f;
 
+    float old_cam_anim = camera_animation;
     // Manage camera switching
+    if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT)) {
+        camera_animation = std::min(camera_animation + (elapsed_time * 2.5f), 1.0f);
+    } else {
+        camera_animation = std::max(camera_animation - (elapsed_time * 2.5f), 0.0f);
+    }
+
+    // Change the objet mode depending on the camera animation
     cam_mode = THIRD_PERSON;
-    if (Input::isKeyPressed(SDL_SCANCODE_LSHIFT) || Input::isKeyPressed(SDL_SCANCODE_RSHIFT))
+    if (camera_animation >= 0.6) {
         cam_mode = FIRST_PERSON;
+    }
+
+    // Play pull/hide gun sound
+    if (camera_animation >= 0.6 && old_cam_anim < 0.6) {
+        sAudioController::play_3D(GUN_PULL_SOUND_DIR, position + (direction * 2.0f));
+    } else if (camera_animation < 0.6 && old_cam_anim >= 0.6) {
+        sAudioController::play_3D(GUN_HIDE_SOUND_DIR, position + (direction * 2.0f));
+    }
+    
+
     Vector3 can_displ = (speed * elapsed_time);
         
     // Rotare and add the displacement

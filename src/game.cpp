@@ -7,8 +7,10 @@
 #include "input.h"
 #include "animation.h"
 #include "game_scene.h"
+#include <bass.h>
 
 #include <cmath>
+#include <cassert>
 
 //some globals
 Shader* shader = NULL;
@@ -47,8 +49,10 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	camera->setPerspective(70.f,window_width/(float)window_height,0.1f,100000.f); //set the projection, we want to be perspective
 	camera->enable();
 
-	// example of shader loading using the shaders manager
-	shader = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+	if(BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL) == false) {
+		assert("Cant start the sound library");
+	}
+
 
 	torpedo_model.setTranslation(0, -5, 0);
 	curr_scene = new sGameScene();

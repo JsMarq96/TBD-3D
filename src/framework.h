@@ -117,13 +117,15 @@ public:
 Vector3 normalize(Vector3 n);
 float dot( const Vector3& a, const Vector3& b);
 Vector3 cross(const Vector3&a, const Vector3& b);
-Vector3 lerp(const Vector3& a, const Vector3& b, float v);
 
 inline Vector3 operator + (const Vector3& a, const Vector3& b) { return Vector3(a.x + b.x, a.y + b.y, a.z + b.z); }
 inline Vector3 operator - (const Vector3& a, const Vector3& b) { return Vector3(a.x - b.x, a.y - b.y, a.z - b.z); }
 inline Vector3 operator * (const Vector3& a, const Vector3& b) { return Vector3(a.x * b.x, a.y * b.y, a.z * b.z); }
 inline Vector3 operator * (const Vector3& a, float v) { return Vector3(a.x * v, a.y * v, a.z * v); }
 inline Vector3 operator * (float v, const Vector3& a) { return Vector3(a.x * v, a.y * v, a.z * v); }
+
+inline Vector3 lerp(const Vector3& a, const Vector3& b, float v){ return a*(1.0f - v) + b*v; };
+
 
 class Vector4
 {
