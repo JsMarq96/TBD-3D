@@ -39,13 +39,12 @@ void sGameScene::render_scene() {
     
     player.render(curr_camera);
 
-    // TODO: set delimitation by fog?
     // Render area
     scene_stages[0]->render_stage(curr_camera, has_shot, shoot_light_pos);
 
-    // Todo:  THICC FOG
-    //player.render_camera_fog(curr_camera);
-    // Render next areas??
+    drawText(2, 2, "Health: " + std::to_string(player.health) + "/5", Vector3(1, 1, 1), 2);
+    drawText(2, 20, "Ammo: " + std::to_string(player.ammo) + "/5", Vector3(1, 1, 1), 2);
+
     //drawText(2, 2, "x:" + std::to_string(player.position.x) + " z:" + std::to_string(player.position.z), Vector3(1, 1, 1), 2);
 }
 

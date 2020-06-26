@@ -30,19 +30,17 @@ void sStage::render_stage(Camera *camera, bool double_light, Vector3 sec_light) 
     cons.render(camera);
 
     // Notificacion of a ammo or health pac near
-    int consum_index;
-    eConsumType found_elem = cons.test_collide(sPlayer::instance->position, consum_index);
-    switch (found_elem){
-    case AMMO:
-        add_overlay(Texture::Get("data/textures/pick_ammo_pack.png"));
-        break;
-    case HEALTH:
-        add_overlay(Texture::Get("data/textures/pick_health_pack.png"));
-        break;
-    case EMPTY:
-    default:
-        break;
-    }
+    switch (has_found_elem) {
+        case AMMO:
+            add_overlay(Texture::Get("data/textures/pick_ammo_pack.png"));
+            break;
+        case HEALTH:
+            add_overlay(Texture::Get("data/textures/pick_health_pack.png"));
+            break;
+        case EMPTY:
+        default:
+            break;
+    } 
 }
 
 void sStage::update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position) {
@@ -51,6 +49,25 @@ void sStage::update_stage(float elapsed_time, sBulletEntity &bullet_controller, 
 
     enemys.update(elapsed_time, map, player_position);
     cons.update(elapsed_time);
+
+    int consum_index;
+    has_found_elem = cons.test_collide(sPlayer::instance->position, consum_index);
+
+    if (Input::isKeyPressed(SDL_SCANCODE_E)) {
+        switch (has_found_elem) {
+            case AMMO:
+                sPlayer::instance->ammo = 5;
+                cons.pickup_element(consum_index);
+                break;
+            case HEALTH:
+                sPlayer::instance->health = 5;
+                cons.pickup_element(consum_index);
+                break;
+            case EMPTY:
+            default:
+                break;
+        }
+    }
 }
 
 void sStage::add_enviorment_instance(int type, Matrix44 model) {

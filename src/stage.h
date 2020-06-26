@@ -24,6 +24,8 @@ struct sStage {
     int x, y;
     int width, heigth;
 
+    eConsumType has_found_elem;
+
     std::string floor_img_dir;
     // To do: if the map gets to big, we can
     // subdivide it in different stages
