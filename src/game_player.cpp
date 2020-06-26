@@ -84,6 +84,8 @@ void sPlayer::get_camera(Camera *cam) {
     center = lerp(tp_center, fp_center, camera_animation);
     up = lerp(tp_up, fp_up, camera_animation);
 
+    std::cout << up.x << " " << up.z << std::endl;
+
     cam->lookAt(eye, center, up); 
 
     if (cam_mode == FIRST_PERSON) {

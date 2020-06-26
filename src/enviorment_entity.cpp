@@ -34,14 +34,15 @@ void sEnviormentEntity::render(Camera *camera, bool double_light, Vector3 sec_li
         
     curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     curr_shader->setUniform("u_texture", Texture::Get(texture_id.c_str()));
-    curr_shader->setUniform("light_pos", Vector3(250, 120, 250));
-    curr_shader->setUniform("camera_pos", camera->eye);
-    curr_shader->setUniform("double_light", double_light);
-    curr_shader->setUniform("second_light_pos", sec_light);
+    curr_shader->setUniform("u_light_pos", Vector3(250, 120, 250));
+    curr_shader->setUniform("u_camera_pos", camera->eye);
+    curr_shader->setUniform("u_double_light", double_light);
+    curr_shader->setUniform("u_second_light_pos", sec_light);
     curr_shader->setUniform("u_viewprojection", camera->viewprojection_matrix);
 
     // If the entity is rednered via instancing
     if (fl_instancing) {
+        std::cout << "render " << last_inserted_index << std::endl;
         mesh->renderInstanced(GL_TRIANGLES, models, last_inserted_index-1);
         curr_shader->disable();
         return;

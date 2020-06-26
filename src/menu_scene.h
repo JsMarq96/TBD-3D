@@ -7,9 +7,12 @@
 #include "camera.h"
 #include "texture.h"
 #include "input.h"
-
+#include "enviorment_entity.h"
 
 #define MAX_GUI_ELEMS 10
+#define CAMERA_ROTATION_SPEED 0.05f
+#define CAMERA_ROTATION_REFRENCE_X 100
+#define CAMERA_ROTATION_REFRENCE_Y 100
 
 enum eMenuSelection {
     START = 1,
@@ -33,9 +36,15 @@ struct sGUI_Elem {
 
 struct sMenuScene {
     sStage *menu_stage;
+    Camera *cam;
+    Vector2 camera_pos;
+
+    // Background cutscene
+    sEnviormentEntity *env_trees;
 
     sGUI_Elem gui[MAX_GUI_ELEMS];
     Shader *gui_shader;
+
 
     int last_inserted_elem;
 
