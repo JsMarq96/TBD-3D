@@ -11,10 +11,10 @@ void sStage::render_stage(Camera *camera, bool double_light, Vector3 sec_light) 
     shad->setUniform("u_color", Vector4(1, 1, 1, 1));
     shad->setUniform("u_viewprojection", camera->viewprojection_matrix);
     shad->setUniform("u_model", Matrix44());
-    shad->setUniform("light_pos", Vector3(250, 120, 250));
-    shad->setUniform("camera_pos", camera->eye);
-    shad->setUniform("double_light", double_light);
-    shad->setUniform("second_light_pos", sec_light);
+    shad->setUniform("u_light_pos", Vector3(250, 120, 250));
+    shad->setUniform("u_camera_pos", camera->eye);
+    shad->setUniform("u_double_light", double_light);
+    shad->setUniform("u_second_light_pos", sec_light);
     floor_mesh.render(GL_TRIANGLES);
     shad->disable();
 

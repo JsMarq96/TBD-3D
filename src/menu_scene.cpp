@@ -129,9 +129,15 @@ void sMenuScene::update_scene(float elapsed_timer, uint8 pressed_keys) {
 
     selected_index = clamp(selected_index, 1, 2);
 
+    if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+        if (selected_index == 2) {
+            // Quit
+        }
+        Game::instance->current_game_state = GAME;
+    }
+
     // Traveling camera
     camera_pos.x = (camera_pos.x * cos(CAMERA_ROTATION_SPEED * elapsed_timer * 0.6)) - (camera_pos.y * sin(CAMERA_ROTATION_SPEED * elapsed_timer * 0.6));
     camera_pos.y = (camera_pos.x * sin(CAMERA_ROTATION_SPEED * elapsed_timer * 0.6)) + (camera_pos.y * cos(CAMERA_ROTATION_SPEED * elapsed_timer * 0.6));
     
-    std::cout << camera_pos.x << " " << camera_pos.y  << " " << camera_pos.length() << std::endl;
 };

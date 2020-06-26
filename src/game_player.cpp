@@ -101,9 +101,9 @@ void sPlayer::render(Camera *cam) {
     shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
     shader->setUniform("u_texture", texture[cam_mode]);
     shader->setUniform("u_model", model);
-    shader->setUniform("double_light", has_shot_on_frame);
-    shader->setUniform("second_light_pos", position);
-    shader->setUniform("camera_pos", cam->eye);
+    shader->setUniform("u_double_light", has_shot_on_frame);
+    shader->setUniform("u_second_light_pos", position);
+    shader->setUniform("u_camera_pos", cam->eye);
 
     // Switch the model depending on the camera animation
     if (cam_mode == THIRD_PERSON) {

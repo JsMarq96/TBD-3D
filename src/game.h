@@ -9,10 +9,18 @@
 #include "camera.h"
 #include "utils.h"
 
+enum eGameState {
+	MENU = 0,
+	GAME = 1,
+	ENDGAME = 2
+};
+
 class Game
 {
 public:
 	static Game* instance;
+
+	eGameState current_game_state;
 
 	//window
 	SDL_Window* window;

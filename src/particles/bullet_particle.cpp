@@ -50,7 +50,7 @@
             
         curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
         curr_shader->setUniform("u_texture", Texture::Get("data/textures/bullet_texture.png"));
-        curr_shader->setUniform("camera_pos", cam->eye);
+        curr_shader->setUniform("u_camera_pos", cam->eye);
         curr_shader->setUniform("u_viewprojection", cam->viewprojection_matrix);
 
         bullet_mesh.enableBuffers(curr_shader);

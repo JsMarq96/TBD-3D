@@ -42,7 +42,6 @@ void sEnviormentEntity::render(Camera *camera, bool double_light, Vector3 sec_li
 
     // If the entity is rednered via instancing
     if (fl_instancing) {
-        std::cout << "render " << last_inserted_index << std::endl;
         mesh->renderInstanced(GL_TRIANGLES, models, last_inserted_index-1);
         curr_shader->disable();
         return;

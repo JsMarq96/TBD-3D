@@ -113,8 +113,8 @@ void sEnemyEntity::render(Camera *camara)  {
         
     curr_shader->setUniform("u_color", Vector4(1, 1, 1, 1));
     curr_shader->setUniform("u_texture", Texture::Get(texture_id.c_str()));
-    curr_shader->setUniform("light_pos", Vector3(250, 120, 250));
-    curr_shader->setUniform("camera_pos", camara->eye);
+    curr_shader->setUniform("u_light_pos", Vector3(250, 120, 250));
+    curr_shader->setUniform("u_camera_pos", camara->eye);
     curr_shader->setUniform("u_viewprojection", camara->viewprojection_matrix);
 
     mesh->enableBuffers(curr_shader);

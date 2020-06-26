@@ -20,14 +20,6 @@ Game* Game::instance = NULL;
 sGameScene *curr_scene = NULL;
 sMenuScene *menu_scene = NULL;
 
-enum eGameState {
-	MENU = 0,
-	GAME = 1,
-	ENDGAME = 2
-};
-
-eGameState current_game_state;
-
 Game::Game(int window_width, int window_height, SDL_Window* window)
 {
 	this->window_width = window_width;
