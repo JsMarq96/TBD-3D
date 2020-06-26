@@ -80,7 +80,7 @@ void sPlayer::get_camera(Camera *cam) {
     cam_model.rotate(rotation.x * 0.15, Vector3(1,0,0));
     cam_model.translate(0,1.85,0.5);
 
-    tp_eye = cam_model * Vector3(0, 1.2, 2);
+    tp_eye = cam_model * Vector3(0, 1.1, 2);
     tp_center = cam_model * Vector3(0, 1, 0);
     tp_up = cam_model.rotateVector(Vector3(0, 1, 0));
 
@@ -171,9 +171,8 @@ void sPlayer::render(Camera *cam) {
 
     muzzle_flash.render(cam);
 
-    bullets.render(cam);
     player_blood.render(cam);
-
+    bullets.render(cam);
     //add_overlay(Texture::Get("data/efects/hit.png"));
 }
 
@@ -263,6 +262,9 @@ void sPlayer::update(float elapsed_time) {
     // Change the objet mode depending on the camera animation
     cam_mode = THIRD_PERSON;
     if (camera_animation >= 0.6) {
+        if (camera_animation == 0.6) {
+            rotation.x = 0.0f;
+        }
         cam_mode = FIRST_PERSON;
     }
 

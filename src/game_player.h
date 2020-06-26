@@ -77,8 +77,8 @@ struct sPlayer {
     void hit(Vector3 enemy_position) {
         health--;
         sAudioController::play_3D("data/sounds/hit.wav", position);
-        player_blood.add_instance(position);
-        std::cout << "PLAYER HIT" << std::endl;
+        
+        std::cout << "PLAYER HIT " << std::to_string(player_blood.add_instance(position)) <<  std::endl;
 
         speed = speed + (position - enemy_position).normalize() * 0.5;
         if (health == 0) {

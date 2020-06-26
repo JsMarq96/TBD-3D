@@ -114,6 +114,27 @@ struct sEnemyEntity {
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 
     void set_collider_cilinder(float c_radius) { radius = c_radius; };
+
+    // If there are enemy near the sound, go to that location
+    void noise_at(Vector3 position, float radius, sGameMap &map) {
+        for (int i = 0; i <= last_inserted_index; i++) {
+            if (state[i] == RUN_AFTER || state[i] == ATTACK)
+                continue;
+            if ((position - kinetic_elems[i].position).length() <= radius ) {
+                state[i] = ROAM;
+
+                int result;
+                Vector2 poi = Vector2(position.x, position.z);
+
+                map.get_path_to(Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z), poi, enemy_steps[i], MAX_STEPS_NUM, result);
+
+                if (result > 0) {
+                    action_index[i] = 0;
+                    state[i] = ROAM;
+                }
+            }
+        }
+    }
 };
 
 #endif
