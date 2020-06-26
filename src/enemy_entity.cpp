@@ -91,11 +91,13 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         Vector3 move_direction = Vector3(0.f, 0.f, 0.f);
         Vector2 new_pos = Vector2(0.f, 0.f);
 
+        // Execute the code of the corresponding state
         if (state[i] == ROAM) {
             Vector2 next_pos;
 
             map.parse_map_index_to_coordinates(enemy_steps[i][action_index[i]], next_pos);
 
+            // Go the next point in the A* defined path
             new_pos = (next_pos - enemy_pos_2d).normalize();
             move_direction = Vector3(next_pos.x - enemy_pos_2d.x, 0.f, next_pos.y - enemy_pos_2d.y).normalize() * ENEMY_ROAM_SPEED;
 
@@ -109,9 +111,11 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 }
             }
         } else if (state[i] == RUN_AFTER) {
+            // Simply runs towards the player
             new_pos = to_player_dir;
             move_direction = Vector3(to_player_dir.x, 0.f, to_player_dir.y).normalize() * ENEMY_RUN_SPEED;
         } else if (state[i] == STOPPED) {
+            // Traces a route to a random point near the enemy
             if (random(1.0f) > 0.5f) {
                 int result;
                 Vector2 poi = map.get_near_empty_coordinate(enemy_pos_2d);
@@ -126,6 +130,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 state[i] = STOPPED;
             }
         } else if (state[i] == ATTACK) {
+            // Attacks the player
             if (enemy_hit_cooldown_timer[i] >= 0.0) { // Attack cooldown timer
                 enemy_hit_cooldown_timer[i] -= elapsed_time;
             } else {
@@ -134,7 +139,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 if (attack_animation_duration >= 1.9f) {
                 // Hit moment!
                 if (enemy_player_distance <= 1.7f) {
-                    // If it i near, hit
+                    // If it is near, hit
                     sPlayer::instance->hit(kinetic_elems[i].position);
                     enemy_hit_cooldown_timer[i] = ENEMY_ATTACK_COOLDOWN; // Cooldown timer
                     attack_animation_duration = 0;
@@ -148,7 +153,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         // Apply kinetic changes
         kinetic_elems[i].speed = kinetic_elems[i].speed + (move_direction - kinetic_elems[i].speed) * elapsed_time;
         kinetic_elems[i].position = kinetic_elems[i].position + (move_direction * elapsed_time);
-        //std::cout << kinetic_elems[i].speed.length()  / ENEMY_RUN_SPEED << " " << kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED<< std::endl;
         
         float tmp_angle = acos( clamp(enemy_facing.dot(new_pos), -1.0f, 1.0f) );
         kinetic_elems[i].angle += (tmp_angle - kinetic_elems[i].angle) * elapsed_time;
