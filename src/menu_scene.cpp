@@ -132,6 +132,7 @@ void sMenuScene::update_scene(float elapsed_timer, uint8 pressed_keys) {
     if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
         if (selected_index == 2) {
             // Quit
+            Game::instance->must_exit = true;
         }
         Game::instance->current_game_state = GAME;
     }

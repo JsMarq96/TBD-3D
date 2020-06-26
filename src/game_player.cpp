@@ -11,7 +11,8 @@ sPlayer::sPlayer(Vector3 start_pos) {
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
 
-    ammo = 5;
+    ammo = STARTING_AMMO;
+    health = STARTING_HEALTH;
 
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
@@ -35,7 +36,8 @@ sPlayer::sPlayer() {
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
 
-    ammo = 5;
+    ammo = STARTING_AMMO;
+    health = STARTING_HEALTH;
 
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
@@ -84,11 +86,24 @@ void sPlayer::get_camera(Camera *cam) {
     tp_center = cam_model * Vector3(0, 1, 0);
     tp_up = cam_model.rotateVector(Vector3(0, 1, 0));
 
-
     // Interpolate between the camaras
     eye = lerp(tp_eye, fp_eye, camera_animation);
     center = lerp(tp_center, fp_center, camera_animation);
     up = lerp(tp_up, fp_up, camera_animation);
+    
+    if (player_state == DIED) {
+        camera_animation = std::min(camera_animation, 0.86f);
+        Vector3 dc_eye, dc_center, dc_up; // Death camera
+
+        dc_eye = Vector3(position.x + 1.5f, 0.1f, position.z - 1.5f);
+        dc_center = Vector3(position.x + 2.0f, 0.1f, position.z - 2.0f) + direction;
+        dc_up = cam_model.rotateVector(Vector3(1, 1, 0));
+
+        eye = lerp(eye, dc_eye, camera_animation);
+        center = lerp(center, dc_center, camera_animation);
+        up = lerp(up, dc_up, camera_animation);
+    }
+    
 
     cam->lookAt(eye, center, up); 
 
@@ -97,46 +112,6 @@ void sPlayer::get_camera(Camera *cam) {
     }   
 }
 
-void add_overlay(Texture *text) {
-    Shader *curr_shader = Shader::Get("data/shaders/quad.vs", "data/shaders/gui.ps");
-    curr_shader->enable();
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    Mesh elem;
-    // First triangle
-    elem.vertices.push_back(Vector3( -1.0f, 1.0f, 0.0f ));
-    elem.vertices.push_back(Vector3( 1.0f, 1.0f, 0.0f ));
-    elem.vertices.push_back(Vector3( -1.0f, -1.0f, 0.0f ));
-    // Second triangle
-    elem.vertices.push_back(Vector3( 1.0f, 1.0f, 0.0f  ));
-    elem.vertices.push_back(Vector3( 1.0f, -1.0f, 0.0f ));
-    elem.vertices.push_back(Vector3( -1.0f, -1.0f, 0.0f ));
-
-    elem.uvs.push_back(Vector2(0,1));
-    elem.uvs.push_back(Vector2(1,1));
-    elem.uvs.push_back(Vector2(0,0));
-
-    elem.uvs.push_back(Vector2(1,1));
-    elem.uvs.push_back(Vector2(1,0));
-    elem.uvs.push_back(Vector2(0,0));
-
-    /*if (i == selected_index) {
-        gui_shader->setUniform("u_texture", gui[i].text[1]);
-    } else {
-        gui_shader->setUniform("u_texture", gui[i].text[0]);           
-    } */
-
-    curr_shader->setUniform("u_alpha", 1.0f);
-    curr_shader->setUniform("u_texture", text);
-
-    elem.render(GL_TRIANGLES);
-
-    glEnable(GL_CULL_FACE);
-    glDisable(GL_BLEND);
-    curr_shader->disable();
-}
 
 void sPlayer::render(Camera *cam) {
     Shader* shader = shaders[cam_mode];
@@ -167,13 +142,26 @@ void sPlayer::render(Camera *cam) {
 
     shader->disable();
 
+    // Game over overlay
+    if (player_state == DIED && camera_animation >= 0.86) {
+        add_overlay(Texture::Get("data/efects/game_over.png"));
+        return;
+    }
+
     has_shot_on_frame = false;
 
     muzzle_flash.render(cam);
 
+    if (has_been_hit_on_frame) {
+        sAudioController::play_3D("data/sounds/hit.wav", position);
+        add_overlay(Texture::Get("data/efects/hit.png"));
+        player_blood.add_instance(position);
+    }
+
+    has_been_hit_on_frame = false;
+
     player_blood.render(cam);
     bullets.render(cam);
-    //add_overlay(Texture::Get("data/efects/hit.png"));
 }
 
 void sPlayer::render_camera_fog(Camera *cam) {
@@ -218,6 +206,18 @@ void sPlayer::update(float elapsed_time) {
     muzzle_flash.update(elapsed_time);
     bullets.update(elapsed_time);
     player_blood.update(elapsed_time);
+
+    if (player_state == DIED) {
+        camera_animation += elapsed_time;
+
+        if (Input::isKeyPressed(SDL_SCANCODE_SPACE)) {
+            SDL_Delay(500);
+            // Restart the game
+            Game::instance->start_game();
+        }
+
+        return;
+    }
 
     if (shoot_anim > 0) {
         shoot_anim -= elapsed_time;

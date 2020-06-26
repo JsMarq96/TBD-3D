@@ -10,6 +10,7 @@
 #include "animation.h"
 #include "game.h"
 #include "audio_controller.h"
+#include "overlays.h"
 #include "particles/animation_particle.h"
 #include "particles/bullet_particle.h"
 
@@ -19,6 +20,9 @@
 #define CHAR_ROT_SPEED 0.0005f
 #define CHAR_ROT_POINT_SPEED 0.00005f
 #define MUZZLE_FLASH_DURATION 0.04f
+
+#define STARTING_AMMO 5
+#define STARTING_HEALTH 1
 
 #define GUN_FIRE_SOUND_DIR "data/sounds/gun_shot.wav"
 #define GUN_PULL_SOUND_DIR "data/sounds/gun_cock.wav"
@@ -32,7 +36,8 @@ enum CamType : uint8 {
 
 enum ePlayerStates : uint8 {
     STANDING = 0,
-    RUNNING = 1
+    RUNNING = 1,
+    DIED = 2
 };
 
 struct sPlayer {
@@ -53,6 +58,7 @@ struct sPlayer {
 
     float shoot_anim;
     bool has_shot_on_frame;
+    bool has_been_hit_on_frame;
     bool prev_mouse_press;
 
     Texture *texture[2];
@@ -74,15 +80,26 @@ struct sPlayer {
     void render_camera_fog(Camera *cam);
     void update(float elapsed_time);
     void shoot();
+
+    void game_over() {
+        player_state = DIED;
+        camera_animation = 0.0f;
+        std::cout << "GAME OVER" << std::endl;
+    }
+
     void hit(Vector3 enemy_position) {
+        if (health == 0)
+            return;
+
         health--;
-        sAudioController::play_3D("data/sounds/hit.wav", position);
+        has_been_hit_on_frame = true;
         
-        std::cout << "PLAYER HIT " << std::to_string(player_blood.add_instance(position)) <<  std::endl;
+        std::cout << "PLAYER HIT " <<  std::endl;
 
         speed = speed + (position - enemy_position).normalize() * 0.5;
         if (health == 0) {
             // Game over
+            game_over();
         }
     }
 
@@ -92,8 +109,6 @@ struct sPlayer {
         return shoot_anim > 0.55;
     }
 };
-
-//sPlayer* sPlayer::instance;
 
 
 #endif

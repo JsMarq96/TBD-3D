@@ -47,19 +47,20 @@ Game::Game(int window_width, int window_height, SDL_Window* window)
 	if(BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL) == false) {
 		assert("Cant start the sound library");
 	}
-
-
-	curr_scene = new sGameScene();
-	curr_scene->update_scene(0.0f, 0);
-
-	menu_scene = new sMenuScene();
-	menu_scene->update_scene(0.0f, 0);
-
-	current_game_state = MENU;
+	start_game();
 	//hide the cursor
 	SDL_ShowCursor(SDL_DISABLE); //hide or show the mouse
 }
 
+void Game::start_game() {
+	menu_scene = new sMenuScene();
+	menu_scene->update_scene(0.0f, 0);
+	
+	curr_scene = new sGameScene();
+	curr_scene->update_scene(0.0f, 0);
+
+	current_game_state = MENU;
+}
 /*
 void renderMesh(Matrix44 m, Mesh* mesh, Texture* texture, int submesh = 0)
 {
