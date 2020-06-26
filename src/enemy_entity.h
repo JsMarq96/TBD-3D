@@ -64,12 +64,14 @@ struct sEnemyEntity {
     int action_index[ENEMYS_PER_AREA];
     int enemy_steps[ENEMYS_PER_AREA][MAX_STEPS_NUM];
 
+    int enemy_health[ENEMYS_PER_AREA];
+
     int last_inserted_index;
 
     // Extras
     sAnimationParticles blood;
 
-    Animation *animations[3];
+    Animation *animations[4];
 
     sEnemyEntity(std::string &shader_fs,
                  std::string &shader_vs,
@@ -90,6 +92,7 @@ struct sEnemyEntity {
         state[last_inserted_index] = STOPPED;
         kinetic_elems[last_inserted_index].position = position;
         kinetic_elems[last_inserted_index].speed = Vector3(0,0,0);
+        enemy_health[last_inserted_index] = 5;
 
         for (int i = 0; i < ENEMYS_PER_AREA; i++) {
             enemy_steps[last_inserted_index][i] = -1;

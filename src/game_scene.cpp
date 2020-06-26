@@ -45,7 +45,7 @@ void sGameScene::render_scene() {
     // Todo:  THICC FOG
     //player.render_camera_fog(curr_camera);
     // Render next areas??
-    drawText(2, 2, "x:" + std::to_string(player.position.x) + " z:" + std::to_string(player.position.z), Vector3(1, 1, 1), 2);
+    //drawText(2, 2, "x:" + std::to_string(player.position.x) + " z:" + std::to_string(player.position.z), Vector3(1, 1, 1), 2);
 }
 
 void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {

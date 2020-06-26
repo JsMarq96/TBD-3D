@@ -20,7 +20,8 @@ sEnemyEntity::sEnemyEntity() {
 
     animations[STOPPED] = Animation::Get("data/animations/animations_zombie_idle.skanim");
     animations[ROAM] = Animation::Get("data/animations/animations_walking_zombie.skanim"); 
-    animations[RUN_AFTER] = Animation::Get("data/animations/animations_zombie_run.skanim"); 
+    animations[RUN_AFTER] = Animation::Get("data/animations/animations_zombie_run.skanim");
+    animations[ATTACK] = Animation::Get("data/animations/animations_zombie_attack.skanim");
 }
 
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
@@ -41,16 +42,17 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
 
         // State transitions
-        if (angle < 60.f && enemy_player_distance <= 0.7f) {
+        std::cout << angle << " " << enemy_player_distance << std::endl;
+        if (angle > 34.f && angle < 163.f && enemy_player_distance <= 1.5f) {
             // If it is facing to the player and its near, attack him
             state[i] = ATTACK;
-        } else if (angle < 60.f && enemy_player_distance <= 20.0f) {
+        } else if (angle > 34.f && angle < 163.f && enemy_player_distance <= 20.0f) {
             // If it is in the eyesight of the player and it is
             float dist = map.raycast_from_point_to_point(enemy_pos_2d, player_2d_pos, 20.f);
 
             if (dist >= 0) {
                 state[i] = RUN_AFTER;
-            } else if (state[i] == RUN_AFTER) {
+            } else {
                 state[i] = STOPPED;
             }
         }
@@ -123,11 +125,13 @@ void sEnemyEntity::render(Camera *camara)  {
         animations[STOPPED]->assignTime(Game::instance->time + i);
         animations[ROAM]->assignTime(Game::instance->time + i);
         animations[RUN_AFTER]->assignTime(Game::instance->time + i);
+        animations[ATTACK]->assignTime(Game::instance->time + i);
 
         Skeleton blend_sk;
 
         blendSkeleton(&animations[STOPPED]->skeleton, &animations[ROAM]->skeleton, kinetic_elems[i].speed.length() / ENEMY_ROAM_SPEED, &blend_sk);
         blendSkeleton(&blend_sk, &animations[RUN_AFTER]->skeleton, kinetic_elems[i].speed.length() / ENEMY_RUN_SPEED, &blend_sk);
+        blendSkeleton(&blend_sk, &animations[ATTACK]->skeleton, (state[i] == ATTACK) ? 0.9 : 0.0, &blend_sk);
 
         Matrix44 model;
         kinetic_elems[i].get_model_matrix(&model);
@@ -145,9 +149,13 @@ void sEnemyEntity::render(Camera *camara)  {
 void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_normal) {
 
     if (coll_point.y > 1.9) { // Headshot!
-        std::cout << "HEADSHOT";
+        std::cout << "  HEADSHOT!" << std::endl;
+        enemy_health[index] = 0;
+    } else {
+        std::cout << "  SHOT y: " << coll_point.y << std::endl;
+       enemy_health[index]--; 
+       
     }
-    std::cout << "  SHOT y: " << coll_point.y << std::endl;
 
     // Added blood splatter
     blood.add_instance(kinetic_elems[index].position + coll_point);
