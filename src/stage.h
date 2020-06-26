@@ -16,6 +16,7 @@
 #include "mesh.h"
 #include "enviorment_entity.h"
 #include "enemy_entity.h"
+#include "consum_entity.h"
 #include "game_map.h"
 
 // Generic Game Area
@@ -31,6 +32,8 @@ struct sStage {
     std::vector<sEnviormentEntity*> render_elements;
     
     sEnemyEntity enemys;
+
+    sConsumableEntities cons;
 
     Vector3 light_pos;
 

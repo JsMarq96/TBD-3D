@@ -15,13 +15,16 @@
 #include "camera.h"
 #include "game.h"
 #include "animation.h"
+#include "consum_entity.h"
 #include "particles/bullet_particle.h"
 #include "particles/animation_particle.h"
 
+#define ENEMY_STARTING_HEALTH 3
 #define ENEMY_ROAM_SPEED 2.5
 #define ENEMY_RUN_SPEED 4.5
 #define ENEMY_ROT_SPEED 0.5
 #define ENEMY_RECOVERING_TIMER 7.5f
+#define ENEMY_ATTACK_COOLDOWN 0.8f;
 #define ENEMYS_PER_AREA 100
 #define MAX_STEPS_NUM 100
 #define DATA_DIR_LEN 40.f
@@ -67,7 +70,8 @@ struct sEnemyEntity {
     int enemy_steps[ENEMYS_PER_AREA][MAX_STEPS_NUM];
 
     int enemy_health[ENEMYS_PER_AREA];
-    float enemy_timers[ENEMYS_PER_AREA];
+    float enemy_hit_cooldown_timer[ENEMYS_PER_AREA];
+    float enemy_recovering_timers[ENEMYS_PER_AREA];
     float enemy_alphas[ENEMYS_PER_AREA];
 
     int last_inserted_index;
@@ -107,10 +111,10 @@ struct sEnemyEntity {
     };
     void render(Camera *camara);
 
-    void enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_normal);
+    void enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_normal, sConsumableEntities &cons);
 
     // Todo: ray collisions
-    void testBulletCollisions(sBulletEntity &bullet_controller);
+    void testBulletCollisions(sBulletEntity &bullet_controller, sConsumableEntities &cons);
 
     bool testCollisionsWith(Vector3 position, float radius, Vector3 &coll_pos, Vector3 &normal);
 

@@ -25,15 +25,17 @@ void sStage::render_stage(Camera *camera, bool double_light, Vector3 sec_light) 
         curr_item->render(camera, double_light, sec_light);
     }
 
-    // Render enemys
-    enemys.render(camera);
+    // Render enemys and consumibles
+    enemys.render(camera);  
+    cons.render(camera);
 }
 
 void sStage::update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position) {
     // Update the kinectic objects
-    enemys.testBulletCollisions(bullet_controller);
+    enemys.testBulletCollisions(bullet_controller, cons);
 
     enemys.update(elapsed_time, map, player_position);
+    cons.update(elapsed_time);
 }
 
 void sStage::add_enviorment_instance(int type, Matrix44 model) {
@@ -43,7 +45,6 @@ void sStage::add_enviorment_instance(int type, Matrix44 model) {
 
     // Add scaled area
     map.add_area(position.x, position.z, render_elements[type]->radius);
-    //map[int((position.x * width/2) + position.z)] = 1;
 }
 
 void sStage::add_enemy_entity(Vector3 position) {
