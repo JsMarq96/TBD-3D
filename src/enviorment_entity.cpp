@@ -21,7 +21,7 @@ bool sEnviormentEntity::add_element(Matrix44 &new_model) {
     last_inserted_index++;
     if (fl_instancing) {
         float angle = rand() * 180;
-        new_model.rotate(angle, Vector3(0,1,0));
+        //new_model.rotate(angle, Vector3(0,1,0));
     }
     models[last_inserted_index] = new_model;
     return true;
@@ -42,7 +42,7 @@ void sEnviormentEntity::render(Camera *camera, bool double_light, Vector3 sec_li
 
     // If the entity is rednered via instancing
     if (fl_instancing) {
-        mesh->renderInstanced(GL_TRIANGLES, models, last_inserted_index-1);
+        mesh->renderInstanced(GL_TRIANGLES, models, last_inserted_index);
         curr_shader->disable();
         return;
     }

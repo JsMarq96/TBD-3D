@@ -60,19 +60,22 @@ int sStage::add_element(std::string mesh_name, std::string text_name, std::strin
 
 int sStage::add_element(std::string elem_name) {
     int index = -1;
-    std::cout << elem_name << std::endl;
     if (elem_name == "tree.obj") {
         index = add_element("data/meshes/tree.obj","data/textures/tree.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
         render_elements[index]->set_collider_as_cilinder(1.0);
-    } else if (elem_name == "house.obj") {
-        //index = add_element("data/house_f2.obj","data/textures/tree.png","data/shaders/flat.fs", "data/shaders/basic.vs", false);
-        //render_elements[index]->set_collider_as_mesh();
+    } else if (elem_name == "tree1.obj") {
+        index = add_element("data/meshes/tree1.obj","data/textures/tree_text.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
+        render_elements[index]->set_collider_as_cilinder(1.0);
+    } else if (elem_name == "tree2.obj") {
+        index = add_element("data/meshes/tree2.obj","data/textures/tree_text.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
+        render_elements[index]->set_collider_as_cilinder(1.0);
     } else if (elem_name == "rock.obj") {
         index = add_element("data/meshes/rock.obj","data/textures/rock.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
         render_elements[index]->set_collider_as_cilinder(1.5);
     } else if (elem_name == "rock2.obj") {
         index = add_element("data/meshes/rock2.obj","data/textures/rock.png","data/shaders/phong.ps", "data/shaders/instanced.vs", true);
         render_elements[index]->set_collider_as_cilinder(1.5);
+    }else if (elem_name == "enemy.obj") {
     }
 
     return index;

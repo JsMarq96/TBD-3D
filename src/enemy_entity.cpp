@@ -27,7 +27,7 @@ sEnemyEntity::sEnemyEntity() {
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
     Vector2 player_2d_pos = Vector2(player_pos.x, player_pos.z);
 
-    for(int i = 0; i <= last_inserted_index; i++) {
+    for(int i = 0; i < last_inserted_index; i++) {
         if (state[i] == RECOVERING) {
             kinetic_elems[i].speed = Vector3(0,0,0);
 
@@ -69,7 +69,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             } else {
                 state[i] = STOPPED;
             }
-        } else if (state[i] == ATTACK && ((angle < 50.f && angle > 143.f) || enemy_player_distance > 1.7f)) {
+        } else if (state[i] == ATTACK && ((angle < 50.f && angle > 143.f) || enemy_player_distance > 1.9f)) {
             state[i] = ROAM;
         }
 

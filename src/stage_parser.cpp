@@ -1,8 +1,9 @@
 #include "stage_parser.h"
 
-Matrix44 setTranslationMat(float x, float y, float z) {
+Matrix44 setTranslationMat(float x, float y, float z, float rotation) {
     Matrix44 new_mat = Matrix44();
     new_mat.setTranslation(x, y, z);
+    new_mat.rotate(rotation, Vector3(0,1,0));
 
     return new_mat;
 }
@@ -60,9 +61,19 @@ void parse_stage(sStage* to_fill, std::string file_name) {
         rest = rest.substr(delim_index + 1);
 
         // Fetch the z coord
-        float z = std::stof(rest);
+        delim_index = rest.find(" ");
+        float z = std::stof(rest.substr(0, delim_index));
+        rest = rest.substr(delim_index + 1);
+
+        // Fetch the z coord
+        float rotation = std::stof(rest);
     
         // Add the instance to the stage, at the coordinates
-        to_fill->add_enviorment_instance(element_index_map[elem_id], setTranslationMat(x,y,z));
+        if (elem_id == 6) {
+            // Enemy
+            to_fill->add_enemy_entity(Vector3(x,y,z));
+        } else {
+            to_fill->add_enviorment_instance(element_index_map[elem_id], setTranslationMat(x,y,z, rotation));
+        }
     }
 }

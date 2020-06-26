@@ -5,7 +5,7 @@ sGameScene::sGameScene() {
     curr_area = 0;
     srandom(time(NULL));
 
-    player = sPlayer(Vector3(150/2, 0, 150/2));
+    player = sPlayer(Vector3(20, 0, 20));
     sPlayer::instance = &player;
 
     // Create test area
