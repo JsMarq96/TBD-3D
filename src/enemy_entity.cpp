@@ -13,6 +13,7 @@ sEnemyEntity::sEnemyEntity() {
         enemy_health[i] = ENEMY_STARTING_HEALTH;
         enemy_hit_cooldown_timer[i] = 0.0f;
         enemy_recovering_timers[i] = 0.0f;
+        enemy_alphas[i] = 1.0f;
 
         for (int j = 0; j < MAX_STEPS_NUM; j++) {
             enemy_steps[i][j] = -1;
@@ -41,7 +42,6 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             enemy_recovering_timers[i] -= elapsed_time;
 
             enemy_alphas[i] = lerp(1.0f, 0.2f, enemy_recovering_timers[i] / ENEMY_RECOVERING_TIMER);
-            std::cout << enemy_alphas[i] << std::endl;
 
             if (enemy_recovering_timers[i] <= 0.0f) {
                 state[i] = STOPPED;

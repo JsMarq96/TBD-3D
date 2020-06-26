@@ -41,10 +41,9 @@ struct sConsumableEntities {
     };
 
     eConsumType test_collide(Vector3 pos, int &index) {
-        for(int i = 0; i <= CONSUMABLES_NUM; i++) {
-            if (type[i] != EMPTY)
+        for(int i = 0; i < CONSUMABLES_NUM; i++) {
+            if (type[i] == EMPTY)
                 continue;
-            
             if ((pos - position[i]).length() <= 1.5) {
                 index = i;
                 return type[i];

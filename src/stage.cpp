@@ -28,6 +28,21 @@ void sStage::render_stage(Camera *camera, bool double_light, Vector3 sec_light) 
     // Render enemys and consumibles
     enemys.render(camera);  
     cons.render(camera);
+
+    // Notificacion of a ammo or health pac near
+    int consum_index;
+    eConsumType found_elem = cons.test_collide(sPlayer::instance->position, consum_index);
+    switch (found_elem){
+    case AMMO:
+        add_overlay(Texture::Get("data/textures/pick_ammo_pack.png"));
+        break;
+    case HEALTH:
+        add_overlay(Texture::Get("data/textures/pick_health_pack.png"));
+        break;
+    case EMPTY:
+    default:
+        break;
+    }
 }
 
 void sStage::update_stage(float elapsed_time, sBulletEntity &bullet_controller, Vector3 player_position) {
