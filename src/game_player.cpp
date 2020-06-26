@@ -11,6 +11,8 @@ sPlayer::sPlayer(Vector3 start_pos) {
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
 
+    ammo = 5;
+
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
 
@@ -31,6 +33,8 @@ sPlayer::sPlayer() {
     position = Vector3(0,0,0);
     speed = Vector3(0,0,0);
     rotation = Vector3(0,0,0);
+
+    ammo = 5;
 
     texture[THIRD_PERSON] = Texture::Get("data/textures/player_text.png");
     texture[FIRST_PERSON] = Texture::Get("data/textures/player_arms_text.png");
@@ -83,8 +87,6 @@ void sPlayer::get_camera(Camera *cam) {
     eye = lerp(tp_eye, fp_eye, camera_animation);
     center = lerp(tp_center, fp_center, camera_animation);
     up = lerp(tp_up, fp_up, camera_animation);
-
-    std::cout << up.x << " " << up.z << std::endl;
 
     cam->lookAt(eye, center, up); 
 
@@ -146,9 +148,16 @@ void sPlayer::render_camera_fog(Camera *cam) {
 
     glDisable(GL_BLEND);
 
+    bullets.render(cam);
 }
 
-void sPlayer::shoot_animation() {
+void sPlayer::shoot() {
+    if (ammo == 0) {
+        sAudioController::play_3D(GUN_EMPTY_SOUND_DIR, position + (direction * 2.0f));
+        return;
+    } 
+
+    bullets.add_bullet(position + Vector3(0,2,0), direction);
     shoot_anim = 0.6f;
 
     has_shot_on_frame = true;
@@ -156,10 +165,13 @@ void sPlayer::shoot_animation() {
     muzzle_flash.add_instance(position + (direction * 2.0f) + Vector3(0.0f, 2.2f, 0.0f));
 
     sAudioController::play_3D(GUN_FIRE_SOUND_DIR, position + (direction * 2.0f));
+    ammo--;
 }
 
 void sPlayer::update(float elapsed_time) {
+    // Update particles
     muzzle_flash.update(elapsed_time);
+    bullets.update(elapsed_time);
 
     if (shoot_anim > 0) {
         shoot_anim -= elapsed_time;
@@ -235,4 +247,12 @@ void sPlayer::update(float elapsed_time) {
 
     // Get front player direction
     direction = model.frontVector() * -1.f;
+
+    // Shooting
+    bool is_pressed = Input::isMousePressed(SDL_BUTTON_LEFT);
+    // Shoot bullet only when it is pressed
+    if (is_pressed && prev_mouse_press != is_pressed && cam_mode == FIRST_PERSON) {
+        shoot();
+    }
+    prev_mouse_press = is_pressed;
 }

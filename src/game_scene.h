@@ -15,7 +15,6 @@ struct sGameScene {
     int curr_area;
 
     sPlayer player;
-    sBulletEntity bullets;
 
     bool prev_mouse_press = false;
 
