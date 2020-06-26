@@ -8,6 +8,7 @@
 
 #include "framework.h"
 #include "game_map.h"
+#include "game_player.h"
 #include "shader.h"
 #include "mesh.h"
 #include "texture.h"
@@ -20,6 +21,7 @@
 #define ENEMY_ROAM_SPEED 2.5
 #define ENEMY_RUN_SPEED 4.5
 #define ENEMY_ROT_SPEED 0.5
+#define ENEMY_RECOVERING_TIMER 7.5f
 #define ENEMYS_PER_AREA 100
 #define MAX_STEPS_NUM 100
 #define DATA_DIR_LEN 40.f
@@ -65,6 +67,7 @@ struct sEnemyEntity {
     int enemy_steps[ENEMYS_PER_AREA][MAX_STEPS_NUM];
 
     int enemy_health[ENEMYS_PER_AREA];
+    float enemy_timers[ENEMYS_PER_AREA];
 
     int last_inserted_index;
 
@@ -72,6 +75,7 @@ struct sEnemyEntity {
     sAnimationParticles blood;
 
     Animation *animations[4];
+    float attack_animation_duration;
 
     sEnemyEntity(std::string &shader_fs,
                  std::string &shader_vs,

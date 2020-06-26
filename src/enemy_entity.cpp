@@ -28,6 +28,18 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
     Vector2 player_2d_pos = Vector2(player_pos.x, player_pos.z);
 
     for(int i = 0; i <= last_inserted_index; i++) {
+        if (state[i] == RECOVERING) {
+            kinetic_elems[i].speed = Vector3(0,0,0);
+
+            enemy_timers[i] -= elapsed_time;
+
+            if (enemy_timers[i] <= 0.0) {
+                state[i] = STOPPED;
+                std::cout << "recovered" << std::endl;
+            }
+            continue;
+        }
+        
         // Enemy 2d position
         Vector2 enemy_pos_2d = Vector2(kinetic_elems[i].position.x, kinetic_elems[i].position.z);
         
@@ -42,11 +54,13 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
         float angle = acos(enemy_facing.dot(to_player_dir) / (enemy_facing.length() * to_player_dir.length())) * 180 / PI;
 
         // State transitions
-        std::cout << angle << " " << enemy_player_distance << std::endl;
-        if (angle > 34.f && angle < 163.f && enemy_player_distance <= 1.5f) {
+        //std::cout << angle << " " << enemy_player_distance << std::endl;
+        if (state[i] != ATTACK && angle > 50.f && angle < 143.f && enemy_player_distance <= 1.7f) {
             // If it is facing to the player and its near, attack him
             state[i] = ATTACK;
-        } else if (angle > 34.f && angle < 163.f && enemy_player_distance <= 20.0f) {
+            attack_animation_duration = 0.0f;
+            std::cout << "ATTACK MODE" << std::endl;
+        } else if (state[i] != ATTACK && angle > 50.f && angle < 143.f && enemy_player_distance <= 20.0f) {
             // If it is in the eyesight of the player and it is
             float dist = map.raycast_from_point_to_point(enemy_pos_2d, player_2d_pos, 20.f);
 
@@ -55,6 +69,8 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
             } else {
                 state[i] = STOPPED;
             }
+        } else if (state[i] == ATTACK && ((angle < 50.f && angle > 143.f) || enemy_player_distance > 1.7f)) {
+            state[i] = ROAM;
         }
 
         Vector3 move_direction = Vector3(0.f, 0.f, 0.f);
@@ -93,6 +109,24 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
                 }
             } else {
                 state[i] = STOPPED;
+            }
+        } else if (state[i] == ATTACK) {
+            if (enemy_timers[i] >= 0.0) { // Attack cooldown timer
+                enemy_timers[i] -= elapsed_time;
+            } else {
+                attack_animation_duration += elapsed_time;
+
+                if (attack_animation_duration >= 1.9f) {
+                // Hit moment!
+                if (enemy_player_distance <= 1.7f) {
+                    // If it i near, hit
+                    sPlayer::instance->hit(kinetic_elems[i].position);
+                    enemy_timers[i] = 0.8f; // Cooldown timer
+                    attack_animation_duration = 0;
+                } else {
+                    attack_animation_duration = 0;
+                }
+            }
             }
         }
 
@@ -155,6 +189,12 @@ void sEnemyEntity::enemy_is_shoot(int index, Vector3 coll_point, Vector3 coll_no
         std::cout << "  SHOT y: " << coll_point.y << std::endl;
        enemy_health[index]--; 
        
+    }
+
+    if (enemy_health[index] == 0) {
+        state[index] = RECOVERING;
+        enemy_timers[index] = ENEMY_RECOVERING_TIMER;
+        std::cout << "Enemy OUT" << std::endl;
     }
 
     // Added blood splatter

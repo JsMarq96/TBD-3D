@@ -8,10 +8,10 @@
 #include "../texture.h"
 
 #define MAX_BULLET_SIZE 100
-#define BULLET_SPEED 60.f
+#define BULLET_SPEED 120.f
 #define BULLET_TIMER_RANGE 1.5f
 #define BULLET_COOLDOWN 0.5f
-#define BULLET_LENGHT 1.f
+#define BULLET_LENGHT 3.0f
 
 struct sBulletEntity {
     Vector3 position[MAX_BULLET_SIZE];

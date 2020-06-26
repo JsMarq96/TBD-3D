@@ -9,7 +9,7 @@ uniform sampler2D u_texture;
 void main() {
     vec3 fog_color = vec3(0.07, 0.07, 0.07);
 	// Add fog
-	float cam_pix_dist = length(v_world_position - camera_pos);
+	float cam_pix_dist = length(v_world_position - u_camera_pos);
 	//cam_pix_dist = clamp(cam_pix_dist / 20.0, 0.0, 1.0);
 	cam_pix_dist = clamp(cam_pix_dist / 220.0, 0.0, 1.0);
 

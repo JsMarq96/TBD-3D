@@ -6,6 +6,7 @@ sGameScene::sGameScene() {
     srandom(time(NULL));
 
     player = sPlayer(Vector3(150/2, 0, 150/2));
+    sPlayer::instance = &player;
 
     // Create test area
     sStage* test_stage = new sStage(0, 0, 150, 150);
@@ -58,7 +59,7 @@ void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
     // Test for player collisions
     Vector3 coll_pos, coll_normal;
     if (scene_stages[0]->testStageCollisionsWith(player.position, .6f, coll_pos, coll_normal)) {
-        Vector3 pos_delta = coll_normal * (coll_pos - player.position).length();
+        Vector3 pos_delta = coll_normal * (coll_pos - player.position).length() * 0.2;
         player.position = player.position + pos_delta * elapsed_time;
     }
 }

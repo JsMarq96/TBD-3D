@@ -36,12 +36,15 @@ enum ePlayerStates : uint8 {
 };
 
 struct sPlayer {
+    inline static sPlayer *instance;
+
     Vector3 direction;
     Vector3 position;
     Vector3 speed;
     Vector3 rotation;
     Matrix44 model;
 
+    int health;
     int ammo;
 
     float camera_animation;
@@ -58,6 +61,7 @@ struct sPlayer {
     Animation *animations[2];
 
     sAnimationParticles muzzle_flash;
+    sAnimationParticles player_blood;
     sBulletEntity bullets;
 
     float charecter_speed[2] = { CHAR_SPEED, CHAR_SLOW_SPEED };
@@ -70,6 +74,17 @@ struct sPlayer {
     void render_camera_fog(Camera *cam);
     void update(float elapsed_time);
     void shoot();
+    void hit(Vector3 enemy_position) {
+        health--;
+        sAudioController::play_3D("data/sounds/hit.wav", position);
+        player_blood.add_instance(position);
+        std::cout << "PLAYER HIT" << std::endl;
+
+        speed = speed + (position - enemy_position).normalize() * 0.5;
+        if (health == 0) {
+            // Game over
+        }
+    }
 
     bool has_shoot(Vector3 &light_position) {
         light_position = position;
@@ -77,6 +92,8 @@ struct sPlayer {
         return shoot_anim > 0.55;
     }
 };
+
+//sPlayer* sPlayer::instance;
 
 
 #endif

@@ -25,7 +25,8 @@ sPlayer::sPlayer(Vector3 start_pos) {
     animations[STANDING] = Animation::Get("data/animations/animations_idle.skanim");
     animations[RUNNING] = Animation::Get("data/animations/animations_walking.skanim"); 
 
-    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION);  
+    muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION); 
+    player_blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.0f, 13, 0.15);
 }
 
 sPlayer::sPlayer() {
@@ -48,6 +49,7 @@ sPlayer::sPlayer() {
     animations[THIRD_PERSON] = Animation::Get("data/animations/animations_idle.skanim");
 
     muzzle_flash = sAnimationParticles(Texture::Get("data/particles/fire_particle.png"), 8, 8, 0.8f, 40, MUZZLE_FLASH_DURATION);  
+    player_blood = sAnimationParticles(Texture::Get("data/particles/blood_hit.png"), 4, 4, 2.0f, 13, 0.15);
 }
 
 /**
@@ -95,6 +97,47 @@ void sPlayer::get_camera(Camera *cam) {
     }   
 }
 
+void add_overlay(Texture *text) {
+    Shader *curr_shader = Shader::Get("data/shaders/quad.vs", "data/shaders/gui.ps");
+    curr_shader->enable();
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    Mesh elem;
+    // First triangle
+    elem.vertices.push_back(Vector3( -1.0f, 1.0f, 0.0f ));
+    elem.vertices.push_back(Vector3( 1.0f, 1.0f, 0.0f ));
+    elem.vertices.push_back(Vector3( -1.0f, -1.0f, 0.0f ));
+    // Second triangle
+    elem.vertices.push_back(Vector3( 1.0f, 1.0f, 0.0f  ));
+    elem.vertices.push_back(Vector3( 1.0f, -1.0f, 0.0f ));
+    elem.vertices.push_back(Vector3( -1.0f, -1.0f, 0.0f ));
+
+    elem.uvs.push_back(Vector2(0,1));
+    elem.uvs.push_back(Vector2(1,1));
+    elem.uvs.push_back(Vector2(0,0));
+
+    elem.uvs.push_back(Vector2(1,1));
+    elem.uvs.push_back(Vector2(1,0));
+    elem.uvs.push_back(Vector2(0,0));
+
+    /*if (i == selected_index) {
+        gui_shader->setUniform("u_texture", gui[i].text[1]);
+    } else {
+        gui_shader->setUniform("u_texture", gui[i].text[0]);           
+    } */
+
+    curr_shader->setUniform("u_alpha", 1.0f);
+    curr_shader->setUniform("u_texture", text);
+
+    elem.render(GL_TRIANGLES);
+
+    glEnable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+    curr_shader->disable();
+}
+
 void sPlayer::render(Camera *cam) {
     Shader* shader = shaders[cam_mode];
 
@@ -127,6 +170,11 @@ void sPlayer::render(Camera *cam) {
     has_shot_on_frame = false;
 
     muzzle_flash.render(cam);
+
+    bullets.render(cam);
+    player_blood.render(cam);
+
+    //add_overlay(Texture::Get("data/efects/hit.png"));
 }
 
 void sPlayer::render_camera_fog(Camera *cam) {
@@ -147,8 +195,6 @@ void sPlayer::render_camera_fog(Camera *cam) {
     shade->disable();
 
     glDisable(GL_BLEND);
-
-    bullets.render(cam);
 }
 
 void sPlayer::shoot() {
@@ -172,6 +218,7 @@ void sPlayer::update(float elapsed_time) {
     // Update particles
     muzzle_flash.update(elapsed_time);
     bullets.update(elapsed_time);
+    player_blood.update(elapsed_time);
 
     if (shoot_anim > 0) {
         shoot_anim -= elapsed_time;
