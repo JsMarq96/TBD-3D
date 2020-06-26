@@ -1,7 +1,7 @@
 #include "bullet_particle.h"
 
     sBulletEntity::sBulletEntity() {
-        for (int i = 0; i < MAX_BULLET_SIZE; i++) {
+        for (int i = 0; i <= MAX_BULLET_SIZE; i++) {
             particle_timer[i] = 0.0f;
             is_active[i] = false;
         }
@@ -26,7 +26,7 @@
     }
 
     void sBulletEntity::update(float elapsed_time) {
-        for (int i = 0; i < MAX_BULLET_SIZE; i++) {
+        for (int i = 0; i <= MAX_BULLET_SIZE; i++) {
             if (is_active[i]) {
                 // Update position
                 position[i] = position[i] + (direction[i] * elapsed_time * BULLET_SPEED);

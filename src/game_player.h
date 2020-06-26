@@ -65,6 +65,8 @@ struct sPlayer {
     Shader *shaders[2];
     Mesh *meshes[2];
     Animation *animations[2];
+    HCHANNEL walking_sound_channel;
+    bool is_walking;
 
     sAnimationParticles muzzle_flash;
     sAnimationParticles player_blood;

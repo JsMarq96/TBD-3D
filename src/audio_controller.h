@@ -23,7 +23,15 @@ struct sAudioController {
 
     static HCHANNEL play_3D(std::string name, Vector3 position);
 
-    static void stop(HCHANNEL* chan);
+    static void stop(HCHANNEL chan) {
+        BASS_ChannelPause(chan);
+        BASS_ChannelStop(chan);
+        std::cout << BASS_ErrorGetCode() << std::endl;
+    };
+
+    static bool has_finished(HCHANNEL chan) {
+        return !BASS_ChannelIsActive(chan);
+    }
 };
 
 static std::unordered_map<std::string, sAudioController*> loaded_audios = std::unordered_map<std::string, sAudioController*>();

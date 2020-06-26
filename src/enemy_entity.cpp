@@ -27,7 +27,7 @@ sEnemyEntity::sEnemyEntity() {
 void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos) {
     Vector2 player_2d_pos = Vector2(player_pos.x, player_pos.z);
 
-    for(int i = 0; i < last_inserted_index; i++) {
+    for(int i = 0; i <= last_inserted_index; i++) {
         if (state[i] == RECOVERING) {
             kinetic_elems[i].speed = Vector3(0,0,0);
 
@@ -55,7 +55,7 @@ void sEnemyEntity::update(float elapsed_time, sGameMap &map, Vector3 player_pos)
 
         // State transitions
         //std::cout << angle << " " << enemy_player_distance << std::endl;
-        if (state[i] != ATTACK && angle > 50.f && angle < 143.f && enemy_player_distance <= 1.7f) {
+        if (state[i] != ATTACK && angle > 50.f && angle < 143.f && enemy_player_distance <= 1.5f) {
             // If it is facing to the player and its near, attack him
             state[i] = ATTACK;
             attack_animation_duration = 0.0f;
@@ -215,15 +215,15 @@ void sEnemyEntity::testBulletCollisions(sBulletEntity &bullet_controller) {
             if (!bullet_controller.is_active[j])
                 continue;
             if (mesh->testRayCollision(model,
-                    bullet_controller.position[i], 
-                    bullet_controller.direction[i], 
+                    bullet_controller.position[j], 
+                    bullet_controller.direction[j], 
                     coll_point, 
                     normal, 
                     BULLET_LENGHT,
                     true)) {
 
                 bullet_controller.remove_bullet(j);
-                enemy_is_shoot(j, coll_point, normal);
+                enemy_is_shoot(i, coll_point, normal);
             }
         }
     }

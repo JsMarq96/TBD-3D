@@ -6,7 +6,7 @@
         max_frames = max_fram;
         animation_duration = anim_duration;
 
-        for (int i = 0; i < PARTICLE_SIZE; i++) {
+        for (int i = 0; i <= PARTICLE_SIZE; i++) {
             elem_timer[i] = 0.0f;
             is_active[i] = false;
         }
@@ -22,7 +22,7 @@
 
     // Find an empty particel spot and adds it
     bool sAnimationParticles::add_instance(Vector3 position) {
-        for (int i = 0; i < PARTICLE_SIZE; i++) {
+        for (int i = 0; i <= PARTICLE_SIZE; i++) {
             if (is_active[i])
                 continue;
 
@@ -38,7 +38,7 @@
 
     // Update movement or timers of the particles
     void sAnimationParticles::update(float elaped_time) {
-        for (int i = 0; i < PARTICLE_SIZE; i++) {
+        for (int i = 0; i <= PARTICLE_SIZE; i++) {
             if (!is_active[i])
                 continue;
 

@@ -164,26 +164,6 @@ void sPlayer::render(Camera *cam) {
     bullets.render(cam);
 }
 
-void sPlayer::render_camera_fog(Camera *cam) {
-    Mesh mesh;
-    Matrix44 mod = model;
-    mesh.createQuad(0, 0, 50, 50, false);
-    mod.translate(0,0,-10);
-    Shader *shade = Shader::Get("data/shaders/basic.vs", "data/fog_perlin.fs");
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
-
-    shade->enable();
-    shade->setUniform("u_color", Vector4(1,1,1,0.4));
-    shade->setUniform("u_viewprojection", cam->viewprojection_matrix);
-    shade->setUniform("u_model", mod);
-    mesh.render(GL_TRIANGLES);
-    shade->disable();
-
-    glDisable(GL_BLEND);
-}
-
 void sPlayer::shoot() {
     if (ammo == 0) {
         sAudioController::play_3D(GUN_EMPTY_SOUND_DIR, position + (direction * 2.0f));
@@ -288,11 +268,21 @@ void sPlayer::update(float elapsed_time) {
     position = position + disp;
 
     // Set movement states
-    if (disp.length() > 0.01f) {
+    if (speed.length() > 0.01f) {
        player_state = RUNNING;
+
     } else {
         player_state = STANDING;
     }
+
+    /*if (speed.length() > 0.2f) {
+       if (sAudioController::has_finished(walking_sound_channel)) {
+           walking_sound_channel = sAudioController::play_3D("data/sounds/step.wav", position);
+       }
+
+    } else {
+        sAudioController::stop(walking_sound_channel);        
+    }*/
 
     // Get front player direction
     direction = model.frontVector() * -1.f;
