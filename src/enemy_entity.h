@@ -68,6 +68,7 @@ struct sEnemyEntity {
 
     int enemy_health[ENEMYS_PER_AREA];
     float enemy_timers[ENEMYS_PER_AREA];
+    float enemy_alphas[ENEMYS_PER_AREA];
 
     int last_inserted_index;
 
