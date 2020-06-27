@@ -21,6 +21,7 @@ struct sGameScene {
     sGameScene(); 
 
     void render_scene();
+    void skybox_render(Camera* cam);
     void update_scene(float elapsed_time, uint8 pressed_keys);
 };
 

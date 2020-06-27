@@ -36,6 +36,8 @@ void sGameScene::render_scene() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+
+    skybox_render(curr_camera);
     
     player.render(curr_camera);
 
@@ -46,6 +48,33 @@ void sGameScene::render_scene() {
     drawText(2, 20, "Ammo: " + std::to_string(player.ammo) + "/5", Vector3(1, 1, 1), 2);
 
     //drawText(2, 2, "x:" + std::to_string(player.position.x) + " z:" + std::to_string(player.position.z), Vector3(1, 1, 1), 2);
+}
+
+
+void sGameScene::skybox_render(Camera* cam) {
+    //Mesh *skybox = Mesh::Get("data/meshes/cilinder.obj");
+    Mesh skybox;
+    skybox.createCube();
+    Shader *shad = Shader::Get("data/shaders/basic.vs", "data/shaders/texture.fs");
+    Vector3 player_pos = player.position;
+
+    Matrix44 model;
+    model.setTranslation(player_pos.x, 0.0f, player_pos.z);
+    model.scale(90.0f, 90.0f, 90.0f);
+
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+
+    shad->enable();
+    shad->setUniform("u_color", Vector4(1,1,1,1));
+    shad->setUniform("u_texture", Texture::Get("data/textures/skybox.png"));
+    shad->setUniform("u_model", model);
+    shad->setUniform("u_viewprojection", cam->viewprojection_matrix);
+    skybox.render(GL_TRIANGLES);
+    shad->disable();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 }
 
 void sGameScene::update_scene(float elapsed_time, uint8 pressed_keys) {
