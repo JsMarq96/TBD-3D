@@ -14,6 +14,11 @@ The objetive of this class was to develop our own game engine, for a small game 
 - Tweeny, for interpolation and animation (but the functionality was scrapped in the last versions).
 - Pathfinders library, for the A* implementation.
 
+## Project Structure
+- src: the main engine/game code.
+- src/extra: all the code of the libraries.
+- data: the code for the textures, models and shaders
+
 ## The Game
 This game was supposed to be a homage/slight rip-off of the more survival horror games, specifically the Resident Evil 4; but due to development problems, and
 time limits, I didnt have time to do any level desing, so the video is more like a tech demo, than a gameplay example.<br/>
