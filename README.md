@@ -2,9 +2,6 @@
 [![Go to video](https://img.youtube.com/vi/YBdEydwaXGs/0.jpg)](https://www.youtube.com/watch?v=YBdEydwaXGs)
 
 ## About the project
-![TBD](https://github.com/JsMarq96/TBN_3D/blob/master/Images/game_Screen_menu.png?raw=true)
-![TBD](https://github.com/JsMarq96/TBN_3D/blob/master/Images/game_Scene.png?raw=true)
-
 Based on the framework provided by Javier Agenjo, teacher of the UPF, for the class of Electronic Games.<br/>
 The objetive of this class was to develop our own game engine, for a small game of our creation.<br/>
 
