@@ -26,7 +26,7 @@ For good or for worse, this was also the first time that I moddeled using Blende
 The enemys are temporally disabled if you shoot them enough times, or instantly if you just headshot them.<br/>
 The player alternates between First and Third person, only being able to shoot while of first person, where he move more slowly.<br/>
 
-### Intersesting parts
+## Interesting parts
 Since this is the first time I seriusly devled into engine development, some mistakes where made along the way; and that is accentuated since it is also y first time using Data Oriented Programming in a project, but nevertheless, there are still some interesting parts that I would like to highlight. <br/>
 (Or this are just some parts that I had a lot of fun working in).<br/>
 
